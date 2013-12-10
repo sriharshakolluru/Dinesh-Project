@@ -34,7 +34,10 @@ namespace Dinesh_Project
             tabitem.Content = tabFrame;
             tabitem.Name = "Transactions";
             if (AllowTab(tabitem.Name))
+            {
                 tabControlView.Items.Add(tabitem);
+                tabControlView.SelectedItem = tabitem;
+            }
             else
                 MessageBox.Show("Tab is Already Open or Too Many Tabs", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
@@ -50,7 +53,10 @@ namespace Dinesh_Project
             tabitem.Content = tabFrame;
             tabitem.Name = "Reports";
             if (AllowTab(tabitem.Name))
+            {
                 tabControlView.Items.Add(tabitem);
+                tabControlView.SelectedItem = tabitem;
+            }
             else
                 MessageBox.Show("Tab is Already Open or Too Many Tabs", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }

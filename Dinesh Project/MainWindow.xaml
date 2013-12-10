@@ -21,8 +21,8 @@
         <TabControl Grid.Row="1"
                     x:Name="tabControlView" MouseLeftButtonDown="TabControlClicked"
                     >
-            <TabItem Name="Paged" Header="Paged">
-                <Frame Source="Reports.xaml" />
+            <TabItem Name="Home" Header="Home">
+                <Image Source="Data\HomeImage2.jpg"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             </TabItem>
         </TabControl>
     </Grid>
