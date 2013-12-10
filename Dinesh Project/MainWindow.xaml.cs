@@ -31,7 +31,7 @@ namespace Dinesh_Project
 
         private void Page2_Click(object sender, RoutedEventArgs e)
         {
-            tabControlView.Items.Add(new  Reports());
+            tabControlView.Items.Add(new  Transactions());
             
         }
     }
