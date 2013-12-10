@@ -13,13 +13,17 @@
                     >
             <Button Content="Page1"
                     Click="Page1_Click"/>
-            <Button Content="Page3"
+            <Button Content="Page2"
                     Click="Page2_Click"/>
             <Button Content="Page3"
                     Click="Page3_Click"/>
         </StackPanel>
         <TabControl Grid.Row="1"
-                    x:Name="tabControlView"
-                    />
+                    x:Name="tabControlView" MouseLeftButtonDown="TabControlClicked"
+                    >
+            <TabItem Name="Paged" Header="Paged">
+                <Frame Source="Reports.xaml" />
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
