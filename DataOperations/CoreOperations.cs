@@ -71,7 +71,20 @@ namespace DataOperations
         }
         public static bool AddANewVehicle(string RegisrtrationId, string VehicleType, int OwnerId)
         {
-            String InsertCommand = string.Format("INSERT INTO Vehicles(RegistrationNumber,VehicleType,Ownerid) VALUES ('{0}','{1}',{2})", RegisrtrationId , VehicleType,OwnerId);
+            String InsertCommand = string.Format("INSERT INTO Vehicles(RegistrationNumber,VehicleType,Ownerid) VALUES ('{0}','{1}',{2})", RegisrtrationId, VehicleType, OwnerId);
+            int returnValue = InsertData(coreConnectionstring, InsertCommand);
+            if (returnValue > -1)
+                return true;
+            else
+                return false;
+        }
+        
+        
+        
+        public static bool StartANewTransaction(int OperationID, DateTime StartDate,string status,string VehicleRegisrationNumber,int technicianId,string PaymentType,string PaymentStatus,string Remarks)
+        {
+            SqlCeTransaction transac;
+            String InsertCommand = string.Format("INSERT INTO Vehicles(OperationId,StartDate,Status,VehicleId,PaymentType,PaymentStatus,Remarks,TechnicianId) VALUES ({0},'{1}','{2}','{3}','{4}','{5}','{6}',{7})",OperationID,DateTime.Now,status,VehicleRegisrationNumber, );
             int returnValue = InsertData(coreConnectionstring, InsertCommand);
             if (returnValue > -1)
                 return true;
