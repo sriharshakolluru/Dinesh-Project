@@ -79,6 +79,11 @@ namespace DataOperations
                 return false;
         }
 
+        /// <summary>
+        /// substr is the vehicle Registration Number like AP28BHJ1234
+        /// </summary>
+        /// <param name="substr"></param>
+        /// <returns></returns>
         public static DataSet GetAllVehicles(string substr)
         {
             try
@@ -141,8 +146,8 @@ namespace DataOperations
             {
                 SqlCeConnection currentConnection = new SqlCeConnection(coreConnectionstring.ToString());
                 SqlCeCommand cmd = currentConnection.CreateCommand();
-                if (!string.IsNullOrEmpty(Name))
-                    cmd.CommandText = string.Format("SELECT CustomerId,Name,RegistrationId,Phone,Address FROM Customers where Name like '%{0}%'", Name);
+                if (!string.IsNullOrEmpty(name))
+                    cmd.CommandText = string.Format("SELECT CustomerId,Name,RegistrationId,Phone,Address FROM Customers where Name like '%{0}%'", name);
                 else
                     cmd.CommandText = string.Format("SELECT CustomerId,Name,RegistrationId,Phone,Address FROM Customers");
 
@@ -163,8 +168,81 @@ namespace DataOperations
             }
             return null;
         }
-        
-        public static bool StartANewTransaction(int OperationID, DateTime StartDate,string status,string VehicleRegisrationNumber,int technicianId,string PaymentType,string PaymentStatus,string Remarks)
+
+        public static int doesVehicleExist(string RegistrationId)
+        {
+            DataSet vehiclesList= GetAllVehicles(RegistrationId);
+            try
+            {
+                if (vehiclesList != null && vehiclesList.Tables.Count > 0)
+                {
+                    var vehicId = (from DataRow row in vehiclesList.Tables[0].Rows
+                                   select row["VehicleID"]).First();
+
+                    return int.Parse(vehicId.ToString());
+                }
+                else
+                {
+                    Utility.WriteLog("The vehicle list Result does not contain any rows");
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception occurred in doesVehicleExist " + ex.ToString());
+            }
+            return -1;
+        }
+        public static int doesOwnerExists(string Name)
+        {
+            DataSet vehiclesList = GetAllOwners(Name);
+            try
+            {
+                if (vehiclesList != null && vehiclesList.Tables.Count > 0)
+                {
+                    var vehicId = (from DataRow row in vehiclesList.Tables[0].Rows
+                                   select row["CustomerID"]).First();
+
+                    return int.Parse(vehicId.ToString());
+                }
+                else
+                {
+                    Utility.WriteLog("The Customer/Owner list Result does not contain any rows");
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception occurred in doesVehicleExist " + ex.ToString());
+            }
+            return -1;
+        }
+        public static int doesTechnicianExists(string Name)
+        {
+            DataSet techList = GetAllTechnicians(Name);
+            try
+            {
+                if (techList != null && techList.Tables.Count > 0)
+                {
+                    var techId = (from DataRow row in techList.Tables[0].Rows
+                                   select row["Id"]).First();
+
+                    return int.Parse(techId.ToString());
+                }
+                else
+                {
+                    Utility.WriteLog("The Customer/Owner list Result does not contain any rows");
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception occurred in doesVehicleExist " + ex.ToString());
+            }
+            return -1;
+        }
+
+        public static bool StartANewTransaction(int OperationID, DateTime StartDate,string status,string VehicleRegisrationNumber,int technicianName,string PaymentType,string PaymentStatus,double paymentAmount,string Remarks)
         {
             SqlCeTransaction transac;
             string InsertCommand=string.Empty;//= string.Format("INSERT INTO Vehicles(OperationId,StartDate,Status,VehicleId,PaymentType,PaymentStatus,Remarks,TechnicianId) VALUES ({0},'{1}','{2}','{3}','{4}','{5}','{6}',{7})",OperationID,DateTime.Now,status,VehicleRegisrationNumber, );
@@ -175,5 +253,6 @@ namespace DataOperations
                 return false;
         }   
 
+        
     }
 }

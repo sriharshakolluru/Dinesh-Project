@@ -16,7 +16,8 @@ namespace TestingConsole
             //CoreOperations.AddANewTechnician("Dinesh", "Dinu2134");
             //CoreOperations.AddANewVehicle("AP28D2012313243", "MBenz", 1);
             //CoreOperations.GetAllVehicles("2334");
-            CoreOperations.GetAllOwners("aet");
+            //CoreOperations.GetAllOwners("aet");
+            int outd= CoreOperations.doesVehicleExist("233");
             
         }
     }
