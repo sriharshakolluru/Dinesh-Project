@@ -14,7 +14,9 @@ namespace TestingConsole
             //CoreOperations.AddANewOperation("Puncture", "2wheeler");
             //CoreOperations.AddANewCustomer("Neeti", "Neet1234", "9030256352", "Delhi");
             //CoreOperations.AddANewTechnician("Dinesh", "Dinu2134");
-            CoreOperations.AddANewVehicle("AP28D2012313243", "MBenz", 1);
+            //CoreOperations.AddANewVehicle("AP28D2012313243", "MBenz", 1);
+            //CoreOperations.GetAllVehicles("2334");
+            CoreOperations.GetAllOwners("aet");
             
         }
     }
