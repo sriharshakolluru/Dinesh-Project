@@ -10,6 +10,13 @@ namespace DataOperations
     public class CoreOperations
     {
        static  ConnectionStringSettings coreConnectionstring = ConfigurationManager.ConnectionStrings["CoreDbConnectionString"];
+       static DataTable Vechicles;
+       static DataTable Owners;
+       static DataTable Technicians;
+       static bool isVehicleDirty = true;
+       static bool isOwnerDirty = true;
+       static bool isTechnicianDirty = true;
+
 
         //public DataSet GetData(ConnectionStringSettings connection, string command)
         //{
@@ -49,6 +56,7 @@ namespace DataOperations
         }
         public static bool AddANewCustomer(string CustomerName, string RegistrationID,string  phone,string address)
         {
+            isOwnerDirty = true;
             String InsertCommand = string.Format("INSERT INTO CUSTOMERS(Name,RegistrationID,Phone,Address) VALUES ('{0}','{1}','{2}','{3}')", CustomerName, RegistrationID,phone,address);
             int returnValue = InsertData(coreConnectionstring, InsertCommand);
             if (returnValue > -1)
@@ -60,6 +68,7 @@ namespace DataOperations
         }
         public static bool AddANewTechnician(string TechnicianName, string RegistrationID)
         {
+            isTechnicianDirty = true;
             String InsertCommand = string.Format("INSERT INTO Technicians(Name,RegistrationID) VALUES ('{0}','{1}')", TechnicianName, RegistrationID);
             int returnValue = InsertData(coreConnectionstring, InsertCommand);
             if (returnValue > -1)
@@ -71,6 +80,7 @@ namespace DataOperations
         }
         public static bool AddANewVehicle(string RegisrtrationId, string VehicleType, int OwnerId)
         {
+            isVehicleDirty = true;
             String InsertCommand = string.Format("INSERT INTO Vehicles(RegistrationNumber,VehicleType,Ownerid) VALUES ('{0}','{1}',{2})", RegisrtrationId, VehicleType, OwnerId);
             int returnValue = InsertData(coreConnectionstring, InsertCommand);
             if (returnValue > -1)
@@ -84,55 +94,80 @@ namespace DataOperations
         /// </summary>
         /// <param name="substr"></param>
         /// <returns></returns>
-        public static DataSet GetAllVehicles(string substr)
-        {
-            try
-            {
-                SqlCeConnection currentConnection = new SqlCeConnection(coreConnectionstring.ToString());
-                SqlCeCommand cmd = currentConnection.CreateCommand();
-                if (!string.IsNullOrEmpty(substr))
-                    cmd.CommandText = string.Format("SELECT VehicleId,RegistrationNumber,VehicleType,Ownerid FROM Vehicles where RegistrationNumber like '%{0}%'", substr);
-                else
-                    cmd.CommandText = string.Format("SELECT VehicleId,RegistrationNumber,VehicleType,Ownerid FROM Vehicles");
-
-                //cmd.CommandText = string.Format("SELECT VehicleId,RegistrationNumber,VehicleType,Ownerid FROM Vehicles where RegistrationNumber like @partialId", substr);
-                //cmd.Parameters.Add("@partialId", SqlDbType.NVarChar);
-                //cmd.Parameters["partialId"].Value =string.Format(" '%{0}%'", substr);
-                Console.WriteLine(cmd);
-                cmd.CommandType = CommandType.Text;
-                SqlCeDataAdapter adapter = new SqlCeDataAdapter();
-                adapter.SelectCommand = cmd;
-                DataSet resultset = new DataSet();
-                adapter.Fill(resultset);
-                return resultset;
-            }
-            catch (Exception ex)
-            {
-                Utility.WriteLogError("Exception Occurred while Getting Vehicles List" + ex.ToString());
-            }
+        public static DataTable GetVehiclesByRegistration(string substr)
+        {   
+                try
+                {
+                    Vechicles= GetAllVehicles();
+                    DataRow[] matchedVehicles = (from DataRow row in  Vechicles.Rows
+                                           where (row["RegistrationNumber"].ToString().Contains(substr))
+                                           select row).ToArray();
+                    DataTable resultTable = Vechicles.Clone();
+                    foreach (DataRow row in matchedVehicles)
+                    {
+                        resultTable.ImportRow(row);
+                    }
+                    return resultTable;
+                    
+                }
+                catch (Exception ex)
+                {
+                    Utility.WriteLogError("Exception Occurred while Getting Vehicles List" + ex.ToString());
+                }
             return null;
         }
-        public static DataSet GetAllOwners(string Name)
+        public static DataTable GetAllVehicles()
+        {
+            if (isVehicleDirty == true)
+            {
+                try
+                {
+                    SqlCeConnection currentConnection = new SqlCeConnection(coreConnectionstring.ToString());
+                    SqlCeCommand cmd = currentConnection.CreateCommand();
+                    cmd.CommandText = string.Format("SELECT VehicleId,RegistrationNumber,VehicleType,Ownerid FROM Vehicles");
+
+                    //cmd.CommandText = string.Format("SELECT VehicleId,RegistrationNumber,VehicleType,Ownerid FROM Vehicles where RegistrationNumber like @partialId", substr);
+                    //cmd.Parameters.Add("@partialId", SqlDbType.NVarChar);
+                    //cmd.Parameters["partialId"].Value =string.Format(" '%{0}%'", substr);
+                    Console.WriteLine(cmd);
+                    cmd.CommandType = CommandType.Text;
+                    SqlCeDataAdapter adapter = new SqlCeDataAdapter();
+                    adapter.SelectCommand = cmd;
+                    DataSet resultset = new DataSet();
+                    adapter.Fill(resultset);
+                    Vechicles = resultset.Tables[0];
+                    isVehicleDirty = false;
+                    return Vechicles;
+                }
+                catch (Exception ex)
+                {
+                    Utility.WriteLogError("Exception Occurred while Getting Vehicles List" + ex.ToString());
+                }
+                
+            }
+            else
+            {
+                Utility.WriteLogError("No new data to Fetch");
+                return Vechicles;
+            }
+
+            return null;
+        }
+        public static DataTable GetAllOwnersByName(string Name)
         {
             try
             {
-                SqlCeConnection currentConnection = new SqlCeConnection(coreConnectionstring.ToString());
-                SqlCeCommand cmd = currentConnection.CreateCommand();
-                if(!string.IsNullOrEmpty(Name))
-                    cmd.CommandText = string.Format("SELECT CustomerId,Name,RegistrationId,Phone,Address FROM Customers where Name like '%{0}%'", Name);
-                else
-                    cmd.CommandText = string.Format("SELECT CustomerId,Name,RegistrationId,Phone,Address FROM Customers");
+                Owners = GetAllOwners();
 
-                //cmd.CommandText = string.Format("SELECT VehicleId,RegistrationNumber,VehicleType,Ownerid FROM Vehicles where RegistrationNumber like @partialId", substr);
-                //cmd.Parameters.Add("@partialId", SqlDbType.NVarChar);
-                //cmd.Parameters["partialId"].Value =string.Format(" '%{0}%'", substr);
-                Console.WriteLine(cmd);
-                cmd.CommandType = CommandType.Text;
-                SqlCeDataAdapter adapter = new SqlCeDataAdapter();
-                adapter.SelectCommand = cmd;
-                DataSet resultset = new DataSet();
-                adapter.Fill(resultset);
-                return resultset;
+                DataRow[] matchedOwners = (from DataRow row in Vechicles.Rows
+                                             where (row["Name"].ToString().Contains(Name))
+                                             select row).ToArray();
+                DataTable resultTable = new DataTable();
+                foreach (DataRow row in matchedOwners)
+                {
+                    resultTable.ImportRow(row);
+                }
+                return resultTable;
             }
             catch (Exception ex)
             {
@@ -140,45 +175,122 @@ namespace DataOperations
             }
             return null;
         }
-        public static DataSet GetAllTechnicians(string name)
+        public static DataTable GetAllOwners()
         {
-            try
+            if (isOwnerDirty)
             {
-                SqlCeConnection currentConnection = new SqlCeConnection(coreConnectionstring.ToString());
-                SqlCeCommand cmd = currentConnection.CreateCommand();
-                if (!string.IsNullOrEmpty(name))
-                    cmd.CommandText = string.Format("SELECT CustomerId,Name,RegistrationId,Phone,Address FROM Customers where Name like '%{0}%'", name);
-                else
+                try
+                {
+                    SqlCeConnection currentConnection = new SqlCeConnection(coreConnectionstring.ToString());
+                    SqlCeCommand cmd = currentConnection.CreateCommand();
                     cmd.CommandText = string.Format("SELECT CustomerId,Name,RegistrationId,Phone,Address FROM Customers");
+                    Console.WriteLine(cmd);
+                    cmd.CommandType = CommandType.Text;
+                    SqlCeDataAdapter adapter = new SqlCeDataAdapter();
+                    adapter.SelectCommand = cmd;
+                    DataSet resultset = new DataSet();
+                    adapter.Fill(resultset);
+                    Owners = resultset.Tables[0];
+                    return Owners;
+                }
+                catch (Exception ex)
+                {
+                    Utility.WriteLogError("Exception Occurred while Getting Vehicles List" + ex.ToString());
+                }
+                finally
+                {
+                    isOwnerDirty = false;
+                }
 
-                //cmd.CommandText = string.Format("SELECT VehicleId,RegistrationNumber,VehicleType,Ownerid FROM Vehicles where RegistrationNumber like @partialId", substr);
-                //cmd.Parameters.Add("@partialId", SqlDbType.NVarChar);
-                //cmd.Parameters["partialId"].Value =string.Format(" '%{0}%'", substr);
-                Console.WriteLine(cmd);
-                cmd.CommandType = CommandType.Text;
-                SqlCeDataAdapter adapter = new SqlCeDataAdapter();
-                adapter.SelectCommand = cmd;
-                DataSet resultset = new DataSet();
-                adapter.Fill(resultset);
-                return resultset;
             }
-            catch (Exception ex)
+            else
+                return Owners;
+            return null;
+        }
+        public static int GetOwnerByVehicle(string registrationNumber)
+        {
+            int vehicId = doesVehicleExist(registrationNumber);
+            if (vehicId != -1)
             {
-                Utility.WriteLogError("Exception Occurred while Getting Vehicles List" + ex.ToString());
+                try
+                {
+
+                    Vechicles = GetAllVehicles();
+                    
+                    if (Vechicles != null && Vechicles.Rows.Count > 0)
+                    {
+                        var ownerId = (from DataRow row in Vechicles.Rows
+                                       where row["VehicleID"].ToString().Equals(vehicId.ToString())
+                                       select row["Ownerid"]).First();
+
+                        return int.Parse(ownerId.ToString());
+                    }
+                    else
+                    {
+                        Utility.WriteLogError("Dataset is empty in result to query on vehicles table");
+                        return -1;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Utility.WriteLogError("Exception Occurred while Getting Vehicles List" + ex.ToString());
+                }
+                return -1;
+            }
+            else
+            {
+                Utility.WriteLogError(" Error occurred while getting vehicle witi given registration Number");
+                return -2;
+            }
+        }
+        public static DataTable GetAllTechnicians(string name)
+        {
+            if (isTechnicianDirty)
+            {
+                try
+                {
+                    SqlCeConnection currentConnection = new SqlCeConnection(coreConnectionstring.ToString());
+                    SqlCeCommand cmd = currentConnection.CreateCommand();
+                    if (!string.IsNullOrEmpty(name))
+                        cmd.CommandText = string.Format("SELECT Id,Name,RegistrationId FROM Technicians where Name like '%{0}%'", name);
+                    else
+                        cmd.CommandText = string.Format("SELECT Id,Name,RegistrationId FROM Technicians");
+
+                    //cmd.CommandText = string.Format("SELECT VehicleId,RegistrationNumber,VehicleType,Ownerid FROM Vehicles where RegistrationNumber like @partialId", substr);
+                    //cmd.Parameters.Add("@partialId", SqlDbType.NVarChar);
+                    //cmd.Parameters["partialId"].Value =string.Format(" '%{0}%'", substr);
+                    Console.WriteLine(cmd);
+                    cmd.CommandType = CommandType.Text;
+                    SqlCeDataAdapter adapter = new SqlCeDataAdapter();
+                    adapter.SelectCommand = cmd;
+                    DataSet resultset = new DataSet();
+                    adapter.Fill(resultset);
+                    Technicians = resultset.Tables[0];
+                    isTechnicianDirty = false;
+                    return Technicians;
+                }
+                catch (Exception ex)
+                {
+                    Utility.WriteLogError("Exception Occurred while Getting Vehicles List" + ex.ToString());
+                }
+            }
+            else
+            {
+                Utility.WriteLog("No new data to fetch in technicians");
+                return Technicians;
             }
             return null;
         }
 
         public static int doesVehicleExist(string RegistrationId)
         {
-            DataSet vehiclesList= GetAllVehicles(RegistrationId);
+            DataTable vehiclesList= GetVehiclesByRegistration(RegistrationId);
             try
             {
-                if (vehiclesList != null && vehiclesList.Tables.Count > 0)
+                if (vehiclesList != null)
                 {
-                    var vehicId = (from DataRow row in vehiclesList.Tables[0].Rows
+                    var vehicId = (from DataRow row in vehiclesList.Rows
                                    select row["VehicleID"]).First();
-
                     return int.Parse(vehicId.ToString());
                 }
                 else
@@ -195,12 +307,12 @@ namespace DataOperations
         }
         public static int doesOwnerExists(string Name)
         {
-            DataSet vehiclesList = GetAllOwners(Name);
+            DataTable vehiclesList = GetAllOwnersByName(Name);
             try
             {
-                if (vehiclesList != null && vehiclesList.Tables.Count > 0)
+                if (vehiclesList != null && vehiclesList.Rows.Count > 0)
                 {
-                    var vehicId = (from DataRow row in vehiclesList.Tables[0].Rows
+                    var vehicId = (from DataRow row in vehiclesList.Rows
                                    select row["CustomerID"]).First();
 
                     return int.Parse(vehicId.ToString());
@@ -219,12 +331,12 @@ namespace DataOperations
         }
         public static int doesTechnicianExists(string Name)
         {
-            DataSet techList = GetAllTechnicians(Name);
+            DataTable techList = GetAllTechnicians(Name);
             try
             {
-                if (techList != null && techList.Tables.Count > 0)
+                if (techList != null && techList.Rows.Count > 0)
                 {
-                    var techId = (from DataRow row in techList.Tables[0].Rows
+                    var techId = (from DataRow row in techList.Rows
                                    select row["Id"]).First();
 
                     return int.Parse(techId.ToString());
@@ -242,15 +354,45 @@ namespace DataOperations
             return -1;
         }
 
-        public static bool StartANewTransaction(int OperationID, DateTime StartDate,string status,string VehicleRegisrationNumber,int technicianName,string PaymentType,string PaymentStatus,double paymentAmount,string Remarks)
+        public static bool StartANewTransactionWithExistingVehicle(int OperationID, DateTime StartDate,string status,string VehicleRegisrationNumber,string technicianName,string PaymentType,string PaymentStatus,double paymentAmount,string Remarks)
         {
             SqlCeTransaction transac;
-            string InsertCommand=string.Empty;//= string.Format("INSERT INTO Vehicles(OperationId,StartDate,Status,VehicleId,PaymentType,PaymentStatus,Remarks,TechnicianId) VALUES ({0},'{1}','{2}','{3}','{4}','{5}','{6}',{7})",OperationID,DateTime.Now,status,VehicleRegisrationNumber, );
-            int returnValue = InsertData(coreConnectionstring, InsertCommand);
-            if (returnValue > -1)
-                return true;
-            else
+            int ownerId,vehicleId;
+            string serviceID;
+            if ((ownerId=GetOwnerByVehicle(VehicleRegisrationNumber)) > -1)// Owner exists
+            {
+                vehicleId = doesVehicleExist(VehicleRegisrationNumber);
+                serviceID = Utility.CreateRandomID(VehicleRegisrationNumber);
+
+                ///Add technician Part
+                int techId= doesTechnicianExists(technicianName);
+                if (techId == -1)
+                {
+                    AddANewTechnician(technicianName, Utility.CreateRandomID(technicianName));
+                    techId = doesTechnicianExists(technicianName);
+                }
+                
+
+                
+                //Command Data
+                string InsertCommand = string.Format("INSERT INTO Transactions(ServiceId,OperationId,StartDate,Status,VehicleId,PaymentType,PaymentStatus,PaymentAmount,Remarks,TechnicianId) VALUES ('{9}',{0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8})",OperationID,DateTime.Now,status,vehicleId,PaymentType,PaymentStatus, paymentAmount,Remarks,techId,serviceID);
+                Utility.WriteLog("The insert Command for Transaction is " + InsertCommand);
+                int returnValue = InsertData(coreConnectionstring, InsertCommand);
+                if (returnValue > -1)
+                    return true;
+                else
+                    return false;
+            }
+            else if(ownerId==-2)// Vehicle does not exist
+            {
+                Utility.WriteLogError("Vehicle Does Not Exist.. Registration ID Entered ... "+VehicleRegisrationNumber);
                 return false;
+            }
+            else if (ownerId==-1)
+                Utility.WriteLogError("Vehicle exists but owner data is missing ");
+
+            return false;
+            
         }   
 
         
