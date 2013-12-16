@@ -3,11 +3,25 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
-	Title="Reports">
+      mc:Ignorable="d" Title="Reports" d:DesignHeight="300" d:DesignWidth="300">
     
      <Grid>
-        <Label>Reports Page</Label>
+        <Image Source="Data/ReportsFormsLinksHeader.png" Height="30px" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Stretch="Fill"/>
+        <TabControl TabStripPlacement="Left" Margin="0,30,-110,0">
+            <TabItem Name="tabTechnician" Header="Technician" Background="Aqua">
+                <Viewbox Stretch="Uniform">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Top">
+                        <StackPanel Orientation="Horizontal"  VerticalAlignment="Center" >
+                            <Label Name="Sample" Content="Technician" MaxHeight="20" FontSize="3" FontStretch="ExtraExpanded" HorizontalAlignment="Left" HorizontalContentAlignment="Left" MaxWidth="20" VerticalAlignment="Stretch" Width="20" Height="17" />
+                            <TextBox Name="txtTechName"  Width="47" Height="7"  FontSize="1"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                        </StackPanel>
+                    </StackPanel>
+                </Viewbox>
+            </TabItem>
+            <TabItem Header="tab2"></TabItem>
+        </TabControl>
+        
     </Grid>
 </Page>
