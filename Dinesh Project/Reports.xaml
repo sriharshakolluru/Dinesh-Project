@@ -6,19 +6,23 @@
       mc:Ignorable="d" Title="Reports" d:DesignHeight="300" d:DesignWidth="300">
     
      <Grid>
-        <Image Source="Data/ReportsFormsLinksHeader.png" Height="30px" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Stretch="Fill"/>
-        <TabControl TabStripPlacement="Left" Margin="0,30,-110,0">
+        <Image Source="Data/ReportsFormsLinksHeader.png" Height="90px"  VerticalAlignment="Top" HorizontalAlignment="Stretch"  Stretch="Fill"/>
+        <TabControl TabStripPlacement="Left" HorizontalAlignment="Stretch" Margin="0,90,0,0" MaxWidth="1500">
             <TabItem Name="tabTechnician" Header="Technician" Background="Aqua">
-                <Viewbox Stretch="Uniform">
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Top">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Top" MaxWidth="900">
                         <StackPanel Orientation="Horizontal"  VerticalAlignment="Center" >
-                            <Label Name="Sample" Content="Technician" MaxHeight="20" FontSize="3" FontStretch="ExtraExpanded" HorizontalAlignment="Left" HorizontalContentAlignment="Left" MaxWidth="20" VerticalAlignment="Stretch" Width="20" Height="17" />
-                            <TextBox Name="txtTechName"  Width="47" Height="7"  FontSize="1"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" >
-                        </StackPanel>
+                        <Label Name="lblTechID" Content="Technician" Height="30" FontSize="18" FontStretch="ExtraExpanded"  MaxWidth="200" Width="100"  />
+                            <TextBox Name="txtTechName"  MinWidth="150" MaxWidth="200" Height="30"  FontSize="18"/>
+                        <Label Content="      " />
+                        <Label Name="lblRegistrationNumber" Content="Registration No" MaxWidth="200" Height="35" FontSize="18" VerticalAlignment="Center"/>
+                        <TextBox Name="txttechRegistrationId" MinWidth="150" MaxWidth="200" Height="30" FontSize="18"  />
                     </StackPanel>
-                </Viewbox>
+                    
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Name="btnSave" Content="Save" FontSize="18"  Margin="-100,30,0,0" MaxWidth="150" MaxHeight="50" />
+                    </StackPanel>
+
+                    </StackPanel>
             </TabItem>
             <TabItem Header="tab2"></TabItem>
         </TabControl>

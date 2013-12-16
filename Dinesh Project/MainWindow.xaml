@@ -22,7 +22,7 @@
                     x:Name="tabControlView" MouseLeftButtonDown="TabControlClicked"
                     >
             <TabItem Name="Home" Header="Home">
-                <Image Source="Data\HomeImage2.jpg"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <Image Source="Data\HomeImage2.jpg"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Fill"/>
             </TabItem>
         </TabControl>
     </Grid>

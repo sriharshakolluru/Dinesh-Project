@@ -359,21 +359,25 @@ namespace DataOperations
             SqlCeTransaction transac;
             int ownerId,vehicleId;
             string serviceID;
+           
             if ((ownerId=GetOwnerByVehicle(VehicleRegisrationNumber)) > -1)// Owner exists
             {
+                #region vehicle Verification
                 vehicleId = doesVehicleExist(VehicleRegisrationNumber);
                 serviceID = Utility.CreateRandomID(VehicleRegisrationNumber);
+                #endregion
 
-                ///Add technician Part
+
+                #region Add technician Part
                 int techId= doesTechnicianExists(technicianName);
                 if (techId == -1)
                 {
                     AddANewTechnician(technicianName, Utility.CreateRandomID(technicianName));
                     techId = doesTechnicianExists(technicianName);
                 }
-                
 
-                
+                #endregion
+
                 //Command Data
                 string InsertCommand = string.Format("INSERT INTO Transactions(ServiceId,OperationId,StartDate,Status,VehicleId,PaymentType,PaymentStatus,PaymentAmount,Remarks,TechnicianId) VALUES ('{9}',{0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8})",OperationID,DateTime.Now,status,vehicleId,PaymentType,PaymentStatus, paymentAmount,Remarks,techId,serviceID);
                 Utility.WriteLog("The insert Command for Transaction is " + InsertCommand);
