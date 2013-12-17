@@ -11,7 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using DataOperations;
+using System.Data;
 namespace Dinesh_Project
 {
     /// <summary>
@@ -22,6 +23,13 @@ namespace Dinesh_Project
         public Reports()
         {
             InitializeComponent();
+            BindData();
+        }
+
+        public void BindData()
+        {
+            DataTable techList = CoreOperations.GetAllTechnicians(String.Empty);
+            grdTechData.ItemsSource = techList.AsDataView();
         }
     }
 }

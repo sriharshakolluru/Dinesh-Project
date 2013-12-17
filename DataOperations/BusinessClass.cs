@@ -9,4 +9,8 @@ namespace DataOperations
     {
 
     }
+    class Technicians
+    {
+
+    }
 }
