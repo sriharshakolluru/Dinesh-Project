@@ -25,12 +25,28 @@
                         <Label Content="      " />
                         <Label Name="dummy2" Content="" MaxWidth="200" Height="35" FontSize="18" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <dg:DataGrid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-120,30,0,0" AutoGenerateColumns="False" x:Name="grdTechData" CanUserAddRows="False">
-                        <dg:DataGrid.Columns>
-                            <dg:DataGridTextColumn Header="Name" Width="*" Binding="{Binding Path=Name}" />
-                            <dg:DataGridTextColumn Header="RegistrationID" Width="*" Binding="{Binding Path=RegistrationID}" />
-                        </dg:DataGrid.Columns>
-                    </dg:DataGrid>
+                    <DataGrid HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" Margin="-120,30,0,0" AutoGenerateColumns="False" x:Name="grdTechData" CanUserAddRows="False">
+                        <DataGrid.Resources>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="Background" Value="LightGreen" />
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Width="*"  MaxWidth="150" Binding="{Binding Path=Name}" >
+                                <DataGridColumn.HeaderStyle>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                                        <Setter Property="Foreground" Value="Black" />
+                                        <Setter Property="FontSize" Value="20" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        <Setter Property="BorderBrush" Value="blue"/>
+                                        <Setter Property="BorderThickness" Value="2,2,2,2"/>
+
+                                    </Style>
+                                </DataGridColumn.HeaderStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="RegistrationID" Width="*" MaxWidth="200" Binding="{Binding Path=RegistrationID}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </StackPanel>
             </TabItem>
             <TabItem Header="tab2"></TabItem>
