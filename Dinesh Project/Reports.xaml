@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:dg="clr-namespace:Microsoft.Windows.Controls;assembly=WpfToolkit"
-      mc:Ignorable="d" Title="Reports" d:DesignHeight="300" d:DesignWidth="300">
+      mc:Ignorable="d" Title="Reports" d:DesignHeight="300" d:DesignWidth="300" Loaded="Page_Loaded">
     
      <Grid>
         <Image Source="Data/ReportsFormsLinksHeader.png" Height="90px"  VerticalAlignment="Top" HorizontalAlignment="Stretch"  Stretch="Fill"/>
@@ -25,14 +25,16 @@
                         <Label Content="      " />
                         <Label Name="dummy2" Content="" MaxWidth="200" Height="35" FontSize="18" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <DataGrid HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" Margin="-120,30,0,0" AutoGenerateColumns="False" x:Name="grdTechData" CanUserAddRows="False">
+                    <DataGrid HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" Margin="-120,30,0,0" AutoGenerateColumns="False" x:Name="grdTechData" CanUserAddRows="False" RowEditEnding="grdTechData_RowEditEnding">
                         <DataGrid.Resources>
                             <Style TargetType="{x:Type DataGridColumnHeader}">
                                 <Setter Property="Background" Value="LightGreen" />
                             </Style>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Name" Width="*"  MaxWidth="150" Binding="{Binding Path=Name}" >
+                            <DataGridTextColumn Header="ID" Width="*" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=Id,  UpdateSourceTrigger=PropertyChanged}" >
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Name" Width="*" IsReadOnly="False" MaxWidth="150" Binding="{Binding Path=Name,  UpdateSourceTrigger=PropertyChanged}" >
                                 <DataGridColumn.HeaderStyle>
                                     <Style TargetType="{x:Type DataGridColumnHeader}">
                                         <Setter Property="Foreground" Value="Black" />

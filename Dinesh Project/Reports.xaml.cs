@@ -31,5 +31,17 @@ namespace Dinesh_Project
             DataTable techList = CoreOperations.GetAllTechnicians(String.Empty);
             grdTechData.ItemsSource = techList.AsDataView();
         }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void grdTechData_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            DataGrid dg= (DataGrid)sender;
+            DataRowView row = (DataRowView)dg.SelectedItems[0];
+            string str = row["Name"].ToString();
+        }
     }
 }

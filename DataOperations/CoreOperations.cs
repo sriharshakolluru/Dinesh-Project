@@ -89,6 +89,19 @@ namespace DataOperations
                 return false;
         }
 
+
+        public static bool EditaTechnician(string TechnicianName, string RegistrationID)
+        {
+            isTechnicianDirty = true;
+            String InsertCommand = string.Format("Update Technicians tTech SET Name='{0}' WHERE tTech.RegistrationID= '{1}'", TechnicianName, RegistrationID);
+            int returnValue = InsertData(coreConnectionstring, InsertCommand);
+            if (returnValue > -1)
+                return true;
+            else
+                return false;
+        }
+
+
         /// <summary>
         /// substr is the vehicle Registration Number like AP28BHJ1234
         /// </summary>
