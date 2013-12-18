@@ -41,7 +41,13 @@ namespace Dinesh_Project
         {
             DataGrid dg= (DataGrid)sender;
             DataRowView row = (DataRowView)dg.SelectedItems[0];
-            string str = row["Name"].ToString();
+            string key = row["Id"].ToString();
+            string Name = row["Name"].ToString();
+            string RegID = row["RegistrationID"].ToString();
+            if (CoreOperations.EditaTechnician(int.Parse(key), Name, RegID))
+                MessageBox.Show("Edit is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            else
+                MessageBox.Show("Edit is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

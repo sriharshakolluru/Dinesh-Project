@@ -32,15 +32,23 @@ namespace DataOperations
         public static int InsertData(ConnectionStringSettings connectin, string command)
         {
             int returnCode;
-            using (SqlCeConnection con = new SqlCeConnection(connectin.ConnectionString))
+            try
             {
-                con.Open();
-                using (SqlCeCommand com = new SqlCeCommand(command, con))
+                using (SqlCeConnection con = new SqlCeConnection(connectin.ConnectionString))
                 {
-                    returnCode= com.ExecuteNonQuery();
+                    con.Open();
+                    using (SqlCeCommand com = new SqlCeCommand(command, con))
+                    {
+                        returnCode = com.ExecuteNonQuery();
+                    }
                 }
+                return returnCode;
             }
-            return returnCode;
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception occurred in inserting data " + ex.ToString());
+                return -1;
+            }
         }
 
         public static bool AddANewOperation(string OperationName, string VehicalClass)
@@ -90,10 +98,10 @@ namespace DataOperations
         }
 
 
-        public static bool EditaTechnician(string TechnicianName, string RegistrationID)
+        public static bool EditaTechnician(int Id,string TechnicianName, string RegistrationID)
         {
             isTechnicianDirty = true;
-            String InsertCommand = string.Format("Update Technicians tTech SET Name='{0}' WHERE tTech.RegistrationID= '{1}'", TechnicianName, RegistrationID);
+            String InsertCommand = string.Format("Update Technicians SET Name='{0}' , RegistrationID ='{1}'  WHERE Id= {2}", TechnicianName, RegistrationID,Id);
             int returnValue = InsertData(coreConnectionstring, InsertCommand);
             if (returnValue > -1)
                 return true;
