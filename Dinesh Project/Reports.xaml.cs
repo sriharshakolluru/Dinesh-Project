@@ -28,8 +28,9 @@ namespace Dinesh_Project
 
         public void BindData()
         {
-            DataTable techList = CoreOperations.GetAllTechnicians(String.Empty);
+            DataTable techList = CoreOperations.GetAllTechnicians(String.Empty,string.Empty);
             grdTechData.ItemsSource = techList.AsDataView();
+            techList.Dispose();
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -44,10 +45,69 @@ namespace Dinesh_Project
             string key = row["Id"].ToString();
             string Name = row["Name"].ToString();
             string RegID = row["RegistrationID"].ToString();
-            if (CoreOperations.EditaTechnician(int.Parse(key), Name, RegID))
-                MessageBox.Show("Edit is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (!string.IsNullOrEmpty(Name))
+            {
+                bool doesExist = (CoreOperations.doesTechnicianExists(Name) <= -1) ? false : true;
+                if (doesExist)
+                {
+                    if (CoreOperations.EditaTechnician(int.Parse(key), Name, RegID))
+                        MessageBox.Show("Edit is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    else
+                        MessageBox.Show("Edit is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    if (CoreOperations.AddANewTechnician(Name, Utility.CreateRandomID(Name)))
+                        MessageBox.Show("Addition is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    else
+                        MessageBox.Show("Addition is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            matchSearchRequest();
+        }
+
+        private void txtTechName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            matchSearchRequest();
+        }
+
+        
+        public void matchSearchRequest()
+        {
+            string enteredText = txtTechName.Text;
+            string enteredID = txttechRegistrationId.Text;
+            DataTable techList = CoreOperations.GetAllTechnicians(enteredText,enteredID);
+            grdTechData.ItemsSource = techList.AsDataView();
+            techList.Dispose();
+        }
+
+        private void txttechRegistrationId_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            matchSearchRequest();
+        }
+
+        private void delButton_Click(object sender, RoutedEventArgs e)
+        {
+            int index = grdTechData.SelectedIndex;
+            var selectedItems = grdTechData.SelectedItems;
+            bool delOk=false;
+            StringBuilder FailedIDs = new StringBuilder("The Technicians which are failed to be deleted are : ");
+            foreach (DataRowView selectedItem in selectedItems)
+            {
+                delOk = CoreOperations.DeleteTechnician(selectedItem[2].ToString());
+                if (!delOk)
+                {
+                    FailedIDs.Append(selectedItem[1]);
+                    continue;
+                }
+            }
+            if (delOk)
+                matchSearchRequest();
             else
-                MessageBox.Show("Edit is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+            {
+                MessageBox.Show(FailedIDs.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
     }
 }

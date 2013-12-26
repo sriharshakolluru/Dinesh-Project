@@ -46,7 +46,7 @@ namespace DataOperations
             }
             catch (Exception ex)
             {
-                Utility.WriteLogError("Exception occurred in inserting data " + ex.ToString());
+                Utility.WriteLogError("Exception occurred in inserting/deleting data " + ex.ToString());
                 return -1;
             }
         }
@@ -183,7 +183,7 @@ namespace DataOperations
                 DataRow[] matchedOwners = (from DataRow row in Vechicles.Rows
                                              where (row["Name"].ToString().Contains(Name))
                                              select row).ToArray();
-                DataTable resultTable = new DataTable();
+                DataTable resultTable = Owners.Clone();
                 foreach (DataRow row in matchedOwners)
                 {
                     resultTable.ImportRow(row);
@@ -264,7 +264,32 @@ namespace DataOperations
                 return -2;
             }
         }
-        public static DataTable GetAllTechnicians(string name)
+        public static DataTable GetAllTechnicians(string name,string RegID)
+        {
+            try
+            {
+                if (isTechnicianDirty)
+                    Technicians = GetAllTechnicians();
+
+                DataRow[] MatchedRows = (from DataRow row in Technicians.Rows
+                                         where row["Name"].ToString().Contains(name) && row["RegistrationID"].ToString().Contains(RegID)
+                                         select row
+                                         ).ToArray();
+                DataTable resultTable = Technicians.Clone();
+                foreach (DataRow row in MatchedRows)
+                {
+                    resultTable.ImportRow(row);
+                }
+
+                return resultTable;
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError(string.Format("Exception occurred in Getall Technicians with criteria. Inputs: Name = {0} , RegID = {1}", name, RegID));
+            }
+            return null;
+        }
+        public static DataTable GetAllTechnicians()
         {
             if (isTechnicianDirty)
             {
@@ -272,15 +297,7 @@ namespace DataOperations
                 {
                     SqlCeConnection currentConnection = new SqlCeConnection(coreConnectionstring.ToString());
                     SqlCeCommand cmd = currentConnection.CreateCommand();
-                    if (!string.IsNullOrEmpty(name))
-                        cmd.CommandText = string.Format("SELECT Id,Name,RegistrationId FROM Technicians where Name like '%{0}%'", name);
-                    else
-                        cmd.CommandText = string.Format("SELECT Id,Name,RegistrationId FROM Technicians");
-
-                    //cmd.CommandText = string.Format("SELECT VehicleId,RegistrationNumber,VehicleType,Ownerid FROM Vehicles where RegistrationNumber like @partialId", substr);
-                    //cmd.Parameters.Add("@partialId", SqlDbType.NVarChar);
-                    //cmd.Parameters["partialId"].Value =string.Format(" '%{0}%'", substr);
-                    Console.WriteLine(cmd);
+                    cmd.CommandText = string.Format("SELECT Id,Name,RegistrationId FROM Technicians");
                     cmd.CommandType = CommandType.Text;
                     SqlCeDataAdapter adapter = new SqlCeDataAdapter();
                     adapter.SelectCommand = cmd;
@@ -301,6 +318,17 @@ namespace DataOperations
                 return Technicians;
             }
             return null;
+        }
+
+        public static bool DeleteTechnician(string RegID)
+        {
+            isTechnicianDirty = true;
+            String InsertCommand = string.Format("DELETE FROM Technicians WHERE RegistrationId='{0}'",RegID);
+            int returnValue = InsertData(coreConnectionstring, InsertCommand);
+            if (returnValue > -1)
+                return true;
+            else
+                return false;
         }
 
         public static int doesVehicleExist(string RegistrationId)
@@ -352,7 +380,7 @@ namespace DataOperations
         }
         public static int doesTechnicianExists(string Name)
         {
-            DataTable techList = GetAllTechnicians(Name);
+            DataTable techList = GetAllTechnicians(Name,string.Empty);
             try
             {
                 if (techList != null && techList.Rows.Count > 0)
