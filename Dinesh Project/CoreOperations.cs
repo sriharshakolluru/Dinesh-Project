@@ -5,7 +5,8 @@ using System.Text;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlServerCe;
-namespace DataOperations
+using DataOperations;
+namespace Dinesh_Project
 {
     public class CoreOperations
     {
@@ -196,7 +197,7 @@ namespace DataOperations
             }
             return null;
         }
-        public static DataTable GetAllOwners()
+        public static List<Customer> GetAllOwners()
         {
             if (isOwnerDirty)
             {

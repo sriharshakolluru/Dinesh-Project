@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -23,10 +24,11 @@ namespace Dinesh_Project
         public Reports()
         {
             InitializeComponent();
-            BindData();
+            BindDataofTechnicians();
+            BindDataofCustomers();
         }
 
-        public void BindData()
+        public void BindDataofTechnicians()
         {
             DataTable techList = CoreOperations.GetAllTechnicians(String.Empty,string.Empty);
             grdTechData.ItemsSource = techList.AsDataView();
@@ -38,6 +40,8 @@ namespace Dinesh_Project
 
         }
 
+
+        #region Technicians
         private void grdTechData_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
             DataGrid dg= (DataGrid)sender;
@@ -109,5 +113,36 @@ namespace Dinesh_Project
             }
 
         }
+        #endregion
+
+        
+        private void BindDataofCustomers()
+        {
+            CustomersData[] datasource = new CustomersData[1];
+            
+            CustomersData data = new CustomersData();
+            datasource[0] = data;
+            data.ID = "asdasdf";
+            data.Name = "sample";
+            
+            ArrayList vechicleLIst=new ArrayList();
+            vechicleLIst.Add("abc");
+            vechicleLIst.Add("abc2");
+            ListCollectionView list=new ListCollectionView(vechicleLIst);
+            
+            //data.log= list;
+            grdCustData.DataContext = datasource;
+            grdCustData.ItemsSource = datasource;
+
+            
+            
+
+                
+        }
+
+        
+
+
+
     }
 }

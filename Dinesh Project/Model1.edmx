@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="CoreDbModel.Store" Alias="Self" Provider="System.Data.SqlServerCe.3.5" ProviderManifestToken="3.5" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="CoreDbModelStoreContainer">
+          <EntitySet Name="Customers" EntityType="CoreDbModel.Store.Customers" store:Type="Tables" />
+          <EntitySet Name="Operations" EntityType="CoreDbModel.Store.Operations" store:Type="Tables" />
+          <EntitySet Name="Technicians" EntityType="CoreDbModel.Store.Technicians" store:Type="Tables" />
+          <EntitySet Name="Transactions" EntityType="CoreDbModel.Store.Transactions" store:Type="Tables" />
+          <EntitySet Name="Vehicles" EntityType="CoreDbModel.Store.Vehicles" store:Type="Tables" />
+          <AssociationSet Name="FK_Operations" Association="CoreDbModel.Store.FK_Operations">
+            <End Role="Operations" EntitySet="Operations" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Owner_Vehicle" Association="CoreDbModel.Store.FK_Owner_Vehicle">
+            <End Role="Customers" EntitySet="Customers" />
+            <End Role="Vehicles" EntitySet="Vehicles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Technician" Association="CoreDbModel.Store.FK_Technician">
+            <End Role="Technicians" EntitySet="Technicians" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vehicles" Association="CoreDbModel.Store.FK_Vehicles">
+            <End Role="Vehicles" EntitySet="Vehicles" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Customers">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="RegistrationID" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="15" />
+          <Property Name="Address" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Operations">
+          <Key>
+            <PropertyRef Name="OperationId" />
+          </Key>
+          <Property Name="OperationId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="VehicleClass" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Technicians">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="RegistrationID" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Transactions">
+          <Key>
+            <PropertyRef Name="ServiceId" />
+          </Key>
+          <Property Name="ServiceId" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="OperationId" Type="int" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="10" />
+          <Property Name="VehicleId" Type="int" />
+          <Property Name="Remarks" Type="nvarchar" MaxLength="100" />
+          <Property Name="TechnicianId" Type="int" />
+          <Property Name="PaymentType" Type="nvarchar" MaxLength="10" />
+          <Property Name="PaymentStatus" Type="nvarchar" MaxLength="20" />
+          <Property Name="PaymentAmount" Type="float" />
+        </EntityType>
+        <EntityType Name="Vehicles">
+          <Key>
+            <PropertyRef Name="VehicleID" />
+          </Key>
+          <Property Name="VehicleID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="RegistrationNumber" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="VehicleType" Type="nvarchar" MaxLength="10" />
+          <Property Name="Ownerid" Type="bigint" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Operations">
+          <End Role="Operations" Type="CoreDbModel.Store.Operations" Multiplicity="1" />
+          <End Role="Transactions" Type="CoreDbModel.Store.Transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Operations">
+              <PropertyRef Name="OperationId" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="OperationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Owner_Vehicle">
+          <End Role="Customers" Type="CoreDbModel.Store.Customers" Multiplicity="1" />
+          <End Role="Vehicles" Type="CoreDbModel.Store.Vehicles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customers">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Vehicles">
+              <PropertyRef Name="Ownerid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Technician">
+          <End Role="Technicians" Type="CoreDbModel.Store.Technicians" Multiplicity="0..1" />
+          <End Role="Transactions" Type="CoreDbModel.Store.Transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Technicians">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="TechnicianId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vehicles">
+          <End Role="Vehicles" Type="CoreDbModel.Store.Vehicles" Multiplicity="0..1" />
+          <End Role="Transactions" Type="CoreDbModel.Store.Transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vehicles">
+              <PropertyRef Name="VehicleID" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="VehicleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CoreDbModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="CoreDbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Customers" EntityType="CoreDbModel.Customer" />
+          <EntitySet Name="Operations" EntityType="CoreDbModel.Operation" />
+          <EntitySet Name="Technicians" EntityType="CoreDbModel.Technician" />
+          <EntitySet Name="Transactions" EntityType="CoreDbModel.Transaction" />
+          <EntitySet Name="Vehicles" EntityType="CoreDbModel.Vehicle" />
+          <AssociationSet Name="FK_Owner_Vehicle" Association="CoreDbModel.FK_Owner_Vehicle">
+            <End Role="Customers" EntitySet="Customers" />
+            <End Role="Vehicles" EntitySet="Vehicles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Operations" Association="CoreDbModel.FK_Operations">
+            <End Role="Operations" EntitySet="Operations" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Technician" Association="CoreDbModel.FK_Technician">
+            <End Role="Technicians" EntitySet="Technicians" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vehicles" Association="CoreDbModel.FK_Vehicles">
+            <End Role="Vehicles" EntitySet="Vehicles" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
+          <Property Name="RegistrationID" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
+          <Property Name="Phone" Type="String" MaxLength="15" Unicode="true" FixedLength="false" />
+          <Property Name="Address" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Vehicles" Relationship="CoreDbModel.FK_Owner_Vehicle" FromRole="Customers" ToRole="Vehicles" />
+        </EntityType>
+        <EntityType Name="Operation">
+          <Key>
+            <PropertyRef Name="OperationId" />
+          </Key>
+          <Property Name="OperationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
+          <Property Name="VehicleClass" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Transactions" Relationship="CoreDbModel.FK_Operations" FromRole="Operations" ToRole="Transactions" />
+        </EntityType>
+        <EntityType Name="Technician">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RegistrationID" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Transactions" Relationship="CoreDbModel.FK_Technician" FromRole="Technicians" ToRole="Transactions" />
+        </EntityType>
+        <EntityType Name="Transaction">
+          <Key>
+            <PropertyRef Name="ServiceId" />
+          </Key>
+          <Property Name="ServiceId" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
+          <Property Name="OperationId" Type="Int32" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" />
+          <Property Name="EndDate" Type="DateTime" />
+          <Property Name="Status" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
+          <Property Name="VehicleId" Type="Int32" />
+          <Property Name="Remarks" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="TechnicianId" Type="Int32" />
+          <Property Name="PaymentType" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
+          <Property Name="PaymentStatus" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+          <Property Name="PaymentAmount" Type="Double" />
+          <NavigationProperty Name="Operation" Relationship="CoreDbModel.FK_Operations" FromRole="Transactions" ToRole="Operations" />
+          <NavigationProperty Name="Technician" Relationship="CoreDbModel.FK_Technician" FromRole="Transactions" ToRole="Technicians" />
+          <NavigationProperty Name="Vehicle" Relationship="CoreDbModel.FK_Vehicles" FromRole="Transactions" ToRole="Vehicles" />
+        </EntityType>
+        <EntityType Name="Vehicle">
+          <Key>
+            <PropertyRef Name="VehicleID" />
+          </Key>
+          <Property Name="VehicleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
+          <Property Name="VehicleType" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
+          <Property Name="Ownerid" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Customer" Relationship="CoreDbModel.FK_Owner_Vehicle" FromRole="Vehicles" ToRole="Customers" />
+          <NavigationProperty Name="Transactions" Relationship="CoreDbModel.FK_Vehicles" FromRole="Vehicles" ToRole="Transactions" />
+        </EntityType>
+        <Association Name="FK_Owner_Vehicle">
+          <End Role="Customers" Type="CoreDbModel.Customer" Multiplicity="1" />
+          <End Role="Vehicles" Type="CoreDbModel.Vehicle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customers">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Vehicles">
+              <PropertyRef Name="Ownerid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Operations">
+          <End Role="Operations" Type="CoreDbModel.Operation" Multiplicity="1" />
+          <End Role="Transactions" Type="CoreDbModel.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Operations">
+              <PropertyRef Name="OperationId" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="OperationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Technician">
+          <End Role="Technicians" Type="CoreDbModel.Technician" Multiplicity="0..1" />
+          <End Role="Transactions" Type="CoreDbModel.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Technicians">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="TechnicianId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vehicles">
+          <End Role="Vehicles" Type="CoreDbModel.Vehicle" Multiplicity="0..1" />
+          <End Role="Transactions" Type="CoreDbModel.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vehicles">
+              <PropertyRef Name="VehicleID" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="VehicleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CoreDbModelStoreContainer" CdmEntityContainer="CoreDbEntities">
+          <EntitySetMapping Name="Customers"><EntityTypeMapping TypeName="CoreDbModel.Customer"><MappingFragment StoreEntitySet="Customers">
+            <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+            <ScalarProperty Name="Name" ColumnName="Name" />
+            <ScalarProperty Name="RegistrationID" ColumnName="RegistrationID" />
+            <ScalarProperty Name="Phone" ColumnName="Phone" />
+            <ScalarProperty Name="Address" ColumnName="Address" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Operations"><EntityTypeMapping TypeName="CoreDbModel.Operation"><MappingFragment StoreEntitySet="Operations">
+            <ScalarProperty Name="OperationId" ColumnName="OperationId" />
+            <ScalarProperty Name="Name" ColumnName="Name" />
+            <ScalarProperty Name="VehicleClass" ColumnName="VehicleClass" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Technicians"><EntityTypeMapping TypeName="CoreDbModel.Technician"><MappingFragment StoreEntitySet="Technicians">
+            <ScalarProperty Name="Name" ColumnName="Name" />
+            <ScalarProperty Name="Id" ColumnName="Id" />
+            <ScalarProperty Name="RegistrationID" ColumnName="RegistrationID" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Transactions"><EntityTypeMapping TypeName="CoreDbModel.Transaction"><MappingFragment StoreEntitySet="Transactions">
+            <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+            <ScalarProperty Name="OperationId" ColumnName="OperationId" />
+            <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+            <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+            <ScalarProperty Name="Status" ColumnName="Status" />
+            <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+            <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+            <ScalarProperty Name="TechnicianId" ColumnName="TechnicianId" />
+            <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+            <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+            <ScalarProperty Name="PaymentAmount" ColumnName="PaymentAmount" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Vehicles"><EntityTypeMapping TypeName="CoreDbModel.Vehicle"><MappingFragment StoreEntitySet="Vehicles">
+            <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
+            <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+            <ScalarProperty Name="VehicleType" ColumnName="VehicleType" />
+            <ScalarProperty Name="Ownerid" ColumnName="Ownerid" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="Model1">
+        <EntityTypeShape EntityType="CoreDbModel.Customer" Width="1.5" PointX="0.75" PointY="1.75" Height="2.1725878906250005" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.Operation" Width="1.5" PointX="3" PointY="5.375" Height="1.7879850260416674" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.Technician" Width="1.5" PointX="3" PointY="8" Height="1.7879850260416674" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.Transaction" Width="1.5" PointX="5.25" PointY="1" Height="3.7109993489583331" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.Vehicle" Width="1.5" PointX="3" PointY="1.75" Height="2.1725878906249996" IsExpanded="true" />
+        <AssociationConnector Association="CoreDbModel.FK_Owner_Vehicle" ManuallyRouted="false">
+          <ConnectorPoint PointX="2.25" PointY="2.8362939453125" />
+          <ConnectorPoint PointX="3" PointY="2.8362939453125" />
+        </AssociationConnector>
+        <AssociationConnector Association="CoreDbModel.FK_Operations" ManuallyRouted="false">
+          <ConnectorPoint PointX="4.5" PointY="6.2689925130208337" />
+          <ConnectorPoint PointX="5.5104141666666671" PointY="6.2689925130208328" />
+          <ConnectorPoint PointX="5.6770808333333331" PointY="6.2689925130208337" />
+          <ConnectorPoint PointX="6" PointY="6.2689925130208337" />
+          <ConnectorPoint PointX="6" PointY="4.7109993489583335" />
+        </AssociationConnector>
+        <AssociationConnector Association="CoreDbModel.FK_Technician" ManuallyRouted="false">
+          <ConnectorPoint PointX="4.5" PointY="8.8939925130208337" />
+          <ConnectorPoint PointX="5.5937475" PointY="8.8939925130208337" />
+          <ConnectorPoint PointX="5.5937475" PointY="4.7109993489583335" />
+        </AssociationConnector>
+        <AssociationConnector Association="CoreDbModel.FK_Vehicles" ManuallyRouted="false">
+          <ConnectorPoint PointX="4.5" PointY="2.8362939453125" />
+          <ConnectorPoint PointX="5.25" PointY="2.8362939453125" />
+        </AssociationConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

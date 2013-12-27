@@ -19,7 +19,7 @@ namespace TestingConsole
             //CoreOperations.GetAllOwners("aet");
 //            int outd= CoreOperations.doesVehicleExist("23");
 
-            CoreOperations.StartANewTransactionWithExistingVehicle(1, DateTime.Now.AddDays(-1), "Opened", "AP23D323341231", "HarshaKB", "Card", "Paid", 500, "Check");
+      //      CoreOperations.StartANewTransactionWithExistingVehicle(1, DateTime.Now.AddDays(-1), "Opened", "AP23D323341231", "HarshaKB", "Card", "Paid", 500, "Check");
             
         }
     }
