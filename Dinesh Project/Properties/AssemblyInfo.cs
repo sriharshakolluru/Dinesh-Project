@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("Dinesh Project")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("JKTyres")]
 [assembly: AssemblyProduct("Dinesh Project")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2013")]
+[assembly: AssemblyCopyright("Copyright © Dinesh")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
