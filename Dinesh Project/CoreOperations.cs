@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Configuration;
+using System.Data.Objects;
+using System.Data.Common;
 using System.Data;
 using System.Data.SqlServerCe;
 using DataOperations;
@@ -11,12 +13,14 @@ namespace Dinesh_Project
     public class CoreOperations
     {
        static  ConnectionStringSettings coreConnectionstring = ConfigurationManager.ConnectionStrings["CoreDbConnectionString"];
-       static DataTable Vechicles;
-       static DataTable Owners;
+       static List<Vehicle> Vechicles;
+       static List<Customer> Owners;
+       static List<CustomerData> customerViewData;
        static DataTable Technicians;
        static bool isVehicleDirty = true;
        static bool isOwnerDirty = true;
        static bool isTechnicianDirty = true;
+       static bool iscustomerDataDirty=true;
 
 
         //public DataSet GetData(ConnectionStringSettings connection, string command)
@@ -66,6 +70,7 @@ namespace Dinesh_Project
         public static bool AddANewCustomer(string CustomerName, string RegistrationID,string  phone,string address)
         {
             isOwnerDirty = true;
+            iscustomerDataDirty = true;
             String InsertCommand = string.Format("INSERT INTO CUSTOMERS(Name,RegistrationID,Phone,Address) VALUES ('{0}','{1}','{2}','{3}')", CustomerName, RegistrationID,phone,address);
             int returnValue = InsertData(coreConnectionstring, InsertCommand);
             if (returnValue > -1)
@@ -90,6 +95,7 @@ namespace Dinesh_Project
         public static bool AddANewVehicle(string RegisrtrationId, string VehicleType, int OwnerId)
         {
             isVehicleDirty = true;
+            iscustomerDataDirty = true;
             String InsertCommand = string.Format("INSERT INTO Vehicles(RegistrationNumber,VehicleType,Ownerid) VALUES ('{0}','{1}',{2})", RegisrtrationId, VehicleType, OwnerId);
             int returnValue = InsertData(coreConnectionstring, InsertCommand);
             if (returnValue > -1)
@@ -116,20 +122,16 @@ namespace Dinesh_Project
         /// </summary>
         /// <param name="substr"></param>
         /// <returns></returns>
-        public static DataTable GetVehiclesByRegistration(string substr)
+        public static List<Vehicle> GetVehiclesByRegistration(string substr)
         {   
                 try
                 {
                     Vechicles= GetAllVehicles();
-                    DataRow[] matchedVehicles = (from DataRow row in  Vechicles.Rows
-                                           where (row["RegistrationNumber"].ToString().Contains(substr))
-                                           select row).ToArray();
-                    DataTable resultTable = Vechicles.Clone();
-                    foreach (DataRow row in matchedVehicles)
-                    {
-                        resultTable.ImportRow(row);
-                    }
-                    return resultTable;
+                    var matchedVehicles = (from Vehicle row in Vechicles
+                                           where (row.RegistrationNumber.ToLower().ToString().Contains(substr.ToLower()))
+                                           select row);
+                    
+                    return matchedVehicles.ToList();
                     
                 }
                 catch (Exception ex)
@@ -138,28 +140,18 @@ namespace Dinesh_Project
                 }
             return null;
         }
-        public static DataTable GetAllVehicles()
+        public static List<Vehicle> GetAllVehicles()
         {
             if (isVehicleDirty == true)
             {
                 try
                 {
-                    SqlCeConnection currentConnection = new SqlCeConnection(coreConnectionstring.ToString());
-                    SqlCeCommand cmd = currentConnection.CreateCommand();
-                    cmd.CommandText = string.Format("SELECT VehicleId,RegistrationNumber,VehicleType,Ownerid FROM Vehicles");
-
-                    //cmd.CommandText = string.Format("SELECT VehicleId,RegistrationNumber,VehicleType,Ownerid FROM Vehicles where RegistrationNumber like @partialId", substr);
-                    //cmd.Parameters.Add("@partialId", SqlDbType.NVarChar);
-                    //cmd.Parameters["partialId"].Value =string.Format(" '%{0}%'", substr);
-                    Console.WriteLine(cmd);
-                    cmd.CommandType = CommandType.Text;
-                    SqlCeDataAdapter adapter = new SqlCeDataAdapter();
-                    adapter.SelectCommand = cmd;
-                    DataSet resultset = new DataSet();
-                    adapter.Fill(resultset);
-                    Vechicles = resultset.Tables[0];
-                    isVehicleDirty = false;
-                    return Vechicles;
+                    using (CoreDbEntities db = new CoreDbEntities())
+                    {
+                        List<Vehicle> currentVehicles= db.Vehicles.ToList();
+                        Vechicles  = currentVehicles;
+                        return Vechicles;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -175,21 +167,17 @@ namespace Dinesh_Project
 
             return null;
         }
-        public static DataTable GetAllOwnersByName(string Name)
+        public static List<Customer> GetAllOwnersByName(string Name,string phone)
         {
             try
             {
                 Owners = GetAllOwners();
 
-                DataRow[] matchedOwners = (from DataRow row in Vechicles.Rows
-                                             where (row["Name"].ToString().Contains(Name))
-                                             select row).ToArray();
-                DataTable resultTable = Owners.Clone();
-                foreach (DataRow row in matchedOwners)
-                {
-                    resultTable.ImportRow(row);
-                }
-                return resultTable;
+                var matchedOwners = (from Customer cust in Owners
+                                           where (cust.Name.ToLower().Contains(Name.ToLower()) && cust.Phone.ToLower().Contains(phone.ToLower()))
+                                           select cust);
+                
+                return matchedOwners.ToList();
             }
             catch (Exception ex)
             {
@@ -203,17 +191,12 @@ namespace Dinesh_Project
             {
                 try
                 {
-                    SqlCeConnection currentConnection = new SqlCeConnection(coreConnectionstring.ToString());
-                    SqlCeCommand cmd = currentConnection.CreateCommand();
-                    cmd.CommandText = string.Format("SELECT CustomerId,Name,RegistrationId,Phone,Address FROM Customers");
-                    Console.WriteLine(cmd);
-                    cmd.CommandType = CommandType.Text;
-                    SqlCeDataAdapter adapter = new SqlCeDataAdapter();
-                    adapter.SelectCommand = cmd;
-                    DataSet resultset = new DataSet();
-                    adapter.Fill(resultset);
-                    Owners = resultset.Tables[0];
-                    return Owners;
+                    using (CoreDbEntities db = new CoreDbEntities())
+                    {
+                         List<Customer> customers= db.Customers.ToList();
+                         Owners = customers;
+                         return Owners;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -239,11 +222,11 @@ namespace Dinesh_Project
 
                     Vechicles = GetAllVehicles();
                     
-                    if (Vechicles != null && Vechicles.Rows.Count > 0)
+                    if (Vechicles != null && Vechicles.Count > 0)
                     {
-                        var ownerId = (from DataRow row in Vechicles.Rows
-                                       where row["VehicleID"].ToString().Equals(vehicId.ToString())
-                                       select row["Ownerid"]).First();
+                        var ownerId = (from Vehicle row in Vechicles
+                                       where row.VehicleID.ToString().Equals(vehicId.ToString())
+                                       select row.Ownerid).First();
 
                         return int.Parse(ownerId.ToString());
                     }
@@ -334,13 +317,13 @@ namespace Dinesh_Project
 
         public static int doesVehicleExist(string RegistrationId)
         {
-            DataTable vehiclesList= GetVehiclesByRegistration(RegistrationId);
+            List<Vehicle> vehiclesList= GetVehiclesByRegistration(RegistrationId);
             try
             {
                 if (vehiclesList != null)
                 {
-                    var vehicId = (from DataRow row in vehiclesList.Rows
-                                   select row["VehicleID"]).First();
+                    var vehicId = (from Vehicle row in vehiclesList
+                                   select row.VehicleID).First();
                     return int.Parse(vehicId.ToString());
                 }
                 else
@@ -357,13 +340,13 @@ namespace Dinesh_Project
         }
         public static int doesOwnerExists(string Name)
         {
-            DataTable vehiclesList = GetAllOwnersByName(Name);
+            List<Customer> vehiclesList = GetAllOwnersByName(Name,string.Empty);
             try
             {
-                if (vehiclesList != null && vehiclesList.Rows.Count > 0)
+                if (vehiclesList != null && vehiclesList.Count> 0)
                 {
-                    var vehicId = (from DataRow row in vehiclesList.Rows
-                                   select row["CustomerID"]).First();
+                    var vehicId = (from Customer row in vehiclesList
+                                   select row.CustomerID).First();
 
                     return int.Parse(vehicId.ToString());
                 }
@@ -446,9 +429,124 @@ namespace Dinesh_Project
                 Utility.WriteLogError("Vehicle exists but owner data is missing ");
 
             return false;
-            
-        }   
 
-        
+        }
+
+
+
+        #region Join Methods
+        public static List<CustomerData> GetCustomizedCustomerdData()
+        {
+            List<Customer> allowners = CoreOperations.GetAllOwners();
+            List<Vehicle> allvehicles = CoreOperations.GetAllVehicles();
+            if (iscustomerDataDirty)
+            {
+                List<CustomerData> data = new List<CustomerData>();
+                
+                var registeredvehicles = (from Vehicle vehicle in allvehicles
+                                          group vehicle by vehicle.Ownerid into vehicleList
+                                          select new { OwnerID = vehicleList.Key, listofVehicles = vehicleList });
+                foreach (Customer CurrentOwner in allowners)
+                {
+                    CustomerData newCustomer = new CustomerData();
+                    newCustomer.Address = CurrentOwner.Address;
+                    newCustomer.CustomerID = CurrentOwner.CustomerID;
+                    newCustomer.Name = CurrentOwner.Name;
+                    newCustomer.Phone = CurrentOwner.Phone;
+                    newCustomer.RegistrationID = CurrentOwner.RegistrationID;
+
+                    List<string> vehiclesList = new List<string>();
+
+                    var vehicList = (from registeredvehicle in registeredvehicles
+                                     where registeredvehicle.OwnerID == newCustomer.CustomerID
+                                     select registeredvehicle.listofVehicles).First();
+
+                    foreach (Vehicle vehico in vehicList)
+                    {
+                        vehiclesList.Add(vehico.RegistrationNumber);
+                    }
+                    newCustomer.vehiclesID = vehiclesList;
+                    data.Add(newCustomer);
+                }
+                customerViewData = data;
+            }
+            else
+            {
+                Utility.WriteLog("Customer view data is not dirty");
+            }
+            return customerViewData;
+
+            
+        }
+        public static List<CustomerData> GetCustomizedCustomerdData(List<Customer> GivenCustomers)
+        {
+            List<Customer> allowners = GivenCustomers;
+            List<Vehicle> allvehicles = CoreOperations.GetAllVehicles();
+            if (allowners.Count < 0)
+            {
+                Utility.WriteLogError("The given List of Customers is Nulll");
+                return null;
+            }
+            if (iscustomerDataDirty)
+            {
+                List<CustomerData> data = new List<CustomerData>();
+
+                var registeredvehicles = (from Vehicle vehicle in allvehicles
+                                          group vehicle by vehicle.Ownerid into vehicleList
+                                          select new { OwnerID = vehicleList.Key, listofVehicles = vehicleList });
+                foreach (Customer CurrentOwner in allowners)
+                {
+                    CustomerData newCustomer = new CustomerData();
+                    newCustomer.Address = CurrentOwner.Address;
+                    newCustomer.CustomerID = CurrentOwner.CustomerID;
+                    newCustomer.Name = CurrentOwner.Name;
+                    newCustomer.Phone = CurrentOwner.Phone;
+                    newCustomer.RegistrationID = CurrentOwner.RegistrationID;
+
+                    List<string> vehiclesList = new List<string>();
+
+                    var vehicList = (from registeredvehicle in registeredvehicles
+                                     where registeredvehicle.OwnerID == newCustomer.CustomerID
+                                     select registeredvehicle.listofVehicles).First();
+
+                    foreach (Vehicle vehico in vehicList)
+                    {
+                        vehiclesList.Add(vehico.RegistrationNumber);
+                    }
+                    newCustomer.vehiclesID = vehiclesList;
+                    data.Add(newCustomer);
+                }
+                customerViewData = data;
+            }
+            else
+            {
+                Utility.WriteLog("Customer view data is not dirty");
+            }
+            return customerViewData;
+
+
+        }
+        #endregion
+
+        public static List<Object> RemoveAdditionalData(List<object> inputLIst, int startID, int numberofItems)
+        {
+            try
+            {
+                if (startID < 0)
+                    startID = inputLIst.Count - startID - 1;
+                if (startID != 0)
+                    inputLIst.RemoveRange(0, startID);
+                inputLIst.RemoveRange(startID + numberofItems, inputLIst.Count - numberofItems);
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception Occurred in Paging data");
+            }
+            finally
+            {
+                
+            }
+            return null;
+        }
     }
 }

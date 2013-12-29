@@ -5,25 +5,12 @@ using System.Text;
 using System.Windows.Data;
 namespace Dinesh_Project
 {
-    class CustomersData
+    public class CustomerData : Customer
     {
+        public List<string> vehiclesID
 
+        { get; set; }
 
-        public string ID
-        {
-            get;
-            set;
-        }
-        public string Name
-        {
-            get;
-            set;
-        }
-        public ListCollectionView OwnedVehicles
-        {
-            get;
-            set;
-        }
         
     }
 }

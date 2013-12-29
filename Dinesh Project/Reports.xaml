@@ -79,11 +79,11 @@
 
                     <StackPanel Orientation="Vertical" VerticalAlignment="Top" MaxWidth="900">
                         <StackPanel Orientation="Horizontal"  VerticalAlignment="Center" >
-                            <Label Name="lblCustname" Content="Customer" Height="30" FontSize="18" FontStretch="ExtraExpanded"  MaxWidth="200" Width="100"  />
-                            <TextBox Name="txtCustName"  MinWidth="150" MaxWidth="200" Height="30" TextChanged="txtTechName_TextChanged" FontSize="18" />
+                            <Label Name="lblCustname" Content="Name" MaxWidth="200" Height="35" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBox Name="txtCustomerName" MinWidth="150" MaxWidth="200" Height="30" TextChanged="txtcustRegistrationId_TextChanged" FontSize="18"  />
                             <Label Content="      " />
-                            <Label Name="lblCustID" Content="Customer ID" MaxWidth="200" Height="35" FontSize="18" VerticalAlignment="Center"/>
-                            <TextBox Name="txtCustomerRegid" MinWidth="150" MaxWidth="200" Height="30" TextChanged="txttechRegistrationId_TextChanged" FontSize="18"  />
+                            <Label Name="lblPhone" Content="Phone" MaxWidth="200" Height="35" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBox Name="txtCustomerPhone" MinWidth="150" MaxWidth="200" Height="30" TextChanged="txtcustPhone_TextChanged" FontSize="18"  />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -99,7 +99,9 @@
                                     </Style>
                                 </DataGrid.Resources>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="ID" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=ID,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="CustomerID" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=RegistrationID,  UpdateSourceTrigger=PropertyChanged}" >
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="OwnerID" MaxWidth="200" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=CustomerID,  UpdateSourceTrigger=PropertyChanged}" >
                                     </DataGridTextColumn>
                                     <DataGridTextColumn Header="Name" Width="*" IsReadOnly="False" MaxWidth="150" Binding="{Binding Path=Name,  UpdateSourceTrigger=PropertyChanged}" >
                                         <DataGridColumn.HeaderStyle>
@@ -113,17 +115,33 @@
                                             </Style>
                                         </DataGridColumn.HeaderStyle>
                                     </DataGridTextColumn>
-                                    
-                                    <DataGridTemplateColumn Header="Log">
+
+                                    <DataGridTemplateColumn Header="Vehicles" IsReadOnly="True">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <ComboBox ItemsSource="{Binding log}" />
+                                                <ComboBox ItemsSource="{Binding vehiclesID}"  SelectedIndex="0"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-
+                                    <DataGridTextColumn Header="Phone" MaxWidth="150" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=Phone,  UpdateSourceTrigger=PropertyChanged}" >
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Address" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=Address,  UpdateSourceTrigger=PropertyChanged}" >
+                                    </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
+                        </StackPanel>
+                        <StackPanel   Margin="4"        Orientation="Horizontal"   HorizontalAlignment="Center">
+                            <Button Margin="4,0" Content="&lt;&lt;" Click="FirstCustCliked" />
+                            <Button Margin="4,0" Content="&lt;" Click="PrevCustClicked"/>
+                            <StackPanel  VerticalAlignment="Center"  Orientation="Horizontal">
+                                <TextBlock  Text="{Binding Start}"/>
+                                <TextBlock Text=" to "/>
+                                <TextBlock Text="{Binding End}"/>
+                                <TextBlock Text=" of "/>
+                                <TextBlock Text="{Binding TotalItems}"/>
+                            </StackPanel>
+                            <Button Margin="4,0" Content=">" Click="nextcustClicked"/>
+                            <Button Margin="4,0" Content=">>" Click="lastCustClicked"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>

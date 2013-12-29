@@ -21,6 +21,7 @@ namespace Dinesh_Project
     /// </summary>
     public partial class Reports : Page
     {
+        private int startIdCust = 0,NumberofItemsCust=5;
         public Reports()
         {
             InitializeComponent();
@@ -118,31 +119,68 @@ namespace Dinesh_Project
         
         private void BindDataofCustomers()
         {
-            CustomersData[] datasource = new CustomersData[1];
+            List<CustomerData> customerData=CoreOperations.GetCustomizedCustomerdData();
+            grdCustData.ItemsSource = customerData;
             
-            CustomersData data = new CustomersData();
-            datasource[0] = data;
-            data.ID = "asdasdf";
-            data.Name = "sample";
-            
-            ArrayList vechicleLIst=new ArrayList();
-            vechicleLIst.Add("abc");
-            vechicleLIst.Add("abc2");
-            ListCollectionView list=new ListCollectionView(vechicleLIst);
-            
-            //data.log= list;
-            grdCustData.DataContext = datasource;
-            grdCustData.ItemsSource = datasource;
-
-            
-            
-
                 
         }
 
+        private void txtcustRegistrationId_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            matchCustSearchRequest();
+            startIdCust = 0;
+        }
+
+        public void matchCustSearchRequest()
+        {
+            try
+            {
+                string enteredText = txtCustomerName.Text;
+                string enteredPhone = txtCustomerPhone.Text;
+                List<Customer> custList = CoreOperations.GetAllOwnersByName(enteredText, enteredPhone);
+                var customizedlist = CoreOperations.GetCustomizedCustomerdData(custList);
+                var finalizedList = customizedlist.ToList();
+                //finalizedList = CoreOperations.RemoveAdditionalData(finalizedList, startIdCust, NumberofItemsCust);
+                grdCustData.ItemsSource = finalizedList;
+            }
+            catch(Exception ex)
+            {
+                Utility.WriteLogError("Exception OCcurred in matchCustSearchRequest\n" + ex.ToString());
+            }
+        }
+
+        private void txtcustPhone_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            matchCustSearchRequest();
+        }
+
+        private void FirstCustCliked(object sender, RoutedEventArgs e)
+        {
+            startIdCust = 0;
+            matchCustSearchRequest();
+        }
+
+        private void PrevCustClicked(object sender, RoutedEventArgs e)
+        {
+            if (startIdCust <= NumberofItemsCust)
+                startIdCust = 0;
+            else
+                startIdCust -= NumberofItemsCust;
+        }
+
+        private void nextcustClicked(object sender, RoutedEventArgs e)
+        {
+            startIdCust += NumberofItemsCust;
+                matchCustSearchRequest();
+        }
+
+        private void lastCustClicked(object sender, RoutedEventArgs e)
+        {
+            startIdCust = -NumberofItemsCust;
+        }
         
 
 
-
+        
     }
 }
