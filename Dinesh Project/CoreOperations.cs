@@ -16,7 +16,7 @@ namespace Dinesh_Project
        static List<Vehicle> Vechicles;
        static List<Customer> Owners;
        static List<CustomerData> customerViewData;
-       static DataTable Technicians;
+       static List<Technician> Technicians;
        static bool isVehicleDirty = true;
        static bool isOwnerDirty = true;
        static bool isTechnicianDirty = true;
@@ -69,16 +69,36 @@ namespace Dinesh_Project
         }
         public static bool AddANewCustomer(string CustomerName, string RegistrationID,string  phone,string address)
         {
-            isOwnerDirty = true;
-            iscustomerDataDirty = true;
-            String InsertCommand = string.Format("INSERT INTO CUSTOMERS(Name,RegistrationID,Phone,Address) VALUES ('{0}','{1}','{2}','{3}')", CustomerName, RegistrationID,phone,address);
-            int returnValue = InsertData(coreConnectionstring, InsertCommand);
-            if (returnValue > -1)
-                return true;
-            else
-                return false;
+            try
+            {
+                //using (CoreDbEntities db = new CoreDbEntities())
+                //{
+                //    Customer newCustomer = db.CreateObject<Customer>();
+                //    newCustomer.Name = CustomerName;
+                //    newCustomer.CustomerID = new Random().Next();
+                //    newCustomer.Phone = phone;
+                //    newCustomer.RegistrationID = RegistrationID;
+                //    newCustomer.Address = address;
+                //    db.Customers.AddObject(newCustomer);
+                //    db.SaveChanges();
+                //    return true;
+                //}
+                isOwnerDirty = true;
+                iscustomerDataDirty = true;
+                String InsertCommand = string.Format("INSERT INTO CUSTOMERS(Name,RegistrationID,Phone,Address) VALUES ('{0}','{1}','{2}','{3}')", CustomerName, RegistrationID, phone, address);
+                int returnValue = InsertData(coreConnectionstring, InsertCommand);
+                if (returnValue > -1)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception  ex)
+            {
 
+                Utility.WriteLogError("Exception occurred in adding a new customer " +CustomerName+"   " + ex.ToString());
+            }
 
+            return false;
         }
         public static bool AddANewTechnician(string TechnicianName, string RegistrationID)
         {
@@ -115,7 +135,34 @@ namespace Dinesh_Project
             else
                 return false;
         }
-
+        public static bool EditACustomer(int ID, string regisrtationID, string Name, String phone, string address)
+        {
+            try
+            {                
+                using (CoreDbEntities db = new CoreDbEntities())
+                {
+                    Customer customers = db.Customers.First(c => c.CustomerID == ID);
+                    if (customers != null)
+                    {
+                        db.Customers.Attach(customers);
+                        customers.Address = address;
+                        customers.Phone = phone;
+                        customers.Name = Name;
+                        customers.RegistrationID = regisrtationID;
+                        db.ObjectStateManager.ChangeObjectState(customers, EntityState.Modified);
+                        db.SaveChanges();
+                    }
+                    
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception  occurred in adding a customer" + ex.ToString());
+                
+            }
+            return false;
+        }
 
         /// <summary>
         /// substr is the vehicle Registration Number like AP28BHJ1234
@@ -156,15 +203,13 @@ namespace Dinesh_Project
                 catch (Exception ex)
                 {
                     Utility.WriteLogError("Exception Occurred while Getting Vehicles List" + ex.ToString());
-                }
-                
+                }   
             }
             else
             {
                 Utility.WriteLogError("No new data to Fetch");
                 return Vechicles;
             }
-
             return null;
         }
         public static List<Customer> GetAllOwnersByName(string Name,string phone)
@@ -248,24 +293,21 @@ namespace Dinesh_Project
                 return -2;
             }
         }
-        public static DataTable GetAllTechnicians(string name,string RegID)
+        public static List<Technician> GetAllTechnicians(string name,string RegID)
         {
             try
             {
                 if (isTechnicianDirty)
                     Technicians = GetAllTechnicians();
 
-                DataRow[] MatchedRows = (from DataRow row in Technicians.Rows
-                                         where row["Name"].ToString().Contains(name) && row["RegistrationID"].ToString().Contains(RegID)
+                var MatchedRows = (from Technician row in Technicians
+                                         where row.Name.ToLower().Contains(name.ToLower()) && row.RegistrationID.Contains(RegID)
                                          select row
-                                         ).ToArray();
-                DataTable resultTable = Technicians.Clone();
-                foreach (DataRow row in MatchedRows)
-                {
-                    resultTable.ImportRow(row);
-                }
+                                         ).ToList();
+                
+                
 
-                return resultTable;
+                return MatchedRows;
             }
             catch (Exception ex)
             {
@@ -273,23 +315,21 @@ namespace Dinesh_Project
             }
             return null;
         }
-        public static DataTable GetAllTechnicians()
+        public static List<Technician> GetAllTechnicians()
         {
             if (isTechnicianDirty)
             {
                 try
                 {
-                    SqlCeConnection currentConnection = new SqlCeConnection(coreConnectionstring.ToString());
-                    SqlCeCommand cmd = currentConnection.CreateCommand();
-                    cmd.CommandText = string.Format("SELECT Id,Name,RegistrationId FROM Technicians");
-                    cmd.CommandType = CommandType.Text;
-                    SqlCeDataAdapter adapter = new SqlCeDataAdapter();
-                    adapter.SelectCommand = cmd;
-                    DataSet resultset = new DataSet();
-                    adapter.Fill(resultset);
-                    Technicians = resultset.Tables[0];
-                    isTechnicianDirty = false;
-                    return Technicians;
+                    
+                    
+                    using (CoreDbEntities db = new CoreDbEntities())
+                    {
+                        List<Technician> techLIst = db.Technicians.ToList();
+                        Technicians = techLIst;
+                        isTechnicianDirty = false;
+                        return Technicians;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -340,10 +380,10 @@ namespace Dinesh_Project
         }
         public static int doesOwnerExists(string Name)
         {
-            List<Customer> vehiclesList = GetAllOwnersByName(Name,string.Empty);
+            List<Customer> vehiclesList = GetAllOwnersByName(Name, string.Empty);
             try
             {
-                if (vehiclesList != null && vehiclesList.Count> 0)
+                if (vehiclesList != null && vehiclesList.Count > 0)
                 {
                     var vehicId = (from Customer row in vehiclesList
                                    select row.CustomerID).First();
@@ -362,15 +402,42 @@ namespace Dinesh_Project
             }
             return -1;
         }
-        public static int doesTechnicianExists(string Name)
+        public static int doesOwnerExists(Int32 id)
         {
-            DataTable techList = GetAllTechnicians(Name,string.Empty);
+            List<Customer> vehiclesList = GetAllOwners();
             try
             {
-                if (techList != null && techList.Rows.Count > 0)
+                if (vehiclesList != null && vehiclesList.Count> 0)
                 {
-                    var techId = (from DataRow row in techList.Rows
-                                   select row["Id"]).First();
+                    var vehicId = (from Customer row in vehiclesList
+                                   where row.CustomerID==id
+                                   select row.CustomerID).First();
+                    if (vehicId != null)
+                        return int.Parse(vehicId.ToString());
+                    else
+                        return -1;
+                }
+                else
+                {
+                    Utility.WriteLog("The Customer/Owner list Result does not contain any rows");
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception occurred in doesVehicleExist " + ex.ToString());
+            }
+            return -1;
+        }
+        public static int doesTechnicianExists(string Name)
+        {
+            List<Technician> techList = GetAllTechnicians(Name,string.Empty);
+            try
+            {
+                if (techList != null && techList.Count > 0)
+                {
+                    var techId = (from Technician row in techList
+                                   select row.Id).First();
 
                     return int.Parse(techId.ToString());
                 }
@@ -528,7 +595,7 @@ namespace Dinesh_Project
         }
         #endregion
 
-        public static List<Object> RemoveAdditionalData(List<object> inputLIst, int startID, int numberofItems)
+        public static List<T> RemoveAdditionalData<T>(List<T> inputLIst, int startID, int numberofItems)
         {
             try
             {
@@ -536,7 +603,8 @@ namespace Dinesh_Project
                     startID = inputLIst.Count - startID - 1;
                 if (startID != 0)
                     inputLIst.RemoveRange(0, startID);
-                inputLIst.RemoveRange(startID + numberofItems, inputLIst.Count - numberofItems);
+                if(inputLIst.Count>numberofItems)
+                    inputLIst.RemoveRange(startID + numberofItems, inputLIst.Count - numberofItems);
             }
             catch (Exception ex)
             {
@@ -546,7 +614,7 @@ namespace Dinesh_Project
             {
                 
             }
-            return null;
+            return inputLIst;
         }
     }
 }

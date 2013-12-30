@@ -92,7 +92,7 @@
                             <Label Name="dummy4" Content="" MaxWidth="200" Height="35" FontSize="18" VerticalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
-                            <DataGrid HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" AutoGenerateColumns="False" x:Name="grdCustData" CanUserAddRows="True"  >
+                            <DataGrid HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" AutoGenerateColumns="False" x:Name="grdCustData" CanUserAddRows="True"  RowEditEnding="grdCustData_RowEnding">
                                 <DataGrid.Resources>
                                     <Style TargetType="{x:Type DataGridColumnHeader}">
                                         <Setter Property="Background" Value="LightGreen" />

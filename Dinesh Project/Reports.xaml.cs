@@ -31,9 +31,10 @@ namespace Dinesh_Project
 
         public void BindDataofTechnicians()
         {
-            DataTable techList = CoreOperations.GetAllTechnicians(String.Empty,string.Empty);
-            grdTechData.ItemsSource = techList.AsDataView();
-            techList.Dispose();
+            List<Technician> techList = CoreOperations.GetAllTechnicians(String.Empty,string.Empty);
+            techList = CoreOperations.RemoveAdditionalData(techList, startIdCust, NumberofItemsCust);
+            grdTechData.ItemsSource = techList;
+            
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -81,9 +82,8 @@ namespace Dinesh_Project
         {
             string enteredText = txtTechName.Text;
             string enteredID = txttechRegistrationId.Text;
-            DataTable techList = CoreOperations.GetAllTechnicians(enteredText,enteredID);
-            grdTechData.ItemsSource = techList.AsDataView();
-            techList.Dispose();
+            List<Technician> techList = CoreOperations.GetAllTechnicians(enteredText,enteredID);
+            grdTechData.ItemsSource = techList;
         }
 
         private void txttechRegistrationId_TextChanged(object sender, TextChangedEventArgs e)
@@ -116,7 +116,7 @@ namespace Dinesh_Project
         }
         #endregion
 
-        
+        #region Customers
         private void BindDataofCustomers()
         {
             List<CustomerData> customerData=CoreOperations.GetCustomizedCustomerdData();
@@ -140,7 +140,7 @@ namespace Dinesh_Project
                 List<Customer> custList = CoreOperations.GetAllOwnersByName(enteredText, enteredPhone);
                 var customizedlist = CoreOperations.GetCustomizedCustomerdData(custList);
                 var finalizedList = customizedlist.ToList();
-                //finalizedList = CoreOperations.RemoveAdditionalData(finalizedList, startIdCust, NumberofItemsCust);
+                finalizedList = CoreOperations.RemoveAdditionalData(finalizedList, startIdCust, NumberofItemsCust);
                 grdCustData.ItemsSource = finalizedList;
             }
             catch(Exception ex)
@@ -178,9 +178,39 @@ namespace Dinesh_Project
         {
             startIdCust = -NumberofItemsCust;
         }
-        
+
+        #endregion
+
+        private void grdCustData_RowEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            DataGrid dg = (DataGrid)sender;
+            CustomerData row = (CustomerData)dg.SelectedItems[0];
+            int key = (int)row.CustomerID;
+            string Name = row.Name;
+            string RegID = row.RegistrationID;
+            string phone = row.Phone;
+            string address = row.Address;
+            if (!string.IsNullOrEmpty(Name))
+            {
+                bool doesExist = (CoreOperations.doesOwnerExists(key) <= -1) ? false : true;
+                if (doesExist)
+                {
+                    if (CoreOperations.EditACustomer(key, RegID,Name,phone,address))
+                        MessageBox.Show("Edit is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    else
+                        MessageBox.Show("Edit is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    if (CoreOperations.AddANewCustomer(Name, Utility.CreateRandomID(Name),phone,address))
+                        MessageBox.Show("Addition is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    else
+                        MessageBox.Show("Addition is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                }   
+            }
+            matchCustSearchRequest();
+        }
 
 
-        
     }
 }
