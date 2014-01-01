@@ -144,15 +144,17 @@ namespace Dinesh_Project
                     Customer customers = db.Customers.First(c => c.CustomerID == ID);
                     if (customers != null)
                     {
+                        db.ObjectStateManager.ChangeObjectState(customers, System.Data.EntityState.Unchanged);
                         db.Customers.Attach(customers);
                         customers.Address = address;
                         customers.Phone = phone;
                         customers.Name = Name;
                         customers.RegistrationID = regisrtationID;
-                        db.ObjectStateManager.ChangeObjectState(customers, EntityState.Modified);
-                        db.SaveChanges();
+                        db.ObjectStateManager.ChangeObjectState(customers, System.Data.EntityState.Modified);
+                        int returnStatus =db.SaveChanges();
                     }
-                    
+                    iscustomerDataDirty = true;
+                    isOwnerDirty = true;
                     return true;
                 }
             }
@@ -526,13 +528,15 @@ namespace Dinesh_Project
 
                     var vehicList = (from registeredvehicle in registeredvehicles
                                      where registeredvehicle.OwnerID == newCustomer.CustomerID
-                                     select registeredvehicle.listofVehicles).First();
-
-                    foreach (Vehicle vehico in vehicList)
+                                     select registeredvehicle.listofVehicles).FirstOrDefault();
+                    if (vehicList != null )
                     {
-                        vehiclesList.Add(vehico.RegistrationNumber);
+                        foreach (Vehicle vehico in vehicList)
+                        {
+                            vehiclesList.Add(vehico.RegistrationNumber);
+                        }
+                        newCustomer.vehiclesID = vehiclesList;
                     }
-                    newCustomer.vehiclesID = vehiclesList;
                     data.Add(newCustomer);
                 }
                 customerViewData = data;
@@ -574,13 +578,15 @@ namespace Dinesh_Project
 
                     var vehicList = (from registeredvehicle in registeredvehicles
                                      where registeredvehicle.OwnerID == newCustomer.CustomerID
-                                     select registeredvehicle.listofVehicles).First();
-
-                    foreach (Vehicle vehico in vehicList)
+                                     select registeredvehicle.listofVehicles).FirstOrDefault();
+                    if (vehicList != null &&vehicList.Count()>0)
                     {
-                        vehiclesList.Add(vehico.RegistrationNumber);
+                        foreach (Vehicle vehico in vehicList)
+                        {
+                            vehiclesList.Add(vehico.RegistrationNumber);
+                        }
+                        newCustomer.vehiclesID = vehiclesList;
                     }
-                    newCustomer.vehiclesID = vehiclesList;
                     data.Add(newCustomer);
                 }
                 customerViewData = data;
