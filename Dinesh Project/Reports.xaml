@@ -50,7 +50,6 @@
                                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                                         <Setter Property="BorderBrush" Value="blue"/>
                                         <Setter Property="BorderThickness" Value="0,0,0,0"/>
-
                                     </Style>
                                 </DataGridColumn.HeaderStyle>
                             </DataGridTextColumn>
@@ -67,7 +66,7 @@
                     </StackPanel>
                 </StackPanel>
                 </Border>
-            </TabItem><!--This is for the Technicians-->
+            </TabItem>
             <TabItem Header="Customers" Name="Customers">
                 <Border BorderBrush="Red" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8">
                     <Border.Background>
@@ -145,20 +144,23 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
-            </TabItem><!--This is for the Customers-->
+            </TabItem>
             <TabItem Header="Vehicles" Name="Vehicles">
                 <Border BorderBrush="Red" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8">
                     <Border.Background>
                         <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
-                            <GradientStop Color="#901F8944" Offset="0"/>
-                            <GradientStop Color="#001FFF89" Offset="0.567"/>
+                            <GradientStop Color="#F5FF8944" Offset="0"/>
+                            <GradientStop Color="#FDFFFF89" Offset="0.567"/>
                         </LinearGradientBrush>
                     </Border.Background>
 
                     <StackPanel Orientation="Vertical" VerticalAlignment="Top" MaxWidth="900">
                         <StackPanel Orientation="Horizontal"  VerticalAlignment="Center" >
-                            <Label Name="lblvehicRegistration" Content="Registration No" MaxWidth="200" Height="35" FontSize="18" VerticalAlignment="Center"/>
-                            <TextBox Name="txtRegName" MinWidth="150" MaxWidth="200" Height="30" TextChanged="txtcustRegistrationId_TextChanged" FontSize="18"  />
+                            <Label Name="lblVehicleID" Content="Name" MaxWidth="200" Height="35" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBox Name="txtvehicleID" MinWidth="150" MaxWidth="200" Height="30" TextChanged="txtVechicID_TextChanged" FontSize="18"  />
+                            <Label Content="      " />
+                            <Label Name="lblOwner" Content="Phone" MaxWidth="200" Height="35" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBox Name="txtOwner" MinWidth="150" MaxWidth="200" Height="30" TextChanged="txtOwner_TextChanged" FontSize="18"  />
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -170,15 +172,17 @@
                             <DataGrid HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" AutoGenerateColumns="False" x:Name="grdVehicData" CanUserAddRows="True"  RowEditEnding="grdVehicData_RowEnding">
                                 <DataGrid.Resources>
                                     <Style TargetType="{x:Type DataGridColumnHeader}">
-                                        <Setter Property="Background" Value="LightGreen" />
+                                        <Setter Property="Background" Value="Pink" />
                                     </Style>
                                 </DataGrid.Resources>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="RegistrationNumber" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=RegistrationNumber,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="RegistrationNumber" MaxWidth="200" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=RegistrationNumber,  UpdateSourceTrigger=PropertyChanged}" >
                                     </DataGridTextColumn>
                                     <DataGridTextColumn Header="VehicleID" MaxWidth="200" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=VehicleID,  UpdateSourceTrigger=PropertyChanged}" >
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="CustomerID" Width="*"  Visibility="Hidden" IsReadOnly="False" MaxWidth="150" Binding="{Binding Path=CustomerID,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="VehicleType" MaxWidth="200" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=VehicleType,  UpdateSourceTrigger=PropertyChanged}" >
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="OwnerName" Width="*" IsReadOnly="False" MaxWidth="150" Binding="{Binding Path=Customer.Name,  UpdateSourceTrigger=PropertyChanged}" >
                                         <DataGridColumn.HeaderStyle>
                                             <Style TargetType="{x:Type DataGridColumnHeader}">
                                                 <Setter Property="Foreground" Value="Black" />
@@ -190,31 +194,25 @@
                                             </Style>
                                         </DataGridColumn.HeaderStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="OwnerName" MaxWidth="150" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=Name,  UpdateSourceTrigger=PropertyChanged}" >
-                                    </DataGridTextColumn>
-                                    <DataGridTextColumn Header="TechnicianName" MaxWidth="150" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=Name,  UpdateSourceTrigger=PropertyChanged}" >
-                                    </DataGridTextColumn>
-                                    <DataGridTextColumn Header="TechId" MaxWidth="150" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=TechId,  UpdateSourceTrigger=PropertyChanged}" >
-                                    </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
-                        <StackPanel   Margin="4"        Orientation="Horizontal"   HorizontalAlignment="Center">
+                        <StackPanel   Margin="4"   Orientation="Horizontal"   HorizontalAlignment="Center">
                             <Button Margin="4,0" Content="&lt;&lt;" Click="FirstCustCliked" />
                             <Button Margin="4,0" Content="&lt;" Click="PrevCustClicked"/>
                             <StackPanel  VerticalAlignment="Center"  Orientation="Horizontal">
-                                <TextBlock  Text="{Binding Start}"/>
+                                <TextBlock Name="txtVehStart" Text="{Binding Start}"/>
                                 <TextBlock Text=" to "/>
-                                <TextBlock Text="{Binding End}"/>
+                                <TextBlock Name="txtVehEnd" Text="{Binding End}"/>
                                 <TextBlock Text=" of "/>
-                                <TextBlock Text="{Binding TotalItems}"/>
+                                <TextBlock Name="txtVehSize" Text="{Binding TotalItems}"/>
                             </StackPanel>
                             <Button Margin="4,0" Content=">" Click="nextcustClicked"/>
                             <Button Margin="4,0" Content=">>" Click="lastCustClicked"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
-            </TabItem><!--This is for the Transactions-->
+            </TabItem>
         </TabControl>
         
     </Grid>

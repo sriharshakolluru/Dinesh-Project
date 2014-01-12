@@ -22,7 +22,7 @@ namespace Dinesh_Project
        static bool isOwnerDirty = true;
        static bool isTechnicianDirty = true;
        static bool iscustomerDataDirty=true;
-       static bool isTransacDirty = true;
+       static bool isTransacDirty = true; 
 
 
         //public DataSet GetData(ConnectionStringSettings connection, string command)
@@ -167,6 +167,35 @@ namespace Dinesh_Project
             }
             return false;
         }
+        public static bool EditAVehicle(int ID, string RegistrationNumber, string vehicleType, int ownerID)
+        {
+            try
+            {
+                using (CoreDbEntities db = new CoreDbEntities())
+                {
+                    Vehicle vehicle = db.Vehicles.First(c => c.VehicleID== ID);
+                    if (vehicle != null)
+                    {
+                        db.ObjectStateManager.ChangeObjectState(vehicle, System.Data.EntityState.Unchanged);
+                        db.Vehicles.Attach(vehicle);
+                        vehicle.RegistrationNumber = RegistrationNumber;
+                        vehicle.VehicleType = vehicleType;
+                        vehicle.Customer= db.Customers.FirstOrDefault(e =>e.CustomerID== ownerID);
+                        db.ObjectStateManager.ChangeObjectState(vehicle, System.Data.EntityState.Modified);
+                        int returnStatus = db.SaveChanges();
+                    }
+                    iscustomerDataDirty = true;
+                    isOwnerDirty = true;
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception  occurred in adding a Vehicle" + ex.ToString());
+
+            }
+            return false;
+        }
 
         /// <summary>
         /// substr is the vehicle Registration Number like AP28BHJ1234
@@ -199,7 +228,7 @@ namespace Dinesh_Project
                 {
                     using (CoreDbEntities db = new CoreDbEntities())
                     {
-                        List<Vehicle> currentVehicles= db.Vehicles.ToList();
+                        List<Vehicle> currentVehicles= db.Vehicles.Include("Customer").ToList();
                         Vechicles  = currentVehicles;
                         return Vechicles;
                     }
@@ -337,7 +366,7 @@ namespace Dinesh_Project
                 }
                 catch (Exception ex)
                 {
-                    Utility.WriteLogError("Exception Occurred while Getting Technicians List" + ex.ToString());
+                    Utility.WriteLogError("Exception Occurred while Getting Vehicles List" + ex.ToString());
                 }
             }
             else
@@ -658,6 +687,8 @@ namespace Dinesh_Project
         {
             try
             {
+                if (inputLIst.Count < numberofItems)
+                    return inputLIst;
                 if (startID < 0)
                     startID = inputLIst.Count - startID - 1;
                 if (startID != 0)

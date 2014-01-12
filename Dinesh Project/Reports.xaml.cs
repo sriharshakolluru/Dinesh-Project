@@ -27,6 +27,7 @@ namespace Dinesh_Project
             InitializeComponent();
             BindDataofTechnicians();
             BindDataofCustomers();
+            BindDataofVehicles();
         }
 
         public void BindDataofTechnicians()
@@ -121,7 +122,7 @@ namespace Dinesh_Project
         {
             List<CustomerData> customerData=CoreOperations.GetCustomizedCustomerdData();
             grdCustData.ItemsSource = customerData;
-            
+            matchCustSearchRequest();
                 
         }
 
@@ -179,6 +180,8 @@ namespace Dinesh_Project
             startIdCust = -NumberofItemsCust;
         }
 
+       
+
         private void grdCustData_RowEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
             DataGrid dg = (DataGrid)sender;
@@ -193,14 +196,66 @@ namespace Dinesh_Project
                 bool doesExist = (CoreOperations.doesOwnerExists(key) <= -1) ? false : true;
                 if (doesExist)
                 {
-                    if (CoreOperations.EditACustomer(key, RegID, Name, phone, address))
+                    if (CoreOperations.EditACustomer(key, RegID,Name,phone,address))
                         MessageBox.Show("Edit is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     else
                         MessageBox.Show("Edit is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
-                    if (CoreOperations.AddANewCustomer(Name, Utility.CreateRandomID(Name), phone, address))
+                    if (CoreOperations.AddANewCustomer(Name, Utility.CreateRandomID(Name),phone,address))
+                        MessageBox.Show("Addition is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    else
+                        MessageBox.Show("Addition is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                }   
+            }
+            matchCustSearchRequest();
+        }
+
+        #endregion
+
+        #region Vehicles
+
+        private void BindDataofVehicles()
+        {
+            List<Vehicle> customerData = CoreOperations.GetAllVehicles();
+            grdVehicData.ItemsSource = customerData.ToList();
+
+        }
+
+        public void matchVehicleList()
+        {
+
+        }
+        private void txtVechicID_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+        private void txtOwner_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+        private void grdVehicData_RowEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            DataGrid dg = (DataGrid)sender;
+            Vehicle row = (Vehicle)dg.SelectedItems[0];
+            int key = (int)row.VehicleID;
+            string RegID = row.RegistrationNumber;
+            string CustomerName = row.Customer.Name;
+            string vehicleType=row.VehicleType;
+            if (!string.IsNullOrEmpty(Name))
+            {
+                bool doesExist = (CoreOperations.doesVehicleExist(RegID) <= -1) ? false : true;
+                if (doesExist)
+                {
+                    if (CoreOperations.EditAVehicle(key, RegID, vehicleType, (int)row.Customer.CustomerID))
+                        MessageBox.Show("Edit is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    else
+                        MessageBox.Show("Edit is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    if (CoreOperations.AddANewVehicle(RegID,vehicleType,row.Customer.CustomerID));
                         MessageBox.Show("Addition is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     else
                         MessageBox.Show("Addition is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -210,10 +265,10 @@ namespace Dinesh_Project
         }
         #endregion
 
-        #region Vehicles Data
+      
 
-        #endregion
+        
 
-
+       
     }
 }
