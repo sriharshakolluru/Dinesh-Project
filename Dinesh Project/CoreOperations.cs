@@ -384,7 +384,7 @@ namespace Dinesh_Project
                 {
                     using (CoreDbEntities db = new CoreDbEntities())
                     {
-                        List<Transaction> transacList = db.Transactions.ToList();
+                        List<Transaction> transacList = db.Transactions.Include("Customers").Include("Vehicles").Include("Technicians").Include("Operations").ToList();
                         Transactions= transacList;
                         isTransacDirty= false;
                         return Transactions;
@@ -416,7 +416,6 @@ namespace Dinesh_Project
                                    Utility.DateInBetween((DateTime)currentTransaction.StartDate,startTimeofTransac,endTimeofTransac)
                                    select currentTransaction
                                          ).ToList();
-
 
 
                 return MatchedRows;

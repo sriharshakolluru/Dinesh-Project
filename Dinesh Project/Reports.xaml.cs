@@ -265,10 +265,15 @@ namespace Dinesh_Project
         }
         #endregion
 
-      
+        #region transactions
+        private void BindTransacData()
+        {
 
-        
+        }
+        #endregion
 
-       
+
+
+
     }
 }
