@@ -17,10 +17,12 @@ namespace Dinesh_Project
        static List<Customer> Owners;
        static List<CustomerData> customerViewData;
        static List<Technician> Technicians;
+       static List<Transaction> Transactions;
        static bool isVehicleDirty = true;
        static bool isOwnerDirty = true;
        static bool isTechnicianDirty = true;
        static bool iscustomerDataDirty=true;
+       static bool isTransacDirty = true;
 
 
         //public DataSet GetData(ConnectionStringSettings connection, string command)
@@ -335,13 +337,64 @@ namespace Dinesh_Project
                 }
                 catch (Exception ex)
                 {
-                    Utility.WriteLogError("Exception Occurred while Getting Vehicles List" + ex.ToString());
+                    Utility.WriteLogError("Exception Occurred while Getting Technicians List" + ex.ToString());
                 }
             }
             else
             {
                 Utility.WriteLog("No new data to fetch in technicians");
                 return Technicians;
+            }
+            return null;
+        }
+        public static List<Transaction> GetAllTransactions()
+        {
+            if (isTransacDirty)
+            {
+                try
+                {
+                    using (CoreDbEntities db = new CoreDbEntities())
+                    {
+                        List<Transaction> transacList = db.Transactions.ToList();
+                        Transactions= transacList;
+                        isTransacDirty= false;
+                        return Transactions;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Utility.WriteLogError("Exception Occurred while Getting transactions List" + ex.ToString());
+                }
+            }
+            else
+            {
+                Utility.WriteLog("No new data to fetch in Transactions");
+                return Transactions;
+            }
+            return null;
+        }
+        public static List<Transaction> GetAllTransactions(DateTime startTimeofTransac, DateTime endTimeofTransac, string OwnerName,string Technician,string RegistrationID)
+        {
+            try
+            {
+                if (isTechnicianDirty)
+                    Technicians = GetAllTechnicians();
+
+                var MatchedRows = (from Transaction currentTransaction in Transactions
+                                   where currentTransaction.Vehicle.Customer.Name.Contains(OwnerName)&&
+                                   currentTransaction.Vehicle.RegistrationNumber.Contains(RegistrationID)&&
+                                   currentTransaction.Technician.Name.Contains(Technician)&&
+                                   Utility.DateInBetween((DateTime)currentTransaction.StartDate,startTimeofTransac,endTimeofTransac)
+                                   select currentTransaction
+                                         ).ToList();
+
+
+
+                return MatchedRows;
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError(string.Format("Exception occurred in Getall Technicians with criteria. Inputs: Name = {0} , RegID = {1}", name, RegID));
             }
             return null;
         }

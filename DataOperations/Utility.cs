@@ -64,5 +64,28 @@ namespace DataOperations
             return ID.ToString();
         }
 
+        public static bool DateInBetween(DateTime targetDate, DateTime start, DateTime end)
+        {
+
+            try
+            {
+                if (targetDate != null && targetDate != default(DateTime))
+                {
+                    if (start.CompareTo(targetDate) < 0)
+                    {
+                        if (end.CompareTo(targetDate) > 0)
+                            return true;
+                    }
+
+                }
+            }
+            catch (Exception  ex)
+            {
+
+                Utility.WriteLogError("Exception Occurred in verification of Dates" + ex.ToString());
+            }
+            return false;
+        }
+
     }
 }
