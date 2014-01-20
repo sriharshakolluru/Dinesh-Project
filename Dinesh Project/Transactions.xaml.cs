@@ -22,13 +22,37 @@ namespace Dinesh_Project
         public Transactions()
         {
             InitializeComponent();
-            testc();
+            BindTransactionToData();
 
         }
 
-        private void testc()
+        private void  BindTransactionToData()
         {
-            List<Transaction> trans= CoreOperations.GetAllTransactions(DateTime.Now, DateTime.Now, string.Empty, string.Empty, string.Empty);
+             List<Transaction> trans= CoreOperations.GetAllTransactions(DateTime.Now.AddMonths(-4), DateTime.Now, string.Empty, string.Empty, string.Empty);
+             grdTransacData.ItemsSource = trans;
+             FillSingleTransacData();
+        }
+
+        private void FillSingleTransacData()
+        {
+            DateTime startDate = (startDatePicker.Value == null) ? default(DateTime) : (DateTime)startDatePicker.Value;
+            var trans = CoreOperations.GetAllTransactions(startDate, (DateTime)endDatePicker.Value, txtCustName.Text, txtTech.Text, txtRegID.Text);
+            if (trans.Count > 0)
+            {
+                var transaction = trans.First();
+                txtCustName.Text = transaction.Vehicle.Customer.Name;
+                txtOperations.Text = transaction.Operation.Name;
+                txtTech.Text = transaction.Technician.Name;
+                startDatePicker.Value = transaction.StartDate;
+                endDatePicker.Value = transaction.EndDate;
+                txtPayment.Text = transaction.PaymentAmount.ToString();
+                txtPaymentDetails.Text = transaction.PaymentStatus;
+                txtRegID.Text = transaction.Vehicle.RegistrationNumber;
+            }
+            else
+            {
+                MessageBox.Show("NO transaction Matched the search criteria");
+            }
         }
     }
 }

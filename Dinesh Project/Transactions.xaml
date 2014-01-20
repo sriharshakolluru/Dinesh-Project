@@ -11,6 +11,7 @@
     <Grid Width="1200">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
@@ -33,17 +34,17 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Operation" Height="28" HorizontalAlignment="Left"  Name="lblOperation" VerticalAlignment="Top" Width="100" />
-                        <wpfTool:CheckComboBox Height="23" HorizontalAlignment="Left"  Name="cmbOperations" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"  />
+                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtOperations" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"  />
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" Width="auto">
                         <Label Content="Arrival Time" Height="28" HorizontalAlignment="Left"  Name="lblStartDate" VerticalAlignment="Top" Width="100" />
-                        <wpfTool:DateTimePicker Name="startDatePicker" ></wpfTool:DateTimePicker>
+                        <wpfTool:DateTimePicker Name="startDatePicker" DefaultValue="1/1/0001 12:00:00 AM" ></wpfTool:DateTimePicker>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Delivered Time" Height="28" HorizontalAlignment="Left"  Name="lblEmdDate" VerticalAlignment="Top" Width="100" />
-                        <wpfTool:DateTimePicker Name="endDatePicker"  DefaultValue="1/1/1001 12:00:00"></wpfTool:DateTimePicker>
+                        <wpfTool:DateTimePicker Name="endDatePicker"  DefaultValue="1/1/0001 12:00:00 AM"></wpfTool:DateTimePicker>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Payment" Height="28" HorizontalAlignment="Left"  Name="lblPayment" VerticalAlignment="Top" Width="100" />
@@ -58,6 +59,33 @@
             </StackPanel>
             
         </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Left">
+        <DataGrid   HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" AutoGenerateColumns="False" x:Name="grdTransacData" CanUserAddRows="False" CanUserResizeColumns="True" >
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="LightGreen" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                    <DataGridTextColumn Header="ServiceID" MaxWidth="250" Width="*" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=ServiceId}" />
+                    <DataGridTextColumn Header="CustomerName" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Vehicle.Customer.Name}" />
+                    <DataGridTextColumn Header="Registration" Width="*" IsReadOnly="True" MaxWidth="150" Binding="{Binding Path=Vehicle.RegistrationNumber}" >
+                    <DataGridColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="Foreground" Value="Black" />
+                            <Setter Property="FontSize" Value="20" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="BorderBrush" Value="blue"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,0"/>
 
+                        </Style>
+                    </DataGridColumn.HeaderStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="ReceivedDate" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=StartDate}" />
+                    <DataGridTextColumn Header="Delivered Date" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=EndDate}" />
+                    <DataGridTextColumn Header="Operations" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Operation.Name}" />
+                </DataGrid.Columns>
+        </DataGrid>
+</StackPanel>
     </Grid>
 </Page>
