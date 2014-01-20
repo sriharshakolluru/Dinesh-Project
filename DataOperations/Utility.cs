@@ -71,10 +71,19 @@ namespace DataOperations
             {
                 if (targetDate != null && targetDate != default(DateTime))
                 {
+                    if (start.Equals(default(DateTime)))
+                    {
+                        return true;
+                    }
                     if (start.CompareTo(targetDate) < 0)
                     {
-                        if (end.CompareTo(targetDate) > 0)
+                        if (end.Equals(default(DateTime)))
                             return true;
+                        else if (end != default(DateTime) && end.CompareTo(targetDate) > 0)
+                            return true;
+                        else
+                            return false;
+
                     }
 
                 }

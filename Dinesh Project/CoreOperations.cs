@@ -384,8 +384,9 @@ namespace Dinesh_Project
                 {
                     using (CoreDbEntities db = new CoreDbEntities())
                     {
-                        List<Transaction> transacList = db.Transactions.Include("Customers").Include("Vehicles").Include("Technicians").Include("Operations").ToList();
+                        List<Transaction> transacList = db.Transactions.Include("Vehicle").Include("Vehicle.Customer").Include("Technician").Include("Operation").ToList();
                         Transactions= transacList;
+                        
                         isTransacDirty= false;
                         return Transactions;
                     }
@@ -406,18 +407,17 @@ namespace Dinesh_Project
         {
             try
             {
-                if (isTechnicianDirty)
-                    Technicians = GetAllTechnicians();
+                if (isTransacDirty)
+                    Transactions = GetAllTransactions();
 
                 var MatchedRows = (from Transaction currentTransaction in Transactions
-                                   where currentTransaction.Vehicle.Customer.Name.Contains(OwnerName)&&
+                                   where 
+                                   currentTransaction.Vehicle.Customer.Name.Contains(OwnerName)&&
                                    currentTransaction.Vehicle.RegistrationNumber.Contains(RegistrationID)&&
                                    currentTransaction.Technician.Name.Contains(Technician)&&
                                    Utility.DateInBetween((DateTime)currentTransaction.StartDate,startTimeofTransac,endTimeofTransac)
                                    select currentTransaction
                                          ).ToList();
-
-
                 return MatchedRows;
             }
             catch (Exception ex)

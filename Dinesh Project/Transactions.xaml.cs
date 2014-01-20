@@ -22,6 +22,13 @@ namespace Dinesh_Project
         public Transactions()
         {
             InitializeComponent();
+            testc();
+
+        }
+
+        private void testc()
+        {
+            List<Transaction> trans= CoreOperations.GetAllTransactions(DateTime.Now, DateTime.Now, string.Empty, string.Empty, string.Empty);
         }
     }
 }

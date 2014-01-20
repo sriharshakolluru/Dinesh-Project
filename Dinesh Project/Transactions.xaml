@@ -3,11 +3,61 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"      
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
-	Title="Transactions">
+      d:DesignHeight="300" d:DesignWidth="300" 
+    Title="Transactions">
 
-    <Grid>
-        
+    <Grid Width="1200">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+        <Image Source="Data/ReportsFormsLinksHeader.png" Height="90px"  VerticalAlignment="Top" HorizontalAlignment="Stretch"  Stretch="Fill"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Vertical" MinWidth="400" MaxWidth="700">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Registration Id" Height="28" HorizontalAlignment="Left"  Name="lblRegID" VerticalAlignment="Top" Width="100"/>
+                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtRegID" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Customer" Height="28" HorizontalAlignment="Left"  Name="lblCustName" VerticalAlignment="Top" Width="100" />
+                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtCustName" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Technician" Height="28" HorizontalAlignment="Left"  Name="lblTechName" VerticalAlignment="Top" Width="100" />
+                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtTech" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Operation" Height="28" HorizontalAlignment="Left"  Name="lblOperation" VerticalAlignment="Top" Width="100" />
+                        <wpfTool:CheckComboBox Height="23" HorizontalAlignment="Left"  Name="cmbOperations" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"  />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Width="auto">
+                        <Label Content="Arrival Time" Height="28" HorizontalAlignment="Left"  Name="lblStartDate" VerticalAlignment="Top" Width="100" />
+                        <wpfTool:DateTimePicker Name="startDatePicker" ></wpfTool:DateTimePicker>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Delivered Time" Height="28" HorizontalAlignment="Left"  Name="lblEmdDate" VerticalAlignment="Top" Width="100" />
+                        <wpfTool:DateTimePicker Name="endDatePicker"  DefaultValue="1/1/1001 12:00:00"></wpfTool:DateTimePicker>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Payment" Height="28" HorizontalAlignment="Left"  Name="lblPayment" VerticalAlignment="Top" Width="100" />
+                        <TextBox Name="txtPayment" MaxWidth="300" MinWidth="80" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Payment Details" Height="28" HorizontalAlignment="Left"  Name="lblPaymentDetails" VerticalAlignment="Top" Width="100" />
+                        <wpfTool:MultiLineTextEditor Name="txtPaymentDetails" MaxWidth="700" MinWidth="300" />
+                    </StackPanel>
+                </StackPanel>
+                
+            </StackPanel>
+            
+        </StackPanel>
+
     </Grid>
 </Page>
