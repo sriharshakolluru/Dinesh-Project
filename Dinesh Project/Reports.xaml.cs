@@ -255,7 +255,7 @@ namespace Dinesh_Project
                 }
                 else
                 {
-                    if (CoreOperations.AddANewVehicle(RegID,vehicleType,row.Customer.CustomerID));
+                    if (CoreOperations.AddANewVehicle(RegID,vehicleType,(int)row.Customer.CustomerID))
                         MessageBox.Show("Addition is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     else
                         MessageBox.Show("Addition is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -265,12 +265,7 @@ namespace Dinesh_Project
         }
         #endregion
 
-        #region transactions
-        private void BindTransacData()
-        {
-
-        }
-        #endregion
+        
 
 
 

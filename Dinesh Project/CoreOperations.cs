@@ -422,7 +422,7 @@ namespace Dinesh_Project
             }
             catch (Exception ex)
             {
-                Utility.WriteLogError(string.Format("Exception occurred in Getall Technicians with criteria. Inputs: Name = {0} , RegID = {1}", name, RegID));
+                Utility.WriteLogError(string.Format("Exception occurred in Getall Technicians with criteria. Inputs: Name = {0} , RegID = {1}", OwnerName, RegistrationID));
             }
             return null;
         }
