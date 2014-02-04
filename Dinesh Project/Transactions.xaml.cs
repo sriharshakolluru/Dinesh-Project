@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
+using DataOperations;
 
 namespace Dinesh_Project
 {
@@ -25,12 +26,17 @@ namespace Dinesh_Project
         {
             InitializeComponent();
             BindTransactionToData();
+            txtOperations.ItemsSource = CoreOperations.GetAllOPerations();
+            txtOperations.ValueMemberPath = "Name";
+            txtTech.ItemsSource = CoreOperations.GetAllTechnicians();
+            txtTech.ValueMemberPath = "Name";
+
 
         }
 
         private void  BindTransactionToData()
         {
-             List<Transaction> trans= CoreOperations.GetAllTransactions(DateTime.Now.AddMonths(-4), DateTime.Now, string.Empty, string.Empty, string.Empty,string.Empty);
+             List<Transaction> trans= CoreOperations.GetAllTransactions(DateTime.Now.AddMonths(-4), DateTime.Now, string.Empty, string.Empty, string.Empty,string.Empty,string.Empty);
              grdTransacData.ItemsSource = trans;
             // FillSingleTransacData();
         }
@@ -38,7 +44,7 @@ namespace Dinesh_Project
         private void FillSingleTransacData()
         {
             DateTime startDate = (startDatePicker.Value == null) ? default(DateTime) : (DateTime)startDatePicker.Value;
-            var trans = CoreOperations.GetAllTransactions(startDate, (DateTime)endDatePicker.Value, txtCustName.Text, txtTech.Text, txtRegID.Text,string.Empty);
+            var trans = CoreOperations.GetAllTransactions(startDate, (DateTime)endDatePicker.Value, txtCustName.Text, txtTech.Text, txtRegID.Text,string.Empty,string.Empty);
             if (trans.Count > 0)
             {
                 var transaction = trans.First();
@@ -50,6 +56,7 @@ namespace Dinesh_Project
                 txtPayment.Text = transaction.PaymentAmount.ToString();
                 txtPaymentDetails.Text = transaction.PaymentStatus;
                 txtRegID.Text = transaction.Vehicle.RegistrationNumber;
+                txtCustPhone.Text = transaction.Vehicle.Customer.Phone;
             }
             else
             {
@@ -59,9 +66,86 @@ namespace Dinesh_Project
 
         private void saveNewTransaction(object sender, RoutedEventArgs e)
         {
-            //Step 1. Check if vehicleExists
-            //if(string.IsNullOrEmpty(txtRegID.te)
 
+            int ownerID = -1, oprationID = -1, vehicID=-1;
+            //Step 1. Check if vehicleExists
+            #region Getting Vehicle
+            if (!string.IsNullOrEmpty(txtRegID.Text))
+            {
+                vehicID = CoreOperations.doesVehicleExist(txtRegID.Text);
+                if(vehicID<=-1)
+                {
+                    #region getOwnerID
+                    
+                    //Step 2. If owner does not exists, addnew owner else get ID and create a new vehicle Data
+                    if (!string.IsNullOrEmpty(txtCustName.Text))
+                    {
+                        ownerID=CoreOperations.doesOwnerExists(txtCustName.Text);
+                        
+                        if(ownerID <= -1)//create one
+                        {
+                            ownerID= CoreOperations.AddANewCustomer(txtCustName.Text, Utility.CreateRandomID(txtCustName.Text)
+                                , txtCustPhone.Text, string.Empty);
+                            
+                            if(ownerID <= -1)
+                            {                                
+                                MessageBox.Show("Error Occurred... Could not create the customer account", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;   
+                            }
+                        }
+                        
+                        Customer owner= CoreOperations.GetAllOwnersByName(txtCustName.Text,txtCustPhone.Text).First();
+                        ownerID =(int) owner.CustomerID;
+                    }
+                    else
+                    {
+                        //when owners data is not available
+                        MessageBox.Show("Enter Customer Name");
+                        Utility.WriteLogError("Exception Occurred. Owner's Data not specified in UI");
+                        return;
+                    }
+                    #endregion
+
+                    bool vehicleAdded= CoreOperations.AddANewVehicle(txtRegID.Text, string.Empty,(int) ownerID);
+                    if (!vehicleAdded)
+                    {
+                        MessageBox.Show("Error Occurred... Could not create the Vehicle Data", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                }
+                vehicID = CoreOperations.doesVehicleExist(txtRegID.Text);
+
+            }
+            #endregion
+
+            //Step 3. Check if the operation Exists
+            #region GetOperation 
+            
+            if (string.IsNullOrEmpty(txtOperations.Text))
+                MessageBox.Show("Enter The Operation Name", "Missing Value", MessageBoxButton.OK, MessageBoxImage.Warning);
+            else
+            {
+                oprationID = CoreOperations.doesOperationExists(txtOperations.Text);
+                if (oprationID <= -1)
+                {
+                    bool operationAdded=CoreOperations.AddANewOperation(txtOperations.Text, string.Empty);
+                    if (operationAdded)
+                        oprationID= CoreOperations.doesOperationExists(txtOperations.Text);
+                }
+                if (oprationID <= -1)
+                {
+                    Utility.WriteLogError("Error: Could not add operation");
+                    return;
+                }
+            }
+            #endregion
+
+            // Step 4. Now create a transaction.
+            DateTime startTime=(startDatePicker.Value.HasValue)?startDatePicker.Value.Value:default(DateTime);
+            CoreOperations.StartANewTransactionWithExistingVehicle(oprationID, startTime, string.Empty,vehicID, txtTech.Text, string.Empty
+                , txtPaymentDetails.Text, double.Parse(txtPayment.Text), string.Empty);
+
+            
 
         }
 
@@ -81,6 +165,7 @@ namespace Dinesh_Project
             txtPayment.Text = string.Empty;
             txtPaymentDetails.Text = string.Empty;
             txtRegID.Text = string.Empty;
+            txtCustPhone.Text = string.Empty;
 
         }
 
@@ -96,7 +181,7 @@ namespace Dinesh_Project
             DateTime startDate = (startDatePicker.Value.HasValue) ? startDatePicker.Value.Value : default(DateTime);
             DateTime endDate = (endDatePicker.Value.HasValue) ? endDatePicker.Value.Value : default(DateTime);
             string technicianName = txtTech.Text;
-            List<Transaction> matchdList= CoreOperations.GetAllTransactions(startDate,endDate,ownerName,technicianName,registrationID,string.Empty);
+            List<Transaction> matchdList= CoreOperations.GetAllTransactions(startDate,endDate,ownerName,technicianName,registrationID,string.Empty,txtCustPhone.Text);
             grdTransacData.ItemsSource = matchdList;
                 
         }
@@ -125,7 +210,7 @@ namespace Dinesh_Project
                     txtPayment.Text = selectedTransac.PaymentAmount.Value.ToString();
                     txtPaymentDetails.Text = selectedTransac.PaymentStatus;
                     txtRegID.Text = selectedTransac.Vehicle.RegistrationNumber;
-
+                    txtCustPhone.Text = selectedTransac.Vehicle.Customer.Phone;
                 }
 
             }

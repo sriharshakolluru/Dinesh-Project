@@ -203,7 +203,7 @@ namespace Dinesh_Project
                 }
                 else
                 {
-                    if (CoreOperations.AddANewCustomer(Name, Utility.CreateRandomID(Name),phone,address))
+                    if (CoreOperations.AddANewCustomer(Name, Utility.CreateRandomID(Name),phone,address)>-1)
                         MessageBox.Show("Addition is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     else
                         MessageBox.Show("Addition is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);

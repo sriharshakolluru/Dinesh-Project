@@ -60,16 +60,23 @@ namespace Dinesh_Project
 
         public static bool AddANewOperation(string OperationName, string VehicalClass)
         {
-            String InsertCommand = string.Format("INSERT INTO OPERATIONS (Name,VehicleClass) VALUES ('{0}','{1}')", OperationName, VehicalClass);
-            int returnValue = InsertData(coreConnectionstring, InsertCommand);
-            if (returnValue > -1)
-                return true;
-            else
-                return false;
+            try
+            {
 
-
+                String InsertCommand = string.Format("INSERT INTO OPERATIONS (Name,VehicleClass) VALUES ('{0}','{1}')", OperationName, VehicalClass);
+                int returnValue = InsertData(coreConnectionstring, InsertCommand);
+                if (returnValue > -1)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception oCcurred in COre Operations::AddNewOperation. " + ex.ToString());
+            }
+            return false;
         }
-        public static bool AddANewCustomer(string CustomerName, string RegistrationID,string  phone,string address)
+        public static int AddANewCustomer(string CustomerName, string RegistrationID,string  phone,string address)
         {
             try
             {
@@ -89,18 +96,14 @@ namespace Dinesh_Project
                 iscustomerDataDirty = true;
                 String InsertCommand = string.Format("INSERT INTO CUSTOMERS(Name,RegistrationID,Phone,Address) VALUES ('{0}','{1}','{2}','{3}')", CustomerName, RegistrationID, phone, address);
                 int returnValue = InsertData(coreConnectionstring, InsertCommand);
-                if (returnValue > -1)
-                    return true;
-                else
-                    return false;
+                return returnValue;
             }
             catch (Exception  ex)
             {
-
                 Utility.WriteLogError("Exception occurred in adding a new customer " +CustomerName+"   " + ex.ToString());
             }
 
-            return false;
+            return -1;
         }
         public static bool AddANewTechnician(string TechnicianName, string RegistrationID)
         {
@@ -125,7 +128,6 @@ namespace Dinesh_Project
             else
                 return false;
         }
-
 
         public static bool EditaTechnician(int Id,string TechnicianName, string RegistrationID)
         {
@@ -403,7 +405,7 @@ namespace Dinesh_Project
             }
             return null;
         }
-        public static List<Transaction> GetAllTransactions(DateTime startTimeofTransac, DateTime endTimeofTransac, string OwnerName,string Technician,string RegistrationID,string ServiceID)
+        public static List<Transaction> GetAllTransactions(DateTime startTimeofTransac, DateTime endTimeofTransac, string OwnerName,string Technician,string RegistrationID,string ServiceID,string Phone)
         {
             try
             {
@@ -417,6 +419,7 @@ namespace Dinesh_Project
                                    currentTransaction.Technician.Name.Contains(Technician)&&
                                    Utility.DateInBetween((DateTime)currentTransaction.StartDate,startTimeofTransac,endTimeofTransac)
                                    &&(string.IsNullOrEmpty(ServiceID)||currentTransaction.ServiceId.Equals(ServiceID))
+                                   &&currentTransaction.Vehicle.Customer.Phone.Contains(Phone)
                                    select currentTransaction
                                          ).ToList();
                 return MatchedRows;
@@ -426,6 +429,13 @@ namespace Dinesh_Project
                 Utility.WriteLogError(string.Format("Exception occurred in Getall Technicians with criteria. Inputs: Name = {0} , RegID = {1}", OwnerName, RegistrationID));
             }
             return null;
+        }
+        public static List<Operation> GetAllOPerations()
+        {
+            using (CoreDbEntities db = new CoreDbEntities())
+            {
+                return db.Operations.ToList();
+            }
         }
 
         public static bool DeleteTechnician(string RegID)
@@ -537,49 +547,46 @@ namespace Dinesh_Project
             }
             return -1;
         }
+        public static int doesOperationExists(string Name)
+        {
+            using (CoreDbEntities db = new CoreDbEntities())
+            {
+                var listofOps = db.Operations.Where(x => x.Name.Contains(Name));
+                if (listofOps.Any())
+                    return listofOps.First().OperationId;
+            }
+            return -1;
+        }
 
-        public static bool StartANewTransactionWithExistingVehicle(int OperationID, DateTime StartDate,string status,string VehicleRegisrationNumber,string technicianName,string PaymentType,string PaymentStatus,double paymentAmount,string Remarks)
+        public static bool StartANewTransactionWithExistingVehicle(int OperationID, DateTime StartDate,string status,int  vehicleID,string technicianName,string PaymentType,string PaymentStatus,double paymentAmount,string Remarks)
         {
             SqlCeTransaction transac;
-            int ownerId,vehicleId;
             string serviceID;
-           
-            if ((ownerId=GetOwnerByVehicle(VehicleRegisrationNumber)) > -1)// Owner exists
+
+            isTransacDirty = true;
+            isTechnicianDirty = true;
+            isVehicleDirty = true;
+            isOwnerDirty = true;
+            serviceID = Utility.CreateRandomID(technicianName);
+            #region Add technician Part
+            int techId= doesTechnicianExists(technicianName);
+            if (techId == -1)
             {
-                #region vehicle Verification
-                vehicleId = doesVehicleExist(VehicleRegisrationNumber);
-                serviceID = Utility.CreateRandomID(VehicleRegisrationNumber);
-                #endregion
-
-
-                #region Add technician Part
-                int techId= doesTechnicianExists(technicianName);
-                if (techId == -1)
-                {
-                    AddANewTechnician(technicianName, Utility.CreateRandomID(technicianName));
-                    techId = doesTechnicianExists(technicianName);
-                }
-
-                #endregion
-
-                //Command Data
-                string InsertCommand = string.Format("INSERT INTO Transactions(ServiceId,OperationId,StartDate,Status,VehicleId,PaymentType,PaymentStatus,PaymentAmount,Remarks,TechnicianId) VALUES ('{9}',{0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8})",OperationID,DateTime.Now,status,vehicleId,PaymentType,PaymentStatus, paymentAmount,Remarks,techId,serviceID);
-                Utility.WriteLog("The insert Command for Transaction is " + InsertCommand);
-                int returnValue = InsertData(coreConnectionstring, InsertCommand);
-                if (returnValue > -1)
-                    return true;
-                else
-                    return false;
+                AddANewTechnician(technicianName, Utility.CreateRandomID(technicianName));
+                techId = doesTechnicianExists(technicianName);
             }
-            else if(ownerId==-2)// Vehicle does not exist
-            {
-                Utility.WriteLogError("Vehicle Does Not Exist.. Registration ID Entered ... "+VehicleRegisrationNumber);
+
+            #endregion
+
+            //Command Data
+            string InsertCommand = string.Format("INSERT INTO Transactions(ServiceId,OperationId,StartDate,Status,VehicleId,PaymentType,PaymentStatus,PaymentAmount,Remarks,TechnicianId) VALUES ('{9}',{0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}',{8})",OperationID,StartDate,status,vehicleID,PaymentType,PaymentStatus, paymentAmount,Remarks,techId,serviceID);
+            Utility.WriteLog("The insert Command for Transaction is " + InsertCommand);
+            int returnValue = InsertData(coreConnectionstring, InsertCommand);
+            if (returnValue > -1)
+                return true;
+            else
                 return false;
-            }
-            else if (ownerId==-1)
-                Utility.WriteLogError("Vehicle exists but owner data is missing ");
-
-            return false;
+            
 
         }
 

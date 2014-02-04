@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"   
+      xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300" 
@@ -30,12 +31,34 @@
                         <TextBox Height="23" HorizontalAlignment="Left"  Name="txtCustName" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
+                        <Label Content="Phone" Height="28" HorizontalAlignment="Left"  Name="lblCustPhone" VerticalAlignment="Top" Width="100" />
+                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtCustPhone" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
                         <Label Content="Technician" Height="28" HorizontalAlignment="Left"  Name="lblTechName" VerticalAlignment="Top" Width="100" />
-                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtTech" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" />
+                        <toolkit:AutoCompleteBox x:Name="txtTech" Grid.Row ="0" Grid.Column="1" MaxDropDownHeight="300" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"
+                                 FilterMode="StartsWith" IsTextCompletionEnabled="False">
+                            <toolkit:AutoCompleteBox.ItemTemplate >
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </toolkit:AutoCompleteBox.ItemTemplate>
+                        </toolkit:AutoCompleteBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Operation" Height="28" HorizontalAlignment="Left"  Name="lblOperation" VerticalAlignment="Top" Width="100" />
-                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtOperations" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"  />
+                        <toolkit:AutoCompleteBox x:Name="txtOperations" Grid.Row ="0" Grid.Column="1" MaxDropDownHeight="300" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"
+                                 FilterMode="StartsWith" IsTextCompletionEnabled="False">
+                            <toolkit:AutoCompleteBox.ItemTemplate >
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </toolkit:AutoCompleteBox.ItemTemplate>
+                        </toolkit:AutoCompleteBox>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Vertical">
@@ -55,6 +78,7 @@
                         <Label Content="Payment Details" Height="28" HorizontalAlignment="Left"  Name="lblPaymentDetails" VerticalAlignment="Top" Width="100" />
                         <wpfTool:MultiLineTextEditor Name="txtPaymentDetails" MaxWidth="700" MinWidth="300" />
                     </StackPanel>
+                    
                 </StackPanel>
                 
             </StackPanel>
