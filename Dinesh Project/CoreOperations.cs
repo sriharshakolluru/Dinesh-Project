@@ -403,7 +403,7 @@ namespace Dinesh_Project
             }
             return null;
         }
-        public static List<Transaction> GetAllTransactions(DateTime startTimeofTransac, DateTime endTimeofTransac, string OwnerName,string Technician,string RegistrationID)
+        public static List<Transaction> GetAllTransactions(DateTime startTimeofTransac, DateTime endTimeofTransac, string OwnerName,string Technician,string RegistrationID,string ServiceID)
         {
             try
             {
@@ -416,6 +416,7 @@ namespace Dinesh_Project
                                    currentTransaction.Vehicle.RegistrationNumber.Contains(RegistrationID)&&
                                    currentTransaction.Technician.Name.Contains(Technician)&&
                                    Utility.DateInBetween((DateTime)currentTransaction.StartDate,startTimeofTransac,endTimeofTransac)
+                                   &&(string.IsNullOrEmpty(ServiceID)||currentTransaction.ServiceId.Equals(ServiceID))
                                    select currentTransaction
                                          ).ToList();
                 return MatchedRows;

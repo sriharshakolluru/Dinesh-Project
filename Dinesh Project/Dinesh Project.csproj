@@ -179,6 +179,7 @@
     <Content Include="Data\CoreDb.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Data\searchIMafe.jpg" />
     <Resource Include="Icon1.ico" />
     <Resource Include="Data\desktop-file.ico" />
     <Content Include="Data\HomeImage1.jpg">
