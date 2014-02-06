@@ -72,7 +72,7 @@ namespace Dinesh_Project
             }
             catch (Exception ex)
             {
-                Utility.WriteLogError("Exception oCcurred in COre Operations::AddNewOperation. " + ex.ToString());
+                Utility.WriteLogError("Exception Occurred in COre Operations::AddNewOperation. " + ex.ToString());
             }
             return false;
         }
