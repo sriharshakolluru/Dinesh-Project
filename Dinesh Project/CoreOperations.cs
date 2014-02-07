@@ -199,6 +199,41 @@ namespace Dinesh_Project
             return false;
         }
 
+        public static bool EditATransaction(string ID, string RegistrationNumber, int  ownerID,int  techID)
+        {
+            try
+            {
+                isTransacDirty = true;
+                isVehicleDirty = true;
+                iscustomerDataDirty = true;
+                isTechnicianDirty = true;
+                using (CoreDbEntities db = new CoreDbEntities())
+                {
+                    Transaction trans = db.Transactions.First(c => c.ServiceId.Equals(ID));
+                    if (trans != null)
+                    {
+                        db.ObjectStateManager.ChangeObjectState(trans, System.Data.EntityState.Unchanged);
+                        db.Transactions.Attach(trans);
+                        Vehicle vehic= CoreOperations.GetVehiclesByRegistration(RegistrationNumber).First();
+                        vehic.Customer = db.Customers.First(c => c.CustomerID == ownerID);
+                        trans.Vehicle = vehic;
+                        trans.Technician = db.Technicians.First(t => t.Id == techID);
+                        db.ObjectStateManager.ChangeObjectState(trans, System.Data.EntityState.Modified);
+                        int returnStatus = db.SaveChanges();
+                    }
+                    iscustomerDataDirty = true;
+                    isOwnerDirty = true;
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception  occurred in adding a Vehicle" + ex.ToString());
+
+            }
+            return false;
+        }
+
         /// <summary>
         /// substr is the vehicle Registration Number like AP28BHJ1234
         /// </summary>
@@ -346,7 +381,7 @@ namespace Dinesh_Project
             }
             catch (Exception ex)
             {
-                Utility.WriteLogError(string.Format("Exception occurred in Getall Technicians with criteria. Inputs: Name = {0} , RegID = {1}", name, RegID));
+                Utility.WriteLogError(string.Format("Exception occurred in Getall Technicians with criteria. Inputs: Name = {0} , RegID = {1}. Exception message {2}", name, RegID,ex.ToString()));
             }
             return null;
         }
@@ -426,7 +461,7 @@ namespace Dinesh_Project
             }
             catch (Exception ex)
             {
-                Utility.WriteLogError(string.Format("Exception occurred in Getall Technicians with criteria. Inputs: Name = {0} , RegID = {1}", OwnerName, RegistrationID));
+                Utility.WriteLogError(string.Format("Exception occurred in Getall Technicians with criteria. Inputs: Name = {0} , RegID = {1}. Exception is {2} ", OwnerName, RegistrationID,ex.ToString()));
             }
             return null;
         }
@@ -506,7 +541,7 @@ namespace Dinesh_Project
                     var vehicId = (from Customer row in vehiclesList
                                    where row.CustomerID==id
                                    select row.CustomerID).First();
-                    if (vehicId != null)
+                    if (vehicId >-1)
                         return int.Parse(vehicId.ToString());
                     else
                         return -1;
@@ -560,9 +595,7 @@ namespace Dinesh_Project
 
         public static bool StartANewTransactionWithExistingVehicle(int OperationID, DateTime StartDate,string status,int  vehicleID,string technicianName,string PaymentType,string PaymentStatus,double paymentAmount,string Remarks)
         {
-            SqlCeTransaction transac;
             string serviceID;
-
             isTransacDirty = true;
             isTechnicianDirty = true;
             isVehicleDirty = true;
@@ -705,7 +738,7 @@ namespace Dinesh_Project
             }
             catch (Exception ex)
             {
-                Utility.WriteLogError("Exception Occurred in Paging data");
+                Utility.WriteLogError("Exception Occurred in Paging data"+ex.ToString());
             }
             finally
             {
