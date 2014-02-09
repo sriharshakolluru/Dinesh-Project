@@ -199,7 +199,7 @@ namespace Dinesh_Project
             return false;
         }
 
-        public static bool EditATransaction(string ID, string RegistrationNumber, int  ownerID,int  techID)
+        public static bool EditATransaction(string ID, string RegistrationNumber, int  ownerID,int  techID,string PaymentDetails,double paymentMoney,DateTime startTime,DateTime endTime)
         {
             try
             {
@@ -214,10 +214,20 @@ namespace Dinesh_Project
                     {
                         db.ObjectStateManager.ChangeObjectState(trans, System.Data.EntityState.Unchanged);
                         db.Transactions.Attach(trans);
-                        Vehicle vehic= CoreOperations.GetVehiclesByRegistration(RegistrationNumber).First();
+                        Vehicle vehic = db.Vehicles.ToList().First(c=> c.RegistrationNumber.Equals(RegistrationNumber));
                         vehic.Customer = db.Customers.First(c => c.CustomerID == ownerID);
                         trans.Vehicle = vehic;
                         trans.Technician = db.Technicians.First(t => t.Id == techID);
+                        trans.PaymentAmount = paymentMoney;
+                        trans.PaymentStatus = PaymentDetails;
+                        if (!startTime.Equals(default(DateTime)))
+                        {
+                            trans.StartDate = startTime;
+                        }
+                        if (!endTime.Equals(default(DateTime)))
+                        {
+                            trans.EndDate= endTime;
+                        }
                         db.ObjectStateManager.ChangeObjectState(trans, System.Data.EntityState.Modified);
                         int returnStatus = db.SaveChanges();
                     }
@@ -229,7 +239,6 @@ namespace Dinesh_Project
             catch (Exception ex)
             {
                 Utility.WriteLogError("Exception  occurred in adding a Vehicle" + ex.ToString());
-
             }
             return false;
         }
@@ -421,8 +430,9 @@ namespace Dinesh_Project
                 {
                     using (CoreDbEntities db = new CoreDbEntities())
                     {
-                        List<Transaction> transacList = db.Transactions.Include("Vehicle").Include("Vehicle.Customer").Include("Technician").Include("Operation").ToList();
+                        List<Transaction> transacList = db.Transactions.Include("Vehicle").Include("Vehicle.Customer").Include("Technician").Include("Operation").OrderByDescending(c=>c.StartDate).ToList();
                         Transactions= transacList;
+                        
                         
                         isTransacDirty= false;
                         return Transactions;
@@ -561,6 +571,8 @@ namespace Dinesh_Project
         public static int doesTechnicianExists(string Name)
         {
             List<Technician> techList = GetAllTechnicians(Name,string.Empty);
+            if (string.IsNullOrEmpty(Name))
+                return -1;
             try
             {
                 if (techList != null && techList.Count > 0)
@@ -584,6 +596,8 @@ namespace Dinesh_Project
         }
         public static int doesOperationExists(string Name)
         {
+            if (string.IsNullOrEmpty(Name))
+                return -1;
             using (CoreDbEntities db = new CoreDbEntities())
             {
                 var listofOps = db.Operations.Where(x => x.Name.Contains(Name));

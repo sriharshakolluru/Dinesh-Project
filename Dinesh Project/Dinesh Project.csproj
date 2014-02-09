@@ -177,9 +177,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Data\CoreDb.sdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Data\CoreDb.sdf" />
     <Resource Include="Data\searchIMafe.jpg" />
     <Resource Include="Icon1.ico" />
     <Resource Include="Data\desktop-file.ico" />

@@ -40,9 +40,9 @@
                             </Style>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Width="*" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=Id,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="ID" MinWidth="120" MaxWidth="250" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=Id,  UpdateSourceTrigger=PropertyChanged}" >
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Name" Width="*" IsReadOnly="False" MaxWidth="150" Binding="{Binding Path=Name,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="Name" MinWidth="120" IsReadOnly="False" MaxWidth="150" Binding="{Binding Path=Name,  UpdateSourceTrigger=PropertyChanged}" >
                                 <DataGridColumn.HeaderStyle>
                                     <Style TargetType="{x:Type DataGridColumnHeader}">
                                         <Setter Property="Foreground" Value="Black" />
@@ -53,7 +53,7 @@
                                     </Style>
                                 </DataGridColumn.HeaderStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="RegistrationID" Width="*" MaxWidth="200" Binding="{Binding Path=RegistrationID}" />
+                                    <DataGridTextColumn Header="RegistrationID" MinWidth="120" MaxWidth="250" Binding="{Binding Path=RegistrationID}" />
                                 <DataGridTemplateColumn Header="Delete">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -98,11 +98,11 @@
                                     </Style>
                                 </DataGrid.Resources>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="CustomerID" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=RegistrationID,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="CustomerID" MinWidth="120"  MaxWidth="900" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=RegistrationID,  UpdateSourceTrigger=PropertyChanged}" >
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="OwnerID" MaxWidth="200" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=CustomerID,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="OwnerID" MinWidth="120" MaxWidth="200" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=CustomerID,  UpdateSourceTrigger=PropertyChanged}" >
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="Name" Width="*" IsReadOnly="False" MaxWidth="150" Binding="{Binding Path=Name,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="Name" MinWidth="80"  IsReadOnly="False" MaxWidth="150" Binding="{Binding Path=Name,  UpdateSourceTrigger=PropertyChanged}" >
                                         <DataGridColumn.HeaderStyle>
                                             <Style TargetType="{x:Type DataGridColumnHeader}">
                                                 <Setter Property="Foreground" Value="Black" />
@@ -115,16 +115,16 @@
                                         </DataGridColumn.HeaderStyle>
                                     </DataGridTextColumn>
 
-                                    <DataGridTemplateColumn Header="Vehicles" IsReadOnly="True">
+                                    <DataGridTemplateColumn Header="Vehicles" MinWidth="100"  IsReadOnly="True">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <ComboBox ItemsSource="{Binding vehiclesID}"  SelectedIndex="0"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Header="Phone" MaxWidth="150" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=Phone,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="Phone" MaxWidth="150" MinWidth="80"  Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=Phone,  UpdateSourceTrigger=PropertyChanged}" >
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="Address" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=Address,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="Address" MaxWidth="250" Width="*" MinWidth="100"   Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=Address,  UpdateSourceTrigger=PropertyChanged}" >
                                     </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
@@ -176,13 +176,13 @@
                                     </Style>
                                 </DataGrid.Resources>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="RegistrationNumber" MaxWidth="200" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=RegistrationNumber,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="RegistrationId" MaxWidth="450"  MinWidth="130" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=RegistrationNumber,  UpdateSourceTrigger=PropertyChanged}" >
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="VehicleID" MaxWidth="200" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=VehicleID,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="VehicleID" MaxWidth="200" Visibility="Hidden" MinWidth="100" IsReadOnly="True"  Binding="{Binding Path=VehicleID,  UpdateSourceTrigger=PropertyChanged}" >
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="VehicleType" MaxWidth="200" Visibility="Visible" IsReadOnly="False"  Binding="{Binding Path=VehicleType,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="VehicleType" MaxWidth="250" Visibility="Visible" MinWidth="100"  IsReadOnly="False"  Binding="{Binding Path=VehicleType,  UpdateSourceTrigger=PropertyChanged}" >
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="OwnerName" Width="*" IsReadOnly="False" MaxWidth="150" Binding="{Binding Path=Customer.Name,  UpdateSourceTrigger=PropertyChanged}" >
+                                    <DataGridTextColumn Header="OwnerName" Width="*" IsReadOnly="False" MaxWidth="150" MinWidth="120"  Binding="{Binding Path=Customer.Name,  UpdateSourceTrigger=PropertyChanged}" >
                                         <DataGridColumn.HeaderStyle>
                                             <Style TargetType="{x:Type DataGridColumnHeader}">
                                                 <Setter Property="Foreground" Value="Black" />

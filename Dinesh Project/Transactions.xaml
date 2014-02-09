@@ -24,11 +24,20 @@
                 <StackPanel Orientation="Vertical" MinWidth="400" MaxWidth="700">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Registration Id" Height="28" HorizontalAlignment="Left"  Name="lblRegID" VerticalAlignment="Top" Width="100"/>
-                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtRegID" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" />
+                        <toolkit:AutoCompleteBox x:Name="txtRegID" Grid.Row ="0" Grid.Column="1" MaxDropDownHeight="300" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"
+                                 FilterMode="Contains" IsTextCompletionEnabled="False">
+                            <toolkit:AutoCompleteBox.ItemTemplate >
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding RegistrationNumber}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </toolkit:AutoCompleteBox.ItemTemplate>
+                        </toolkit:AutoCompleteBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Customer" Height="28" HorizontalAlignment="Left"  Name="lblCustName" VerticalAlignment="Top" Width="100" />
-                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtCustName" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" />
+                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtCustName" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" LostFocus="TxtCustomerFocusLost" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Phone" Height="28" HorizontalAlignment="Left"  Name="lblCustPhone" VerticalAlignment="Top" Width="100" />
@@ -78,7 +87,10 @@
                         <Label Content="Payment Details" Height="28" HorizontalAlignment="Left"  Name="lblPaymentDetails" VerticalAlignment="Top" Width="100" />
                         <wpfTool:MultiLineTextEditor Name="txtPaymentDetails" MaxWidth="700" MinWidth="300" />
                     </StackPanel>
-                    
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="ServiceID" Height="28" HorizontalAlignment="Left"  Name="lblServiceID" VerticalAlignment="Top" Width="100" />
+                        <TextBox Name="txtServiceID" MaxWidth="300" MinWidth="80"  IsReadOnly="True"/>
+                    </StackPanel>
                 </StackPanel>
                 
             </StackPanel>
@@ -105,7 +117,7 @@
             <DataGrid.Columns>
                     <DataGridTextColumn Header="ServiceID" MaxWidth="250" Width="*" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=ServiceId}" />
                     <DataGridTextColumn Header="CustomerName" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Vehicle.Customer.Name}" />
-                    <DataGridTextColumn Header="Registration" Width="*" IsReadOnly="True" MaxWidth="150" Binding="{Binding Path=Vehicle.RegistrationNumber}" >
+                    <DataGridTextColumn Header="Registration" Width="*" IsReadOnly="True" MaxWidth="250" Binding="{Binding Path=Vehicle.RegistrationNumber}" >
                     <DataGridColumn.HeaderStyle>
                         <Style TargetType="{x:Type DataGridColumnHeader}">
                             <Setter Property="Foreground" Value="Black" />
@@ -123,6 +135,20 @@
                     <DataGridTextColumn Header="Technician" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Technician.Name}" />
                 </DataGrid.Columns>
         </DataGrid>
-</StackPanel>
+            <StackPanel   Margin="4"   Orientation="Horizontal"   HorizontalAlignment="Center">
+                <Button Margin="4,0" Content="&lt;&lt;" Click="FirstTransCustCliked" />
+                <Button Margin="4,0" Content="&lt;" Click="PrevTransClicked"/>
+                <StackPanel  VerticalAlignment="Center"  Orientation="Horizontal">
+                    <TextBlock Name="txtVehStart" Text="{Binding Start}"/>
+                    <TextBlock Text=" to "/>
+                    <TextBlock Name="txtVehEnd" Text="{Binding End}"/>
+                    <TextBlock Text=" of "/>
+                    <TextBlock Name="txtVehSize" Text="{Binding TotalItems}"/>
+                </StackPanel>
+                <Button Margin="4,0" Content=">" Click="nextTransClicked"/>
+                <Button Margin="4,0" Content=">>" Click="lastTransClicked"/>
+            </StackPanel>
+        </StackPanel>
+        
     </Grid>
 </Page>
