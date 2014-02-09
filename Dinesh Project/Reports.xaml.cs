@@ -22,6 +22,7 @@ namespace Dinesh_Project
     public partial class Reports : Page
     {
         private int startIdCust = 0,NumberofItemsCust=5;
+        private int startIdVehic = 0, NumberofItemsVehic = 5;
         public Reports()
         {
             InitializeComponent();
@@ -141,7 +142,12 @@ namespace Dinesh_Project
                 List<Customer> custList = CoreOperations.GetAllOwnersByName(enteredText, enteredPhone);
                 var customizedlist = CoreOperations.GetCustomizedCustomerdData(custList);
                 var finalizedList = customizedlist.ToList();
+                if (startIdCust < 0)
+                    startIdCust = finalizedList.Count - NumberofItemsCust-1;
+
+                if(startIdVehic<=finalizedList.Count)
                 finalizedList = finalizedList.Skip(startIdCust).Take(NumberofItemsCust).ToList();
+
                 grdCustData.ItemsSource = finalizedList;
             }
             catch(Exception ex)
@@ -171,7 +177,8 @@ namespace Dinesh_Project
         private void nextcustClicked(object sender, RoutedEventArgs e)
         {
             startIdCust += NumberofItemsCust;
-                matchCustSearchRequest();
+            matchCustSearchRequest();
+                
         }
 
         private void lastCustClicked(object sender, RoutedEventArgs e)
@@ -217,22 +224,41 @@ namespace Dinesh_Project
 
         private void BindDataofVehicles()
         {
-            List<Vehicle> customerData = CoreOperations.GetAllVehicles();
-            grdVehicData.ItemsSource = customerData.ToList();
-
+            matchVehicleList();
         }
 
         public void matchVehicleList()
         {
+            try
+            {
+                string enteredText = txtvehicleID.Text;
+                string enteredPhone = txtOwner.Text;
+                List<Vehicle> vehcList = CoreOperations.GetVehiclesByRegistration(enteredText);
+                vehcList = vehcList.Where(v => v.Customer.Phone.Contains(enteredPhone)).ToList();
+
+                if (startIdVehic < 0)
+                    startIdVehic = vehcList.Count - NumberofItemsVehic - 1;
+
+                if (startIdVehic <= vehcList.Count)
+                    vehcList = vehcList.Skip(startIdVehic).Take(NumberofItemsVehic).ToList();
+
+                grdVehicData.ItemsSource = vehcList;
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception OCcurred in matchCustSearchRequest\n" + ex.ToString());
+            }
 
         }
         private void txtVechicID_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            startIdVehic = 0;
+            matchVehicleList();
         }
         private void txtOwner_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            startIdVehic = 0;
+            matchVehicleList();
         }
         private void grdVehicData_RowEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
@@ -264,6 +290,33 @@ namespace Dinesh_Project
         }
         #endregion
 
+        private void FirstvehicCliked(object sender, RoutedEventArgs e)
+        {
+            startIdVehic = 0;
+            matchVehicleList();
+        }
+
+        private void PrevvehicClicked(object sender, RoutedEventArgs e)
+        {
+            startIdVehic -= NumberofItemsVehic;
+            if (startIdVehic < 0)
+                startIdVehic = 0;
+            matchVehicleList();
+        }
+
+        private void nextvehicClicked(object sender, RoutedEventArgs e)
+        {
+            startIdVehic += NumberofItemsVehic;
+            matchVehicleList();
+        }
+
+        private void lastvehicClicked(object sender, RoutedEventArgs e)
+        {
+            startIdVehic = -NumberofItemsVehic;
+            matchVehicleList();
+        }
+
+        
         
 
 
