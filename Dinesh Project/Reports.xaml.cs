@@ -33,7 +33,7 @@ namespace Dinesh_Project
         public void BindDataofTechnicians()
         {
             List<Technician> techList = CoreOperations.GetAllTechnicians(String.Empty,string.Empty);
-            techList = CoreOperations.RemoveAdditionalData(techList, startIdCust, NumberofItemsCust);
+            techList = techList.Skip(startIdCust).Take(NumberofItemsCust).ToList();
             grdTechData.ItemsSource = techList;
             
         }
@@ -141,7 +141,7 @@ namespace Dinesh_Project
                 List<Customer> custList = CoreOperations.GetAllOwnersByName(enteredText, enteredPhone);
                 var customizedlist = CoreOperations.GetCustomizedCustomerdData(custList);
                 var finalizedList = customizedlist.ToList();
-                finalizedList = CoreOperations.RemoveAdditionalData(finalizedList, startIdCust, NumberofItemsCust);
+                finalizedList = finalizedList.Skip(startIdCust).Take(NumberofItemsCust).ToList();
                 grdCustData.ItemsSource = finalizedList;
             }
             catch(Exception ex)
@@ -163,10 +163,9 @@ namespace Dinesh_Project
 
         private void PrevCustClicked(object sender, RoutedEventArgs e)
         {
-            if (startIdCust <= NumberofItemsCust)
+            startIdCust -= NumberofItemsCust;
+            if (startIdCust < 0)
                 startIdCust = 0;
-            else
-                startIdCust -= NumberofItemsCust;
         }
 
         private void nextcustClicked(object sender, RoutedEventArgs e)
@@ -243,7 +242,7 @@ namespace Dinesh_Project
             string RegID = row.RegistrationNumber;
             string CustomerName = row.Customer.Name;
             string vehicleType=row.VehicleType;
-            if (!string.IsNullOrEmpty(Name))
+            if (!string.IsNullOrEmpty(RegID))
             {
                 bool doesExist = (CoreOperations.doesVehicleExist(RegID) <= -1) ? false : true;
                 if (doesExist)

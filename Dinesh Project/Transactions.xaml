@@ -9,146 +9,154 @@
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300" 
     Title="Transactions">
+    <Border BorderBrush="Red" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8">
+        <Border.Background>
+            <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                <GradientStop Color="#F00FC931" Offset="0"/>
+                <GradientStop Color="#00FFF0" Offset="0.567"/>
+            </LinearGradientBrush>
+        </Border.Background>
 
-    <Grid Width="1200">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
-        <Image Source="Data/ReportsFormsLinksHeader.png" Height="90px"  VerticalAlignment="Top" HorizontalAlignment="Stretch"  Stretch="Fill"/>
-        </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Vertical">
-            <StackPanel Orientation="Horizontal">
-                <StackPanel Orientation="Vertical" MinWidth="400" MaxWidth="700">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Registration Id" Height="28" HorizontalAlignment="Left"  Name="lblRegID" VerticalAlignment="Top" Width="100"/>
-                        <toolkit:AutoCompleteBox x:Name="txtRegID" Grid.Row ="0" Grid.Column="1" MaxDropDownHeight="300" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"
+        <Grid Width="1200">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Image Source="Data/ReportsFormsLinksHeader.png" Height="90px"  VerticalAlignment="Top" HorizontalAlignment="Stretch"  Stretch="Fill"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical" MinWidth="400" MaxWidth="700">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Registration Id" Height="28" HorizontalAlignment="Left"  Name="lblRegID" VerticalAlignment="Top" Width="100"/>
+                            <toolkit:AutoCompleteBox x:Name="txtRegID" Grid.Row ="0" Grid.Column="1" MaxDropDownHeight="300" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"
                                  FilterMode="Contains" IsTextCompletionEnabled="False">
-                            <toolkit:AutoCompleteBox.ItemTemplate >
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding RegistrationNumber}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </toolkit:AutoCompleteBox.ItemTemplate>
-                        </toolkit:AutoCompleteBox>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Customer" Height="28" HorizontalAlignment="Left"  Name="lblCustName" VerticalAlignment="Top" Width="100" />
-                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtCustName" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" LostFocus="TxtCustomerFocusLost" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Phone" Height="28" HorizontalAlignment="Left"  Name="lblCustPhone" VerticalAlignment="Top" Width="100" />
-                        <TextBox Height="23" HorizontalAlignment="Left"  Name="txtCustPhone" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Technician" Height="28" HorizontalAlignment="Left"  Name="lblTechName" VerticalAlignment="Top" Width="100" />
-                        <toolkit:AutoCompleteBox x:Name="txtTech" Grid.Row ="0" Grid.Column="1" MaxDropDownHeight="300" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"
+                                <toolkit:AutoCompleteBox.ItemTemplate >
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding RegistrationNumber}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </toolkit:AutoCompleteBox.ItemTemplate>
+                            </toolkit:AutoCompleteBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Customer" Height="28" HorizontalAlignment="Left"  Name="lblCustName" VerticalAlignment="Top" Width="100" />
+                            <TextBox Height="23" HorizontalAlignment="Left"  Name="txtCustName" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" LostFocus="TxtCustomerFocusLost" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Phone" Height="28" HorizontalAlignment="Left"  Name="lblCustPhone" VerticalAlignment="Top" Width="100" />
+                            <TextBox Height="23" HorizontalAlignment="Left"  Name="txtCustPhone" VerticalAlignment="Top" MaxWidth="400" MinWidth="187" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Technician" Height="28" HorizontalAlignment="Left"  Name="lblTechName" VerticalAlignment="Top" Width="100" />
+                            <toolkit:AutoCompleteBox x:Name="txtTech" Grid.Row ="0" Grid.Column="1" MaxDropDownHeight="300" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"
                                  FilterMode="StartsWith" IsTextCompletionEnabled="False">
-                            <toolkit:AutoCompleteBox.ItemTemplate >
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding Name}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </toolkit:AutoCompleteBox.ItemTemplate>
-                        </toolkit:AutoCompleteBox>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Operation" Height="28" HorizontalAlignment="Left"  Name="lblOperation" VerticalAlignment="Top" Width="100" />
-                        <toolkit:AutoCompleteBox x:Name="txtOperations" Grid.Row ="0" Grid.Column="1" MaxDropDownHeight="300" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"
+                                <toolkit:AutoCompleteBox.ItemTemplate >
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </toolkit:AutoCompleteBox.ItemTemplate>
+                            </toolkit:AutoCompleteBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Operation" Height="28" HorizontalAlignment="Left"  Name="lblOperation" VerticalAlignment="Top" Width="100" />
+                            <toolkit:AutoCompleteBox x:Name="txtOperations" Grid.Row ="0" Grid.Column="1" MaxDropDownHeight="300" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"
                                  FilterMode="StartsWith" IsTextCompletionEnabled="False">
-                            <toolkit:AutoCompleteBox.ItemTemplate >
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding Name}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </toolkit:AutoCompleteBox.ItemTemplate>
-                        </toolkit:AutoCompleteBox>
+                                <toolkit:AutoCompleteBox.ItemTemplate >
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </toolkit:AutoCompleteBox.ItemTemplate>
+                            </toolkit:AutoCompleteBox>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" Width="auto">
-                        <Label Content="Arrival Time" Height="28" HorizontalAlignment="Left"  Name="lblStartDate" VerticalAlignment="Top" Width="100" />
-                        <wpfTool:DateTimePicker Name="startDatePicker" DefaultValue="{x:Static sys:DateTime.Now}" ></wpfTool:DateTimePicker>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" Width="auto">
+                            <Label Content="Arrival Time" Height="28" HorizontalAlignment="Left"  Name="lblStartDate" VerticalAlignment="Top" Width="100" />
+                            <wpfTool:DateTimePicker Name="startDatePicker" DefaultValue="{x:Static sys:DateTime.Now}" ></wpfTool:DateTimePicker>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Delivered Time" Height="28" HorizontalAlignment="Left"  Name="lblEmdDate" VerticalAlignment="Top" Width="100" />
+                            <wpfTool:DateTimePicker Name="endDatePicker"   DefaultValue="{x:Static sys:DateTime.Now}"></wpfTool:DateTimePicker>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Payment" Height="28" HorizontalAlignment="Left"  Name="lblPayment" VerticalAlignment="Top" Width="100" />
+                            <TextBox Name="txtPayment" MaxWidth="300" MinWidth="80" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Payment Details" Height="28" HorizontalAlignment="Left"  Name="lblPaymentDetails" VerticalAlignment="Top" Width="100" />
+                            <wpfTool:MultiLineTextEditor Name="txtPaymentDetails" MaxWidth="700" MinWidth="300" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="ServiceID" Height="28" HorizontalAlignment="Left"  Name="lblServiceID" VerticalAlignment="Top" Width="100" />
+                            <TextBox Name="txtServiceID" MaxWidth="300" MinWidth="80"  IsReadOnly="True"/>
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Delivered Time" Height="28" HorizontalAlignment="Left"  Name="lblEmdDate" VerticalAlignment="Top" Width="100" />
-                        <wpfTool:DateTimePicker Name="endDatePicker"   DefaultValue="{x:Static sys:DateTime.Now}"></wpfTool:DateTimePicker>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Payment" Height="28" HorizontalAlignment="Left"  Name="lblPayment" VerticalAlignment="Top" Width="100" />
-                        <TextBox Name="txtPayment" MaxWidth="300" MinWidth="80" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Payment Details" Height="28" HorizontalAlignment="Left"  Name="lblPaymentDetails" VerticalAlignment="Top" Width="100" />
-                        <wpfTool:MultiLineTextEditor Name="txtPaymentDetails" MaxWidth="700" MinWidth="300" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="ServiceID" Height="28" HorizontalAlignment="Left"  Name="lblServiceID" VerticalAlignment="Top" Width="100" />
-                        <TextBox Name="txtServiceID" MaxWidth="300" MinWidth="80"  IsReadOnly="True"/>
-                    </StackPanel>
-                </StackPanel>
-                
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Button Name="btn_Search" Click="searchTransactions"  Content="Save" MaxWidth="20" MaxHeight="20">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Image Source=".\Data\searchIMafe.jpg" x:Name="btnAdd4I"  Visibility="Visible" Stretch="Fill"  />
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
-                <Button Name="btn_Save" Click="saveNewTransaction"  Content="Save"/>
-                <Button Name="btn_Clear" Click="clearTransacData" Content="Clear"/>
-                <Button Name="btn_Delete" Click="deleteTransaction" Content="Delete"/>
-            </StackPanel>
-        </StackPanel>
-        <StackPanel Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Left">
-            <DataGrid   HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" AutoGenerateColumns="False" x:Name="grdTransacData" CanUserAddRows="False" CanUserResizeColumns="True" MouseDoubleClick="selectTransaction">
-                <DataGrid.Resources>
-                <Style TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="LightGreen" />
-                </Style>
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-                    <DataGridTextColumn Header="ServiceID" MaxWidth="250" Width="*" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=ServiceId}" />
-                    <DataGridTextColumn Header="CustomerName" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Vehicle.Customer.Name}" />
-                    <DataGridTextColumn Header="Registration" Width="*" IsReadOnly="True" MaxWidth="250" Binding="{Binding Path=Vehicle.RegistrationNumber}" >
-                    <DataGridColumn.HeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}">
-                            <Setter Property="Foreground" Value="Black" />
-                            <Setter Property="FontSize" Value="20" />
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                            <Setter Property="BorderBrush" Value="blue"/>
-                            <Setter Property="BorderThickness" Value="0,0,0,0"/>
 
-                        </Style>
-                    </DataGridColumn.HeaderStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="ReceivedDate" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=StartDate}" />
-                    <DataGridTextColumn Header="DeliveredDate" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=EndDate}" />
-                    <DataGridTextColumn Header="Operations" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Operation.Name}" />
-                    <DataGridTextColumn Header="Technician" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Technician.Name}" />
-                </DataGrid.Columns>
-        </DataGrid>
-            <StackPanel   Margin="4"   Orientation="Horizontal"   HorizontalAlignment="Center">
-                <Button Margin="4,0" Content="&lt;&lt;" Click="FirstTransCustCliked" />
-                <Button Margin="4,0" Content="&lt;" Click="PrevTransClicked"/>
-                <StackPanel  VerticalAlignment="Center"  Orientation="Horizontal">
-                    <TextBlock Name="txtVehStart" Text="{Binding Start}"/>
-                    <TextBlock Text=" to "/>
-                    <TextBlock Name="txtVehEnd" Text="{Binding End}"/>
-                    <TextBlock Text=" of "/>
-                    <TextBlock Name="txtVehSize" Text="{Binding TotalItems}"/>
                 </StackPanel>
-                <Button Margin="4,0" Content=">" Click="nextTransClicked"/>
-                <Button Margin="4,0" Content=">>" Click="lastTransClicked"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Button Name="btn_Search" Click="searchTransactions"  Content="Save" MaxWidth="20" MaxHeight="20">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image Source=".\Data\searchIMafe.jpg" x:Name="btnAdd4I"  Visibility="Visible" Stretch="Fill"  />
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button Name="btn_Save" Click="saveNewTransaction"  Content="Save"/>
+                    <Button Name="btn_Clear" Click="clearTransacData" Content="Clear"/>
+                    <Button Name="btn_Delete" Click="deleteTransaction" Content="Delete"/>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
-        
-    </Grid>
+            <StackPanel Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Left">
+                <DataGrid   HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" AutoGenerateColumns="False" x:Name="grdTransacData" CanUserAddRows="False" CanUserResizeColumns="True" MouseDoubleClick="selectTransaction">
+                    <DataGrid.Resources>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="Background" Value="LightGreen" />
+                        </Style>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ServiceID" MaxWidth="250" Width="*" Visibility="Hidden" IsReadOnly="True"  Binding="{Binding Path=ServiceId}" />
+                        <DataGridTextColumn Header="CustomerName" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Vehicle.Customer.Name}" />
+                        <DataGridTextColumn Header="Registration" Width="*" IsReadOnly="True" MaxWidth="250" Binding="{Binding Path=Vehicle.RegistrationNumber}" >
+                            <DataGridColumn.HeaderStyle>
+                                <Style TargetType="{x:Type DataGridColumnHeader}">
+                                    <Setter Property="Foreground" Value="Black" />
+                                    <Setter Property="FontSize" Value="20" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                    <Setter Property="BorderBrush" Value="blue"/>
+                                    <Setter Property="BorderThickness" Value="0,0,0,0"/>
+
+                                </Style>
+                            </DataGridColumn.HeaderStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="ReceivedDate" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=StartDate}" />
+                        <DataGridTextColumn Header="DeliveredDate" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=EndDate}" />
+                        <DataGridTextColumn Header="Operations" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Operation.Name}" />
+                        <DataGridTextColumn Header="Technician" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Technician.Name}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <StackPanel   Margin="4"   Orientation="Horizontal"   HorizontalAlignment="Center">
+                    <Button Margin="4,0" Content="&lt;&lt;" Click="FirstTransCustCliked" />
+                    <Button Margin="4,0" Content="&lt;" Click="PrevTransClicked"/>
+                    <StackPanel  VerticalAlignment="Center"  Orientation="Horizontal">
+                        <TextBlock Name="txtVehStart" Text="{Binding Start}"/>
+                        <TextBlock Text=" to "/>
+                        <TextBlock Name="txtVehEnd" Text="{Binding End}"/>
+                        <TextBlock Text=" of "/>
+                        <TextBlock Name="txtVehSize" Text="{Binding TotalItems}"/>
+                    </StackPanel>
+                    <Button Margin="4,0" Content=">" Click="nextTransClicked"/>
+                    <Button Margin="4,0" Content=">>" Click="lastTransClicked"/>
+                </StackPanel>
+            </StackPanel>
+
+        </Grid>
+    </Border>
 </Page>

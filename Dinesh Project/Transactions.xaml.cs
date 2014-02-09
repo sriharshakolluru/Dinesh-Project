@@ -30,21 +30,22 @@ namespace Dinesh_Project
         public Transactions()
         {
             InitializeComponent();
-            BindTransactionToData();
+            maxTransactionsPerGrid = int.TryParse(ConfigurationManager.AppSettings["MaxRowsPerGrid"], out maxTransactionsPerGrid) ? maxTransactionsPerGrid : 5;
+            
             txtOperations.ItemsSource = CoreOperations.GetAllOPerations();
             txtOperations.ValueMemberPath = "Name";
             txtTech.ItemsSource = CoreOperations.GetAllTechnicians();
             txtTech.ValueMemberPath = "Name";
             txtRegID.ItemsSource = CoreOperations.GetAllVehicles();
             txtRegID.ValueMemberPath = "RegistrationNumber";
-            maxTransactionsPerGrid = int.TryParse(ConfigurationManager.AppSettings["MaxRowsPerGrid"], out maxTransactionsPerGrid) ? maxTransactionsPerGrid : 5;
+            BindTransactionToData();
         }
 
         private void  BindTransactionToData()
         {
              List<Transaction> trans= CoreOperations.GetAllTransactions(default(DateTime), DateTime.MaxValue, string.Empty, string.Empty, string.Empty,string.Empty,string.Empty);
              currentMappedList = trans;
-             grdTransacData.ItemsSource = trans;
+             matchTransSearchRequest();
             // FillSingleTransacData();
         }
 
@@ -269,7 +270,7 @@ namespace Dinesh_Project
             txtRegID.Text = string.Empty;
             txtCustPhone.Text = string.Empty;
             txtServiceID.Text = string.Empty;
-            BindTransactionToData();
+            matchTransSearchRequest();
         }
 
         private void deleteTransaction(object sender, RoutedEventArgs e)
@@ -330,7 +331,7 @@ namespace Dinesh_Project
 
         private void matchTransSearchRequest()
         {
-            var finalLIst = CoreOperations.RemoveAdditionalData(currentMappedList, startItem, maxTransactionsPerGrid);
+            var finalLIst = currentMappedList.Skip(startItem).Take(maxTransactionsPerGrid);
             grdTransacData.ItemsSource = finalLIst;
         }
 
@@ -357,7 +358,7 @@ namespace Dinesh_Project
         private void lastTransClicked(object sender, RoutedEventArgs e)
         {
             startItem = currentMappedList.Count - maxTransactionsPerGrid;
-            if (startItem < 0);
+            if (startItem < 0)
                 startItem = 0;
             matchTransSearchRequest();
 

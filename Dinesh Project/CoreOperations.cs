@@ -739,6 +739,7 @@ namespace Dinesh_Project
 
         public static List<T> RemoveAdditionalData<T>(List<T> inputLIst, int startID, int numberofItems)
         {
+            List<T> outputList = new List<T>();    
             try
             {
                 if (inputLIst.Count < numberofItems)
@@ -746,9 +747,20 @@ namespace Dinesh_Project
                 if (startID < 0)
                     startID = inputLIst.Count - startID - 1;
                 if (startID != 0)
-                    inputLIst.RemoveRange(0, startID);
-                if(inputLIst.Count>numberofItems)
-                    inputLIst.RemoveRange(startID + numberofItems, inputLIst.Count - numberofItems);
+                {
+                    for (int delim = startID; delim < inputLIst.Count; delim++)
+                        outputList.Add(inputLIst[delim]);
+                }
+                if (inputLIst.Count > numberofItems)
+                {
+
+                    for (int delim = 0; delim < startID ; delim++)
+                        outputList.Add(inputLIst[delim]);
+                    for (int delim = startID+numberofItems; delim < inputLIst.Count; delim++)
+                        outputList.Add(inputLIst[delim]);
+                    
+                }
+                    
             }
             catch (Exception ex)
             {
@@ -758,7 +770,7 @@ namespace Dinesh_Project
             {
                 
             }
-            return inputLIst;
+            return outputList;
         }
     }
 }
