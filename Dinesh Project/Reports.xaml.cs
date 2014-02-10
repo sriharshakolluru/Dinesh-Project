@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -268,25 +269,41 @@ namespace Dinesh_Project
             string RegID = row.RegistrationNumber;
             string CustomerName = row.Customer.Name;
             string vehicleType=row.VehicleType;
+            
             if (!string.IsNullOrEmpty(RegID))
             {
-                bool doesExist = (CoreOperations.doesVehicleExist(RegID) <= -1) ? false : true;
+                bool doesExist = (CoreOperations.doesVehicleExist(key ) <= -1) ? false : true;
+                int ownerId = CoreOperations.doesOwnerExists(CustomerName);
                 if (doesExist)
                 {
-                    if (CoreOperations.EditAVehicle(key, RegID, vehicleType, (int)row.Customer.CustomerID))
+                    if (ownerId < 0)
+                    {
+                        if (CoreOperations.AddANewCustomer(CustomerName, Utility.CreateRandomID(CustomerName), string.Empty, string.Empty) < 0)
+                        {
+                            MessageBox.Show("Edit is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                            Utility.WriteLogError("Could not create the new user. Before Editing Vehicle");
+                            return;
+                        }
+                        else
+                        {
+                            ownerId = CoreOperations.doesOwnerExists(CustomerName);
+                        }
+                    }
+
+                    if (CoreOperations.EditAVehicle(key, RegID, vehicleType, ownerId))
                         MessageBox.Show("Edit is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     else
                         MessageBox.Show("Edit is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
-                    if (CoreOperations.AddANewVehicle(RegID,vehicleType,(int)row.Customer.CustomerID))
+                    if (CoreOperations.AddANewVehicle(RegID,vehicleType,ownerId))
                         MessageBox.Show("Addition is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     else
                         MessageBox.Show("Addition is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            matchCustSearchRequest();
+            matchVehicleList();
         }
         #endregion
 

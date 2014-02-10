@@ -44,9 +44,10 @@ namespace Dinesh_Project
                 using (SqlCeConnection con = new SqlCeConnection(connectin.ConnectionString))
                 {
                     con.Open();
+                    //command=command.Replace("\'\'", "NULL");
                     using (SqlCeCommand com = new SqlCeCommand(command, con))
                     {
-                        returnCode = com.ExecuteNonQuery();
+                       returnCode = com.ExecuteNonQuery();
                     }
                 }
                 return returnCode;
@@ -175,28 +176,38 @@ namespace Dinesh_Project
             {
                 using (CoreDbEntities db = new CoreDbEntities())
                 {
+                    isVehicleDirty = true;
                     Vehicle vehicle = db.Vehicles.First(c => c.VehicleID== ID);
-                    if (vehicle != null)
-                    {
-                        db.ObjectStateManager.ChangeObjectState(vehicle, System.Data.EntityState.Unchanged);
-                        db.Vehicles.Attach(vehicle);
-                        vehicle.RegistrationNumber = RegistrationNumber;
-                        vehicle.VehicleType = vehicleType;
-                        vehicle.Customer= db.Customers.FirstOrDefault(e =>e.CustomerID== ownerID);
-                        db.ObjectStateManager.ChangeObjectState(vehicle, System.Data.EntityState.Modified);
-                        int returnStatus = db.SaveChanges();
-                    }
+
+                    string updateCommand = string.Format("UPDATE Vehicles set RegistrationNumber = '{0}' , VehicleType= '{1}', Ownerid= {2} where VehicleID= {3} ", RegistrationNumber, vehicleType, ownerID,ID);
+                
+                    //if (vehicle != null)
+                    //{
+                    //    db.ObjectStateManager.ChangeObjectState(vehicle, System.Data.EntityState.Unchanged);
+                    //    db.Vehicles.Attach(vehicle);
+                    //    vehicle.RegistrationNumber = RegistrationNumber;
+                    //    vehicle.VehicleType = vehicleType;
+                    //    vehicle.Customer= db.Customers.FirstOrDefault(e =>e.CustomerID== ownerID);
+                    //    db.ObjectStateManager.ChangeObjectState(vehicle, System.Data.EntityState.Modified);
+                    //    int returnStatus = db.SaveChanges();
+                    //}
+                    
                     iscustomerDataDirty = true;
                     isOwnerDirty = true;
-                    return true;
+                    int returnValue=InsertData(coreConnectionstring, updateCommand);
+
+                    if (returnValue > -1)
+                        return true;
+                    else
+                        return false;
                 }
             }
             catch (Exception ex)
             {
                 Utility.WriteLogError("Exception  occurred in adding a Vehicle" + ex.ToString());
-
+                return false;    
             }
-            return false;
+            
         }
 
         public static bool EditATransaction(string ID, string RegistrationNumber, int  ownerID,int  techID,string PaymentDetails,double paymentMoney,DateTime startTime,DateTime endTime)
@@ -298,7 +309,7 @@ namespace Dinesh_Project
                 Owners = GetAllOwners();
 
                 var matchedOwners = (from Customer cust in Owners
-                                           where (cust.Name.ToLower().Contains(Name.ToLower()) && cust.Phone.ToLower().Contains(phone.ToLower()))
+                                           where (cust.Name.ToLower().Contains(Name.ToLower()) &&(string.IsNullOrEmpty(cust.Phone)|| cust.Phone.ToLower().Contains(phone.ToLower())))
                                            select cust);
                 
                 return matchedOwners.ToList();
@@ -517,6 +528,31 @@ namespace Dinesh_Project
             }
             return -1;
         }
+        public static int doesVehicleExist(int VehicID)
+        {
+            List<Vehicle> vehiclesList = GetAllVehicles();
+            try
+            {
+                if (vehiclesList != null)
+                {
+                    var vehicId = (from Vehicle row in vehiclesList
+                                   where row.VehicleID.Equals(VehicID)
+                                   select row.VehicleID).First();
+                    return int.Parse(vehicId.ToString());
+                }
+                else
+                {
+                    Utility.WriteLog("The vehicle list Result does not contain any rows");
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception occurred in doesVehicleExist " + ex.ToString());
+            }
+            return -1;
+        }
+
         public static int doesOwnerExists(string Name)
         {
             List<Customer> vehiclesList = GetAllOwnersByName(Name, string.Empty);

@@ -229,7 +229,8 @@ namespace Dinesh_Project
                     #endregion
                     if (currenttrans != null && currenttrans.Count > 0 && currentTransaction != null)
                     {
-                        bool isSuccessful=CoreOperations.EditATransaction(serviceID, txtRegID.Text, (int)currentTransaction.Vehicle.Ownerid, currentTransaction.Technician.Id,txtPaymentDetails.Text,double.Parse(txtPayment.Text),startDatePicker.Value.Value,endDatePicker.Value.Value);
+                        DateTime endTime = (endDatePicker.Value.HasValue) ? endDatePicker.Value.Value : default(DateTime);
+                        bool isSuccessful = CoreOperations.EditATransaction(serviceID, txtRegID.Text, (int)currentTransaction.Vehicle.Ownerid, currentTransaction.Technician.Id, txtPaymentDetails.Text, double.Parse(txtPayment.Text), startDatePicker.Value.Value, endTime);
                         if (isSuccessful)
                         {
                             MessageBox.Show(string.Format("Transaction with service ID {0}is Edited Successfully", serviceID)
@@ -346,9 +347,10 @@ namespace Dinesh_Project
 
         private void nextTransClicked(object sender, RoutedEventArgs e)
         {
+            int tempStart = startItem;
             startItem += maxTransactionsPerGrid;
             if (startItem > currentMappedList.Count)
-                startItem = currentMappedList.Count - maxTransactionsPerGrid;
+                startItem = tempStart;
             if (startItem < 0)
                 startItem = 0;
 
