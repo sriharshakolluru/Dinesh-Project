@@ -12,14 +12,14 @@ namespace DataOperations
         {
             try
             {
-                Logger.Write(Message, "Log");
+                //Logger.Write(Message, "Log");
                 StreamWriter writer=new StreamWriter(@"D:\Dinesh Project\Logs\log.txt",true);
                 writer.WriteLine(string.Format("Date: {0} {1}{2}",DateTime.Now.ToString(),Environment.NewLine,Message));
                 writer.Close();
             }
             catch (Exception ex)
             {
-                File.AppendAllText(@"C:\ProjLogs\Failure.txt", "Failure is writing Log" + ex.ToString());
+                //File.AppendAllText(@"C:\ProjLogs\Failure.txt", "Failure is writing Log" + ex.ToString());
             }
         }
 
@@ -42,7 +42,7 @@ namespace DataOperations
             }
             catch (Exception ex)
             {
-                File.AppendAllText(@"C:\ProjLogs\Failure.txt", "Failure is writing Log" + ex.ToString());
+                //File.AppendAllText(@"C:\ProjLogs\Failure.txt", "Failure is writing Log" + ex.ToString());
             }
         }
 

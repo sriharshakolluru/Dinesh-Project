@@ -210,10 +210,11 @@ namespace Dinesh_Project
             
         }
 
-        public static bool EditATransaction(string ID, string RegistrationNumber, int  ownerID,int  techID,string PaymentDetails,double paymentMoney,DateTime startTime,DateTime endTime)
+        public static bool EditATransaction(string ID, string RegistrationNumber, int  ownerID,int  techID,string PaymentDetails,double paymentMoney,DateTime startTime,DateTime endTime,int operationID)
         {
             try
             {
+                Utility.WriteLog("Entered Edit a Transaction");
                 isTransacDirty = true;
                 isVehicleDirty = true;
                 iscustomerDataDirty = true;
@@ -229,6 +230,7 @@ namespace Dinesh_Project
                         vehic.Customer = db.Customers.First(c => c.CustomerID == ownerID);
                         trans.Vehicle = vehic;
                         trans.Technician = db.Technicians.First(t => t.Id == techID);
+                        trans.Operation = db.Operations.First(t => t.OperationId == operationID);
                         trans.PaymentAmount = paymentMoney;
                         trans.PaymentStatus = PaymentDetails;
                         if (!startTime.Equals(default(DateTime)))
@@ -537,8 +539,11 @@ namespace Dinesh_Project
                 {
                     var vehicId = (from Vehicle row in vehiclesList
                                    where row.VehicleID.Equals(VehicID)
-                                   select row.VehicleID).First();
-                    return int.Parse(vehicId.ToString());
+                                   select row.VehicleID);
+                    if (vehicId.Any())
+                        return int.Parse(vehicId.First().ToString());
+                    else
+                        return -1;
                 }
                 else
                 {

@@ -166,6 +166,8 @@ namespace Dinesh_Project
                     string serviceID = txtServiceID.Text;
                     List<Transaction> currenttrans = CoreOperations.GetAllTransactions(default(DateTime), default(DateTime), string.Empty, string.Empty, string.Empty, serviceID, string.Empty);
                     Technician tech; Customer cust;
+                    
+
                     #region Check Technician
                     if (CoreOperations.doesTechnicianExists(txtTech.Text)<0)
                     {
@@ -182,19 +184,19 @@ namespace Dinesh_Project
                                                                                         ,"Terminating",MessageBoxButton.OK,MessageBoxImage.Stop);
                             return;
                         }
-                        tech = CoreOperations.GetAllTechnicians(txtTech.Text, string.Empty).First();
                     }
+                    tech = CoreOperations.GetAllTechnicians(txtTech.Text, string.Empty).First();
                     #endregion
 
                     
                     #region check customer
                     if (CoreOperations.doesOwnerExists(txtCustName.Text) < 0)
                     {
-                        MessageBoxResult result = MessageBox.Show(string.Format("The Customer {0} does not exist in records. Create a new one?",txtCustName.Text)
+                        MessageBoxResult result = MessageBox.Show(string.Format("The Customer {0} does not exist in records. Create a new one?", txtCustName.Text)
                                                                                                 , "Respond", MessageBoxButton.YesNo, MessageBoxImage.Question);
                         if (result.Equals(MessageBoxResult.Yes))
                         {
-                            CoreOperations.AddANewCustomer(txtTech.Text, txtRegID.Text,txtCustPhone.Text,string.Empty);
+                            CoreOperations.AddANewCustomer(txtTech.Text, txtRegID.Text, txtCustPhone.Text, string.Empty);
                             Utility.WriteLog("New Customer Added Before Adding it to Transaction");
                         }
                         else
@@ -202,35 +204,44 @@ namespace Dinesh_Project
                             MessageBox.Show("Add A Customer manually from report pages. Transaction is Terminated");
                             return;
                         }
-                        cust= CoreOperations.GetAllOwnersByName(txtCustName.Text,string.Empty).First();
                     }
+                    else
+                    {
+                        cust =CoreOperations.GetAllOwnersByName(txtCustName.Text, string.Empty).First();
+                        if (!cust.Phone.Equals(txtCustPhone.Text))
+                        {
+                            bool editSuccess=CoreOperations.EditACustomer((int)cust.CustomerID, cust.RegistrationID, txtCustName.Text, txtCustPhone.Text, cust.Address);
+                            if (editSuccess)
+                                Utility.WriteLog("Customer edited as new phone number entered in the phone");
+                            else
+                                Utility.WriteLog("Customer Edit is failed. Could not edit the customer");
+                        }
+                        
+                    }
+                    cust = CoreOperations.GetAllOwnersByName(txtCustName.Text, string.Empty).First();
 
                     #endregion
 
 
                     #region check Operation
-                    if (CoreOperations.doesOwnerExists(txtCustName.Text) < 0)
-                    {
-                        MessageBoxResult result = MessageBox.Show(string.Format("The Customer {0} does not exist in records. Create a new one?", txtOperations.Text)
-                                                                                                , "Respond", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                        if (result.Equals(MessageBoxResult.Yes))
+                    if ((CoreOperations.doesOperationExists(txtOperations.Text) <= -1))
+                        if (CoreOperations.AddANewOperation(txtOperations.Text, string.Empty))
                         {
-                            CoreOperations.AddANewTechnician(txtTech.Text, Utility.CreateRandomID(txtTech.Text));
-                            Utility.WriteLog("New Customer Added Before Adding it to Transaction");
+                            Utility.WriteLog("Added a new Operation: " + txtOperations.Text);
                         }
                         else
                         {
-                            MessageBox.Show("Add A Customer manually from report pages. Transaction is Terminated");
-                            return;
+                            Utility.WriteLog("Could not add new Operation: " + txtOperations.Text);
+                            MessageBox.Show("Adding New Opeartion failed. Continuing with no Operation Data. Contact Admin Immediately");
                         }
-                        cust = CoreOperations.GetAllOwnersByName(txtTech.Text, string.Empty).First();
-                    }
 
+                    oprationID = CoreOperations.doesOperationExists(txtOperations.Text);
+                    //***Not yet Implemented
                     #endregion
                     if (currenttrans != null && currenttrans.Count > 0 && currentTransaction != null)
                     {
                         DateTime endTime = (endDatePicker.Value.HasValue) ? endDatePicker.Value.Value : default(DateTime);
-                        bool isSuccessful = CoreOperations.EditATransaction(serviceID, txtRegID.Text, (int)currentTransaction.Vehicle.Ownerid, currentTransaction.Technician.Id, txtPaymentDetails.Text, double.Parse(txtPayment.Text), startDatePicker.Value.Value, endTime);
+                        bool isSuccessful = CoreOperations.EditATransaction(serviceID, txtRegID.Text,(int) cust.CustomerID, tech.Id, txtPaymentDetails.Text, double.Parse(txtPayment.Text), startDatePicker.Value.Value, endTime,oprationID);
                         if (isSuccessful)
                         {
                             MessageBox.Show(string.Format("Transaction with service ID {0}is Edited Successfully", serviceID)
