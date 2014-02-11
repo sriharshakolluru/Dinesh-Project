@@ -630,6 +630,31 @@ namespace Dinesh_Project
             }
             return -1;
         }
+        public static int doesTechnicianExists(int Id)
+        {
+            List<Technician> techList = GetAllTechnicians();
+            try
+            {
+                if (techList != null && techList.Count > 0)
+                {
+                    var techId = (from Technician row in techList
+                                  where row.Id==Id
+                                  select row.Id).First();
+
+                    return techId;
+                }
+                else
+                {
+                    Utility.WriteLog("The Customer/Owner list Result does not contain any rows");
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception occurred in doesVehicleExist." + ex.ToString());
+            }
+            return -1;
+        }
         public static int doesOperationExists(string Name)
         {
             if (string.IsNullOrEmpty(Name))

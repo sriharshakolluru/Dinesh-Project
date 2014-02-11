@@ -19,7 +19,7 @@ namespace DataOperations
             }
             catch (Exception ex)
             {
-
+                File.AppendAllText(@"C:\ProjLogs\Failure.txt", "Failure is writing Log" + ex.ToString());
             }
         }
 
@@ -37,12 +37,12 @@ namespace DataOperations
                 }
                 catch (Exception ex)
                 {
-
+                    File.AppendAllText(@"C:\ProjLogs\Failure.txt", "Failure is writing Log" + ex.ToString());
                 }
             }
             catch (Exception ex)
             {
-
+                File.AppendAllText(@"C:\ProjLogs\Failure.txt", "Failure is writing Log" + ex.ToString());
             }
         }
 

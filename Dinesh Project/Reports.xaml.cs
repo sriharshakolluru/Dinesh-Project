@@ -49,27 +49,34 @@ namespace Dinesh_Project
         #region Technicians
         private void grdTechData_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
+            Utility.WriteLog("Entered Row Editing/Adding For Technicians");
             DataGrid dg= (DataGrid)sender;
-            DataRowView row = (DataRowView)dg.SelectedItems[0];
-            string key = row["Id"].ToString();
-            string Name = row["Name"].ToString();
-            string RegID = row["RegistrationID"].ToString();
+            Technician row = (Technician)dg.SelectedItems[0];
+            int key = row.Id;
+            string Name = row.Name;
+            string RegID = row.RegistrationID;
             if (!string.IsNullOrEmpty(Name))
             {
-                bool doesExist = (CoreOperations.doesTechnicianExists(Name) <= -1) ? false : true;
+                bool doesExist = (CoreOperations.doesTechnicianExists(key) <= -1) ? false : true;
                 if (doesExist)
                 {
-                    if (CoreOperations.EditaTechnician(int.Parse(key), Name, RegID))
+                    Utility.WriteLog(string.Format("Started Editing Name {0} with ID {1}", Name, key));
+                    if (CoreOperations.EditaTechnician(key, Name, RegID))
                         MessageBox.Show("Edit is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     else
                         MessageBox.Show("Edit is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    Utility.WriteLog(string.Format("Completed Editing Name {0} with ID {1}",Name,key));
                 }
                 else
                 {
+                    Utility.WriteLog(string.Format("Started Adding Name {0} ", Name));
                     if (CoreOperations.AddANewTechnician(Name, Utility.CreateRandomID(Name)))
                         MessageBox.Show("Addition is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     else
                         MessageBox.Show("Addition is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    Utility.WriteLog(string.Format("Completed adding Name {0} ", Name));
                 }
             }
             matchSearchRequest();
@@ -263,6 +270,7 @@ namespace Dinesh_Project
         }
         private void grdVehicData_RowEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
+            Utility.WriteLog(string.Format("Entered Grid Vehicle Data Editing "));
             DataGrid dg = (DataGrid)sender;
             Vehicle row = (Vehicle)dg.SelectedItems[0];
             int key = (int)row.VehicleID;
@@ -274,6 +282,7 @@ namespace Dinesh_Project
             {
                 bool doesExist = (CoreOperations.doesVehicleExist(key ) <= -1) ? false : true;
                 int ownerId = CoreOperations.doesOwnerExists(CustomerName);
+                Utility.WriteLog(string.Format("In Vehic  Editing VehicleExists? : {0} User Exists? : {1}", doesExist, ownerId));
                 if (doesExist)
                 {
                     if (ownerId < 0)
@@ -287,6 +296,7 @@ namespace Dinesh_Project
                         else
                         {
                             ownerId = CoreOperations.doesOwnerExists(CustomerName);
+                            Utility.WriteLog(string.Format("In Vehic  Editing : Customer Edited Successfully. ID Created : {0}, name is {1} ", ownerId, CustomerName));
                         }
                     }
 
@@ -294,6 +304,8 @@ namespace Dinesh_Project
                         MessageBox.Show("Edit is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     else
                         MessageBox.Show("Edit is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    Utility.WriteLog(string.Format("Completed Editing Vehicle For the ID {0} : Name {1}", key, RegID));
                 }
                 else
                 {
@@ -301,6 +313,7 @@ namespace Dinesh_Project
                         MessageBox.Show("Addition is Successful", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     else
                         MessageBox.Show("Addition is UnSuccessful", "Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Utility.WriteLog(string.Format("Completed Adding  Vehicle For the ID {0} : Owner {1}", RegID,ownerId));
                 }
             }
             matchVehicleList();
