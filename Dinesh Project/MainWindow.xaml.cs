@@ -19,6 +19,7 @@ namespace Dinesh_Project
     /// </summary>
     public partial class MainWindow : Window
     {
+        List<TabItem> listofTabls=new List<TabItem>();
         public MainWindow()
         {
             InitializeComponent();
@@ -26,50 +27,71 @@ namespace Dinesh_Project
 
         private void Page1_Click(object sender, RoutedEventArgs e)
         {
-            TabItem tabitem = new TabItem();
-            tabitem.Header = "Transactions";
-            Frame tabFrame = new Frame();
-            Transactions page1 = new Transactions();
-            tabFrame.Content = page1;
-            tabitem.Content = tabFrame;
-            tabitem.Name = "Transactions";
-            if (AllowTab(tabitem.Name))
+            const string tabName = "Transactions";
+            
+            if (!TabExists(tabName))
             {
+                TabItem tabitem = new TabItem();
+                tabitem.Header = tabName ;
+                Frame tabFrame = new Frame();
+                Transactions page1 = new Transactions();
+                tabFrame.Content = page1;
+                tabitem.Content = tabFrame;
+                tabitem.Name =tabName;
                 tabControlView.Items.Add(tabitem);
                 tabControlView.SelectedItem = tabitem;
             }
             else
-                MessageBox.Show("Tab is Already Open or Too Many Tabs", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            {
+                List<TabItem> tabitem = (from TabItem item in tabControlView.Items
+                                   where item.Name.Equals(tabName)
+                                   select item).ToList();
+                if (tabitem.Any())
+                {
+                    tabControlView.SelectedItem = tabitem.First();
+                }
+                
+            }
+                //MessageBox.Show("Tab is Already Open or Too Many Tabs", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
         private void Page2_Click(object sender, RoutedEventArgs e)
         {
 
-            TabItem tabitem = new TabItem();
-            tabitem.Header = "Reports";
-            Frame tabFrame = new Frame();
-            Reports page1 = new Reports();
-            tabFrame.Content = page1;
-            tabitem.Content = tabFrame;
-            tabitem.Name = "Reports";
-            if (AllowTab(tabitem.Name))
+            const string tabName = "Reports";
+            if (!TabExists(tabName))
             {
+                TabItem tabitem = new TabItem();
+                tabitem.Header = tabName;
+                Frame tabFrame = new Frame();
+                Reports page1 = new Reports();
+                tabFrame.Content = page1;
+                tabitem.Content = tabFrame;
+                tabitem.Name = tabName;
                 tabControlView.Items.Add(tabitem);
                 tabControlView.SelectedItem = tabitem;
             }
             else
-                MessageBox.Show("Tab is Already Open or Too Many Tabs", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            {
+                List<TabItem> tabitem = (from TabItem item in tabControlView.Items
+                                   where item.Name.Equals(tabName)
+                                   select item).ToList();
+                if (tabitem.Any())
+                {
+                    tabControlView.SelectedItem = tabitem.First();
+                }
+                
+            }
+                //MessageBox.Show("Tab is Already Open or Too Many Tabs", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
-        public bool AllowTab(string Name)
+        public bool TabExists(string Name)
         {
             var activeTabs = (from TabItem item in tabControlView.Items
                               select item.Name);
             if (activeTabs.Contains(Name))
-                return false;
-            else if (activeTabs.Count() > 5)
-                return false;
-            else
                 return true;
+            else
+                return false;
         }
 
         private void Page3_Click(object sender, RoutedEventArgs e)
