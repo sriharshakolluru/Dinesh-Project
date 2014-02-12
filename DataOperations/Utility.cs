@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Practices.EnterpriseLibrary.Logging;
 using System.IO;
 using System.Security.Cryptography;
+using log4net;
 namespace DataOperations
 {
    public class Utility
     {
+       private static readonly ILog logger = LogManager.GetLogger("LogFileAppender"); 
         public static void WriteLog(string Message)
         {
             try
             {
                 //Logger.Write(Message, "Log");
+                logger.Info(Message);
                 StreamWriter writer=new StreamWriter(@"D:\Dinesh Project\Logs\log.txt",true);
                 writer.WriteLine(string.Format("Date: {0} {1}{2}",DateTime.Now.ToString(),Environment.NewLine,Message));
                 writer.Close();
@@ -31,10 +33,7 @@ namespace DataOperations
                 //Logger.Write(Message, "LogError");
                 try
                 {
-                    //Logger.Write(Message, "Important");
-                    StreamWriter writer = new StreamWriter(@"D:\Dinesh Project\Logs\logError.txt", true);
-                    writer.WriteLine(string.Format("Date: {0} {1}{2}", DateTime.Now.ToString(), Environment.NewLine, Message));
-                    writer.Close();
+                    logger.Error(Message);
                 }
                 catch (Exception ex)
                 {
@@ -44,6 +43,30 @@ namespace DataOperations
             catch (Exception ex)
             {
                 //File.AppendAllText(@"C:\ProjLogs\Failure.txt", "Failure is writing Log" + ex.ToString());
+            }
+        }
+
+        public static void WriteLogWarn(string Message)
+        {
+            try
+            {                
+                logger.Warn(Message);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        public static void WriteLogDebug(string Message)
+        {
+            try
+            {
+                logger.Debug(Message);
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 
