@@ -41,6 +41,7 @@ namespace Dinesh_Project
             int returnCode;
             try
             {
+                Utility.WriteLogDebug(string.Format("The Command Received to execute is {0}. The connection string is {1}", command, connectin.ConnectionString));
                 using (SqlCeConnection con = new SqlCeConnection(connectin.ConnectionString))
                 {
                     con.Open();
@@ -50,6 +51,7 @@ namespace Dinesh_Project
                        returnCode = com.ExecuteNonQuery();
                     }
                 }
+                Utility.WriteLogDebug(string.Format("Finished The Command Received to execute : {0}. The connection string is {1}", command, connectin.ConnectionString));
                 return returnCode;
             }
             catch (Exception ex)
@@ -63,13 +65,20 @@ namespace Dinesh_Project
         {
             try
             {
-
+                Utility.WriteLogDebug(string.Format("Adding a New Operarton: Operartion :{0} , VehicleClass : {1}  ", OperationName, VehicalClass));
                 String InsertCommand = string.Format("INSERT INTO OPERATIONS (Name,VehicleClass) VALUES ('{0}','{1}')", OperationName, VehicalClass);
                 int returnValue = InsertData(coreConnectionstring, InsertCommand);
                 if (returnValue > -1)
+                {
+
+                    Utility.WriteLogDebug(string.Format("Finished Adding a New Operarton: Operartion :{0} , VehicleClass : {1}  ", OperationName, VehicalClass));
                     return true;
+                }
                 else
+                {
+                    Utility.WriteLogDebug(string.Format("Failed Adding a New Operarton: Operartion :{0} , VehicleClass : {1}  ", OperationName, VehicalClass));
                     return false;
+                }
             }
             catch (Exception ex)
             {
@@ -93,41 +102,60 @@ namespace Dinesh_Project
                 //    db.SaveChanges();
                 //    return true;
                 //}
+                Utility.WriteLogDebug(string.Format("Adding a New Customer: Vehicle :{0} , name : {1} ,Phone : {2} ", RegistrationID, CustomerName,phone));
                 isOwnerDirty = true;
                 iscustomerDataDirty = true;
-                String InsertCommand = string.Format("INSERT INTO CUSTOMERS(Name,RegistrationID,Phone,Address) VALUES ('{0}','{1}','{2}','{3}')", CustomerName, RegistrationID, phone, address);
+                String InsertCommand = string.Format("INSERT INTO CUSTOMERS(Name,RegistrationID,Phone,Address) VALUES ('{0}','{1}','{2}','{3}')"
+                                                                                                , CustomerName, RegistrationID, phone, address);
                 int returnValue = InsertData(coreConnectionstring, InsertCommand);
+                Utility.WriteLogDebug(string.Format("Finished Adding a New Customer: Vehicle :{0} , name : {1} ,Phone : {2}. The return value is {3} "
+                                                                                            , RegistrationID, CustomerName, phone,returnValue));
                 return returnValue;
             }
             catch (Exception  ex)
             {
-                Utility.WriteLogError("Exception occurred in adding a new customer " +CustomerName+"   " + ex.ToString());
+                Utility.WriteLogError(string.Format( "Exception occurred in adding a new customer {0} . Exception : {1}",CustomerName,ex.ToString()));
             }
 
             return -1;
         }
         public static bool AddANewTechnician(string TechnicianName, string RegistrationID)
         {
+            Utility.WriteLogDebug(string.Format("Adding a New Technician: Registration ID :{0} , name : {1} ", RegistrationID, TechnicianName));
             isTechnicianDirty = true;
             String InsertCommand = string.Format("INSERT INTO Technicians(Name,RegistrationID) VALUES ('{0}','{1}')", TechnicianName, RegistrationID);
             int returnValue = InsertData(coreConnectionstring, InsertCommand);
             if (returnValue > -1)
+            {
+                Utility.WriteLogDebug(string.Format("Finished Adding a New Technician: Registration ID :{0} , name : {1} ", RegistrationID, TechnicianName));
                 return true;
+            }
             else
+            {
+                Utility.WriteLogDebug(string.Format("Failed Adding a New Technician: Registration ID :{0} , name : {1} ", RegistrationID, TechnicianName));
                 return false;
-
+            }
 
         }
         public static bool AddANewVehicle(string RegisrtrationId, string VehicleType, int OwnerId)
         {
+            Utility.WriteLogDebug(string.Format("Adding a New Vehicle : Registration ID :{0} , OwnerID : {1} ",RegisrtrationId,OwnerId));
             isVehicleDirty = true;
             iscustomerDataDirty = true;
             String InsertCommand = string.Format("INSERT INTO Vehicles(RegistrationNumber,VehicleType,Ownerid) VALUES ('{0}','{1}',{2})", RegisrtrationId, VehicleType, OwnerId);
             int returnValue = InsertData(coreConnectionstring, InsertCommand);
             if (returnValue > -1)
+            {
+
+                Utility.WriteLogDebug(string.Format("Finished Adding a New Vehicle : Registration ID :{0} , OwnerID : {1} ", RegisrtrationId, OwnerId));
                 return true;
+            }
             else
+            {
+                Utility.WriteLogWarn(string.Format("Failed adding a New Vehicle : Registration ID :{0} , OwnerID : {1} ", RegisrtrationId, OwnerId));
                 return false;
+            }
+            
         }
 
         public static bool EditaTechnician(int Id,string TechnicianName, string RegistrationID)
@@ -174,6 +202,8 @@ namespace Dinesh_Project
         {
             try
             {
+                Utility.WriteLogDebug(string.Format("Entered Editing a vehicle ID : {0}. The Owner is {1}. New Registration Number : {2}", ID, ownerID, RegistrationNumber));
+
                 using (CoreDbEntities db = new CoreDbEntities())
                 {
                     isVehicleDirty = true;
@@ -197,9 +227,16 @@ namespace Dinesh_Project
                     int returnValue=InsertData(coreConnectionstring, updateCommand);
 
                     if (returnValue > -1)
+                    {
+                        Utility.WriteLogDebug(string.Format("Finished Editing a vehicle ID : {0}. The Owner is {1}. New Registration Number : {2}", ID, ownerID, RegistrationNumber));
                         return true;
+                    }
                     else
-                        return false;
+                    {
+                        Utility.WriteLogDebug(string.Format("FailedEditing a vehicle ID : {0}. The Owner is {1}. New Registration Number : {2}", ID, ownerID, RegistrationNumber));
+                        return false; 
+                    }
+                
                 }
             }
             catch (Exception ex)
@@ -209,7 +246,6 @@ namespace Dinesh_Project
             }
             
         }
-
         public static bool EditATransaction(string ID, string RegistrationNumber, int  ownerID,int  techID,string PaymentDetails,double paymentMoney,DateTime startTime,DateTime endTime,int operationID)
         {
             try
@@ -246,6 +282,7 @@ namespace Dinesh_Project
                     }
                     iscustomerDataDirty = true;
                     isOwnerDirty = true;
+                    Utility.WriteLog("Completed Editing a Transaction id :"+trans.ServiceId);
                     return true;
                 }
             }
@@ -702,8 +739,6 @@ namespace Dinesh_Project
             
 
         }
-
-
 
         #region Join Methods
         public static List<CustomerData> GetCustomizedCustomerdData()
