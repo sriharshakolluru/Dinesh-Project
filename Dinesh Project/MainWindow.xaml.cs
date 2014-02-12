@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using log4net;
 
 namespace Dinesh_Project
 {
@@ -23,6 +24,7 @@ namespace Dinesh_Project
         public MainWindow()
         {
             InitializeComponent();
+            log4net.Config.XmlConfigurator.Configure(); 
         }
 
         private void Page1_Click(object sender, RoutedEventArgs e)
