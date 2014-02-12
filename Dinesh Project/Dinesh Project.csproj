@@ -52,7 +52,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon1.ico</ApplicationIcon>
+    <ApplicationIcon>desktop-file.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
@@ -185,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\CoreDb.sdf" />
+    <Resource Include="desktop-file.ico" />
     <Resource Include="Data\searchIMafe.jpg" />
     <Resource Include="Icon1.ico" />
     <Resource Include="Data\desktop-file.ico" />
