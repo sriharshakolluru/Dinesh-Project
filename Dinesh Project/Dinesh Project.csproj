@@ -104,6 +104,9 @@
     <Compile Include="LoginPopup.xaml.cs">
       <DependentUpon>LoginPopup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LoginPopUpControl.xaml.cs">
+      <DependentUpon>LoginPopUpControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Model1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -116,6 +119,10 @@
       <DependentUpon>Transactions.xaml</DependentUpon>
     </Compile>
     <Page Include="LoginPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LoginPopUpControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

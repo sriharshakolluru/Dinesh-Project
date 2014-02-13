@@ -8,12 +8,13 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Data.Objects.DataClasses;
-using System.Data.EntityClient;
-using System.ComponentModel;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 [assembly: EdmSchemaAttribute()]
 #region EDM Relationship Metadata
@@ -108,6 +109,22 @@ namespace Dinesh_Project
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
+        public ObjectSet<PasswordDetail> PasswordDetails
+        {
+            get
+            {
+                if ((_PasswordDetails == null))
+                {
+                    _PasswordDetails = base.CreateObjectSet<PasswordDetail>("PasswordDetails");
+                }
+                return _PasswordDetails;
+            }
+        }
+        private ObjectSet<PasswordDetail> _PasswordDetails;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
         public ObjectSet<Technician> Technicians
         {
             get
@@ -154,6 +171,7 @@ namespace Dinesh_Project
         private ObjectSet<Vehicle> _Vehicles;
 
         #endregion
+
         #region AddTo Methods
     
         /// <summary>
@@ -170,6 +188,14 @@ namespace Dinesh_Project
         public void AddToOperations(Operation operation)
         {
             base.AddObject("Operations", operation);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the PasswordDetails EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToPasswordDetails(PasswordDetail passwordDetail)
+        {
+            base.AddObject("PasswordDetails", passwordDetail);
         }
     
         /// <summary>
@@ -197,11 +223,11 @@ namespace Dinesh_Project
         }
 
         #endregion
+
     }
-    
 
     #endregion
-    
+
     #region Entities
     
     /// <summary>
@@ -230,6 +256,7 @@ namespace Dinesh_Project
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -356,6 +383,7 @@ namespace Dinesh_Project
         partial void OnAddressChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -382,6 +410,7 @@ namespace Dinesh_Project
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -408,6 +437,7 @@ namespace Dinesh_Project
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -486,6 +516,7 @@ namespace Dinesh_Project
         partial void OnVehicleClassChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -512,6 +543,116 @@ namespace Dinesh_Project
         }
 
         #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="CoreDbModel", Name="PasswordDetail")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class PasswordDetail : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new PasswordDetail object.
+        /// </summary>
+        /// <param name="id">Initial value of the Id property.</param>
+        /// <param name="loginID">Initial value of the LoginID property.</param>
+        /// <param name="password">Initial value of the Password property.</param>
+        public static PasswordDetail CreatePasswordDetail(global::System.Int32 id, global::System.String loginID, global::System.String password)
+        {
+            PasswordDetail passwordDetail = new PasswordDetail();
+            passwordDetail.Id = id;
+            passwordDetail.LoginID = loginID;
+            passwordDetail.Password = password;
+            return passwordDetail;
+        }
+
+        #endregion
+
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Id
+        {
+            get
+            {
+                return _Id;
+            }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    ReportPropertyChanging("Id");
+                    _Id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _Id;
+        partial void OnIdChanging(global::System.Int32 value);
+        partial void OnIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String LoginID
+        {
+            get
+            {
+                return _LoginID;
+            }
+            set
+            {
+                OnLoginIDChanging(value);
+                ReportPropertyChanging("LoginID");
+                _LoginID = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("LoginID");
+                OnLoginIDChanged();
+            }
+        }
+        private global::System.String _LoginID;
+        partial void OnLoginIDChanging(global::System.String value);
+        partial void OnLoginIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Password
+        {
+            get
+            {
+                return _Password;
+            }
+            set
+            {
+                OnPasswordChanging(value);
+                ReportPropertyChanging("Password");
+                _Password = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("Password");
+                OnPasswordChanged();
+            }
+        }
+        private global::System.String _Password;
+        partial void OnPasswordChanging(global::System.String value);
+        partial void OnPasswordChanged();
+
+        #endregion
+
+    
     }
     
     /// <summary>
@@ -538,6 +679,7 @@ namespace Dinesh_Project
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -616,6 +758,7 @@ namespace Dinesh_Project
         partial void OnRegistrationIDChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -642,6 +785,7 @@ namespace Dinesh_Project
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -668,6 +812,7 @@ namespace Dinesh_Project
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -938,6 +1083,7 @@ namespace Dinesh_Project
         partial void OnPaymentAmountChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -1056,6 +1202,7 @@ namespace Dinesh_Project
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -1084,6 +1231,7 @@ namespace Dinesh_Project
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -1186,6 +1334,7 @@ namespace Dinesh_Project
         partial void OnOwneridChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -1250,8 +1399,10 @@ namespace Dinesh_Project
         }
 
         #endregion
+
     }
 
     #endregion
+
     
 }

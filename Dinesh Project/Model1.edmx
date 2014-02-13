@@ -8,6 +8,7 @@
         <EntityContainer Name="CoreDbModelStoreContainer">
           <EntitySet Name="Customers" EntityType="CoreDbModel.Store.Customers" store:Type="Tables" />
           <EntitySet Name="Operations" EntityType="CoreDbModel.Store.Operations" store:Type="Tables" />
+          <EntitySet Name="PasswordDetails" EntityType="CoreDbModel.Store.PasswordDetails" store:Type="Tables" />
           <EntitySet Name="Technicians" EntityType="CoreDbModel.Store.Technicians" store:Type="Tables" />
           <EntitySet Name="Transactions" EntityType="CoreDbModel.Store.Transactions" store:Type="Tables" />
           <EntitySet Name="Vehicles" EntityType="CoreDbModel.Store.Vehicles" store:Type="Tables" />
@@ -45,6 +46,14 @@
           <Property Name="OperationId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="20" />
           <Property Name="VehicleClass" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="PasswordDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="LoginID" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="Password" Type="nvarchar" Nullable="false" MaxLength="300" />
         </EntityType>
         <EntityType Name="Technicians">
           <Key>
@@ -135,6 +144,7 @@
         <EntityContainer Name="CoreDbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Customers" EntityType="CoreDbModel.Customer" />
           <EntitySet Name="Operations" EntityType="CoreDbModel.Operation" />
+          <EntitySet Name="PasswordDetails" EntityType="CoreDbModel.PasswordDetail" />
           <EntitySet Name="Technicians" EntityType="CoreDbModel.Technician" />
           <EntitySet Name="Transactions" EntityType="CoreDbModel.Transaction" />
           <EntitySet Name="Vehicles" EntityType="CoreDbModel.Vehicle" />
@@ -174,6 +184,14 @@
           <Property Name="Name" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="VehicleClass" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="Transactions" Relationship="CoreDbModel.FK_Operations" FromRole="Operations" ToRole="Transactions" />
+        </EntityType>
+        <EntityType Name="PasswordDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LoginID" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="300" Unicode="true" FixedLength="false" />
         </EntityType>
         <EntityType Name="Technician">
           <Key>
@@ -268,42 +286,71 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="CoreDbModelStoreContainer" CdmEntityContainer="CoreDbEntities">
-          <EntitySetMapping Name="Customers"><EntityTypeMapping TypeName="CoreDbModel.Customer"><MappingFragment StoreEntitySet="Customers">
-            <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
-            <ScalarProperty Name="Name" ColumnName="Name" />
-            <ScalarProperty Name="RegistrationID" ColumnName="RegistrationID" />
-            <ScalarProperty Name="Phone" ColumnName="Phone" />
-            <ScalarProperty Name="Address" ColumnName="Address" />
-          </MappingFragment></EntityTypeMapping></EntitySetMapping>
-          <EntitySetMapping Name="Operations"><EntityTypeMapping TypeName="CoreDbModel.Operation"><MappingFragment StoreEntitySet="Operations">
-            <ScalarProperty Name="OperationId" ColumnName="OperationId" />
-            <ScalarProperty Name="Name" ColumnName="Name" />
-            <ScalarProperty Name="VehicleClass" ColumnName="VehicleClass" />
-          </MappingFragment></EntityTypeMapping></EntitySetMapping>
-          <EntitySetMapping Name="Technicians"><EntityTypeMapping TypeName="CoreDbModel.Technician"><MappingFragment StoreEntitySet="Technicians">
-            <ScalarProperty Name="Name" ColumnName="Name" />
-            <ScalarProperty Name="Id" ColumnName="Id" />
-            <ScalarProperty Name="RegistrationID" ColumnName="RegistrationID" />
-          </MappingFragment></EntityTypeMapping></EntitySetMapping>
-          <EntitySetMapping Name="Transactions"><EntityTypeMapping TypeName="CoreDbModel.Transaction"><MappingFragment StoreEntitySet="Transactions">
-            <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
-            <ScalarProperty Name="OperationId" ColumnName="OperationId" />
-            <ScalarProperty Name="StartDate" ColumnName="StartDate" />
-            <ScalarProperty Name="EndDate" ColumnName="EndDate" />
-            <ScalarProperty Name="Status" ColumnName="Status" />
-            <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
-            <ScalarProperty Name="Remarks" ColumnName="Remarks" />
-            <ScalarProperty Name="TechnicianId" ColumnName="TechnicianId" />
-            <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
-            <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
-            <ScalarProperty Name="PaymentAmount" ColumnName="PaymentAmount" />
-          </MappingFragment></EntityTypeMapping></EntitySetMapping>
-          <EntitySetMapping Name="Vehicles"><EntityTypeMapping TypeName="CoreDbModel.Vehicle"><MappingFragment StoreEntitySet="Vehicles">
-            <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
-            <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
-            <ScalarProperty Name="VehicleType" ColumnName="VehicleType" />
-            <ScalarProperty Name="Ownerid" ColumnName="Ownerid" />
-          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="CoreDbModel.Customer">
+              <MappingFragment StoreEntitySet="Customers">
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="RegistrationID" ColumnName="RegistrationID" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Operations">
+            <EntityTypeMapping TypeName="CoreDbModel.Operation">
+              <MappingFragment StoreEntitySet="Operations">
+                <ScalarProperty Name="OperationId" ColumnName="OperationId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="VehicleClass" ColumnName="VehicleClass" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PasswordDetails">
+            <EntityTypeMapping TypeName="CoreDbModel.PasswordDetail">
+              <MappingFragment StoreEntitySet="PasswordDetails">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="LoginID" ColumnName="LoginID" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Technicians">
+            <EntityTypeMapping TypeName="CoreDbModel.Technician">
+              <MappingFragment StoreEntitySet="Technicians">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RegistrationID" ColumnName="RegistrationID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Transactions">
+            <EntityTypeMapping TypeName="CoreDbModel.Transaction">
+              <MappingFragment StoreEntitySet="Transactions">
+                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+                <ScalarProperty Name="OperationId" ColumnName="OperationId" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="TechnicianId" ColumnName="TechnicianId" />
+                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+                <ScalarProperty Name="PaymentAmount" ColumnName="PaymentAmount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Vehicles">
+            <EntityTypeMapping TypeName="CoreDbModel.Vehicle">
+              <MappingFragment StoreEntitySet="Vehicles">
+                <ScalarProperty Name="VehicleID" ColumnName="VehicleID" />
+                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+                <ScalarProperty Name="VehicleType" ColumnName="VehicleType" />
+                <ScalarProperty Name="Ownerid" ColumnName="Ownerid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -327,7 +374,8 @@
       <Diagram Name="Model1">
         <EntityTypeShape EntityType="CoreDbModel.Customer" Width="1.5" PointX="0.75" PointY="1.75" Height="2.1725878906250005" IsExpanded="true" />
         <EntityTypeShape EntityType="CoreDbModel.Operation" Width="1.5" PointX="3" PointY="5.375" Height="1.7879850260416674" IsExpanded="true" />
-        <EntityTypeShape EntityType="CoreDbModel.Technician" Width="1.5" PointX="3" PointY="8" Height="1.7879850260416674" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.PasswordDetail" Width="1.5" PointX="5.75" PointY="5.75" Height="1.5956835937499996" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.Technician" Width="1.5" PointX="3" PointY="8" Height="1.7879850260416648" IsExpanded="true" />
         <EntityTypeShape EntityType="CoreDbModel.Transaction" Width="1.5" PointX="5.25" PointY="1" Height="3.7109993489583331" IsExpanded="true" />
         <EntityTypeShape EntityType="CoreDbModel.Vehicle" Width="1.5" PointX="3" PointY="1.75" Height="2.1725878906249996" IsExpanded="true" />
         <AssociationConnector Association="CoreDbModel.FK_Owner_Vehicle" ManuallyRouted="false">
@@ -335,16 +383,16 @@
           <ConnectorPoint PointX="3" PointY="2.8362939453125" />
         </AssociationConnector>
         <AssociationConnector Association="CoreDbModel.FK_Operations" ManuallyRouted="false">
-          <ConnectorPoint PointX="4.5" PointY="6.2689925130208337" />
-          <ConnectorPoint PointX="5.5104141666666671" PointY="6.2689925130208328" />
-          <ConnectorPoint PointX="5.6770808333333331" PointY="6.2689925130208337" />
-          <ConnectorPoint PointX="6" PointY="6.2689925130208337" />
-          <ConnectorPoint PointX="6" PointY="4.7109993489583335" />
+          <ConnectorPoint PointX="4.5" PointY="5.53125" />
+          <ConnectorPoint PointX="5.2447891666666671" PointY="5.5312499999999991" />
+          <ConnectorPoint PointX="5.4114558333333331" PointY="5.53125" />
+          <ConnectorPoint PointX="5.46875" PointY="5.53125" />
+          <ConnectorPoint PointX="5.46875" PointY="4.7109993489583335" />
         </AssociationConnector>
         <AssociationConnector Association="CoreDbModel.FK_Technician" ManuallyRouted="false">
-          <ConnectorPoint PointX="4.5" PointY="8.8939925130208337" />
-          <ConnectorPoint PointX="5.5937475" PointY="8.8939925130208337" />
-          <ConnectorPoint PointX="5.5937475" PointY="4.7109993489583335" />
+          <ConnectorPoint PointX="4.5" PointY="8.8939925130208319" />
+          <ConnectorPoint PointX="5.3281225" PointY="8.8939925130208319" />
+          <ConnectorPoint PointX="5.3281225" PointY="4.7109993489583335" />
         </AssociationConnector>
         <AssociationConnector Association="CoreDbModel.FK_Vehicles" ManuallyRouted="false">
           <ConnectorPoint PointX="4.5" PointY="2.8362939453125" />

@@ -1,20 +1,22 @@
 ﻿<Window x:Class="Dinesh_Project.LoginPopup"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="LoginPopup" Height="150" Width="300">
-    <Grid>
-        <StackPanel Orientation="Vertical"  Background="Aqua">
-            <StackPanel Orientation="Horizontal">
-                <Label Name="lblTitile" FontSize="18" FontFamily="Verdana"  FontWeight="ExtraBold" Content="Enter Login Credentials"/>
+        Title="LoginPopup" Height="150" Width="300" Closing="BeforeClose" >
+    
+        <Grid>
+            <StackPanel Orientation="Vertical"  Background="Aqua">
+                <StackPanel Orientation="Horizontal">
+                    <Label Name="lblTitile" FontSize="18" FontFamily="Verdana"  FontWeight="ExtraBold" Content="Enter Login Credentials"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" >
+                    <Label Name="lblLoginID"  Content="LoginId" Width="70"/>
+                    <TextBox Name="txtLoginId" MaxWidth="250" Width="150" KeyDown="loginId_keyDown"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" >
+                    <Label Name="lblPassword"  Content="Password" Width="70"/>
+                    <PasswordBox Name="txtPassword" PasswordChar="$" MaxWidth="250" Width="150" KeyDown="key_down"/>
+                </StackPanel>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" >
-                <Label Name="lblLoginID"  Content="LoginId" Width="70"/>
-                <TextBox Name="txtLoginId" MaxWidth="250" Width="150" KeyDown="loginId_keyDown"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" >
-                <Label Name="lblPassword"  Content="Password" Width="70"/>
-                <PasswordBox Name="txtPassword" PasswordChar="$" MaxWidth="250" Width="150" KeyDown="key_down"/>
-            </StackPanel>
-        </StackPanel>
-    </Grid>
+        </Grid>
+    
 </Window>

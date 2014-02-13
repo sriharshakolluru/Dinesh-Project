@@ -18,6 +18,8 @@ namespace Dinesh_Project
     /// </summary>
     public partial class LoginPopup : Window
     {
+
+        bool isAuthPassed = false;
         public LoginPopup()
         {
             InitializeComponent();
@@ -30,21 +32,33 @@ namespace Dinesh_Project
                 txtPassword.Focus();
             }
         }
+        
+        
 
         private void key_down(object sender, KeyEventArgs e)
         {
             if (e.Key.Equals(Key.Enter))
             {
                 isAuthenticationPassed();
-                
+                this.Close();
             }
         }
-        private bool isAuthenticationPassed()
+        private void isAuthenticationPassed()
         {
             string userName = txtLoginId.Text;
             string password=txtPassword.Password;
+            using (CoreDbEntities db = new CoreDbEntities())
+            {
+                db.PasswordDetails.Where(u=>u.LoginID.Equals(userName));
+            }
 
-            return false;
+            if (userName.Equals(password))
+                isAuthPassed = true;
+        }
+
+        private void BeforeClose(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            //Environment.Exit(0);
         }
     }
 }

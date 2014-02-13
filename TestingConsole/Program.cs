@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DataOperations;
+
 
 namespace TestingConsole
 {
@@ -10,7 +10,7 @@ namespace TestingConsole
     {
         static void Main(string[] args)
         {
-            Utility.WriteLog("Sample");
+//            Utility.WriteLog("Sample");
             //CoreOperations.AddANewOperation("Puncture", "2wheeler");
             //CoreOperations.AddANewCustomer("Neeti", "Neet1234", "9030256352", "Delhi");
             //CoreOperations.AddANewTechnician("Dinesh", "Dinu2134");

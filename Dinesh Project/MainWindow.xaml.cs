@@ -24,7 +24,9 @@ namespace Dinesh_Project
         public MainWindow()
         {
             InitializeComponent();
-            log4net.Config.XmlConfigurator.Configure(); 
+            log4net.Config.XmlConfigurator.Configure();
+            LoginPopup window = new LoginPopup();
+            bool? val=window.ShowDialog();
         }
 
         private void Page1_Click(object sender, RoutedEventArgs e)
