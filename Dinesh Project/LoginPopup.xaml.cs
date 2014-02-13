@@ -21,9 +21,22 @@ namespace Dinesh_Project
     {
 
         bool isAuthPassed = false;
+        public string Password;
+        public string LoginId=string.Empty;
+        bool skipAuthenticate =false;
         public LoginPopup()
         {
             InitializeComponent();
+        }
+        public LoginPopup(bool skipAuthenticate)
+        {
+            InitializeComponent();
+            this.skipAuthenticate = skipAuthenticate;
+            if (skipAuthenticate)
+            {
+                lblLoginID.Content = "Password";
+                lblPassword.Content = "ReEnter";
+            }
         }
 
         private void loginId_keyDown(object sender, KeyEventArgs e)
@@ -32,6 +45,7 @@ namespace Dinesh_Project
             {
                 txtPassword.Focus();
             }
+            
         }
         
         
@@ -40,16 +54,32 @@ namespace Dinesh_Project
         {
             if (e.Key.Equals(Key.Enter))
             {
-                isAuthenticationPassed();
-                if (isAuthPassed)
-                    this.Close();
+                if (!skipAuthenticate)
+                {
+                    isAuthenticationPassed();
+                    if (isAuthPassed)
+                        this.Close();
+                    else
+                    {
+                        txtLoginId.Clear();
+                        txtPassword.Clear();
+                        MessageBox.Show("Authentication Failed", "Fail", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                        txtLoginId.Focus();
+                    }
+                }
                 else
                 {
-                    txtLoginId.Clear();
-                    txtPassword.Clear();
-                    MessageBox.Show("Authentication Failed","Fail",MessageBoxButton.OK,MessageBoxImage.Error,MessageBoxResult.OK,MessageBoxOptions.DefaultDesktopOnly);
+                    if (txtLoginId.Text.Equals(txtPassword.Password))
+                        Password = txtLoginId.Text;
+                    else
+                    {
+                        txtLoginId.Clear();
+                        txtPassword.Clear();
+                        MessageBox.Show("Passwords did not match", "Fail", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                    }
+                    isAuthPassed = true;
+                    this.Close();
                 }
-                
             }
         }
         private void isAuthenticationPassed()
@@ -61,6 +91,7 @@ namespace Dinesh_Project
                 var userDet= db.PasswordDetails.Where(u=>u.LoginID.Equals(userName));
                 if(userDet.Any())
                 {
+                    LoginId = userDet.First().LoginID;
                     string strdHs = userDet.First().Password;
                     isAuthPassed= Utility.ValidateMD5HashData(password, strdHs);
                 }

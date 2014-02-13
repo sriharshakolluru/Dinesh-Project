@@ -157,6 +157,31 @@ namespace Dinesh_Project
             }
             
         }
+        public static bool EditPassword(string LoginID,string Password)
+        {
+            try
+            {
+                using (CoreDbEntities db = new CoreDbEntities())
+                {
+                    PasswordDetail loginID = db.PasswordDetails.First(c => c.LoginID== LoginID);
+                    if (loginID != null)
+                    {
+                        db.ObjectStateManager.ChangeObjectState(loginID, System.Data.EntityState.Unchanged);
+                        db.PasswordDetails.Attach(loginID);
+                        loginID.Password = Utility.GetMD5HashData(Password);
+                        db.ObjectStateManager.ChangeObjectState(loginID, System.Data.EntityState.Modified);
+                        int returnStatus = db.SaveChanges();
+                    }
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteLogError("Exception  occurred in Changing Password" + ex.ToString());
+
+            }
+            return false;
+        }
 
         public static bool EditaTechnician(int Id,string TechnicianName, string RegistrationID)
         {

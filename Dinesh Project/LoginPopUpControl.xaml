@@ -14,9 +14,13 @@
         </Storyboard>
     </UserControl.Resources>
     <Grid>
-    <Popup Name="popup" Placement="Center" PopupAnimation="Fade" AllowsTransparency="True" Height="300">
-           
-           
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+            
+    <Popup Name="popup" Grid.Row="0" Placement="Center" PopupAnimation="Fade" AllowsTransparency="True" Height="300">
+                <TextBlock Name="smpe" Text="Auteer"/>
+
         </Popup>
     </Grid>
 </UserControl>

@@ -199,6 +199,7 @@
     <Resource Include="Data\searchIMafe.jpg" />
     <Resource Include="Icon1.ico" />
     <Resource Include="Data\desktop-file.ico" />
+    <Resource Include="Data\DownIcon.png" />
     <Content Include="Data\HomeImage1.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

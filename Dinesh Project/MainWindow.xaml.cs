@@ -21,12 +21,14 @@ namespace Dinesh_Project
     public partial class MainWindow : Window
     {
         List<TabItem> listofTabls=new List<TabItem>();
+        bool showlogindropdown=false;
         public MainWindow()
         {
             InitializeComponent();
             log4net.Config.XmlConfigurator.Configure();
             LoginPopup window = new LoginPopup();
             bool? val=window.ShowDialog();
+            loginName.Text = window.LoginId;
         }
 
         private void Page1_Click(object sender, RoutedEventArgs e)
@@ -106,6 +108,31 @@ namespace Dinesh_Project
         private void TabControlClicked(object sender, MouseButtonEventArgs e)
         {
             
+        }
+
+        private void LoginIdClicked(object sender, RoutedEventArgs e)
+        {
+            if (!drpDownLogin.Visibility.Equals(Visibility.Visible))
+                drpDownLogin.Visibility = Visibility.Visible;
+            else
+                drpDownLogin.Visibility = Visibility.Hidden;
+
+        }
+
+        private void ChangePassword(object sender, RoutedEventArgs e)
+        {
+            LoginPopup popup = new LoginPopup(true);
+            var passed= popup.ShowDialog();
+            if (!string.IsNullOrEmpty(popup.Password))
+            {
+                CoreOperations.EditPassword(loginName.Text, popup.Password);
+            }
+
+        }
+
+        private void lostfocus(object sender, RoutedEventArgs e)
+        {
+            drpDownLogin.Visibility = Visibility.Hidden;
         }
     }
 }

@@ -3,27 +3,55 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dg="clr-namespace:Microsoft.Windows.Controls;assembly=WpfToolkit"
         Title="MainWindow" Height="525" Width="700">
+
+
+
     <Grid>
-        <Grid.RowDefinitions>
+        <Grid.RowDefinitions >
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel ></StackPanel>
-        <StackPanel Grid.Row="0" 
-                    Orientation="Horizontal"
-                    >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />  
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0"  Grid.Column="0"  Orientation="Horizontal" Height="25" VerticalAlignment="Top">
             <Button Content="Transactions"
                     Click="Page1_Click"/>
             <Button Content="Reports"
-                    Click="Page2_Click"/>
-         
+                    Click="Page2_Click" HorizontalAlignment="Right"/>
         </StackPanel>
+        <StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" LostFocus="lostfocus">
+            <Button Name="LoginLabel"  Width="Auto" Click="LoginIdClicked" Height="25" >
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="loginName"/>
+                        <Path x:Name="BtnArrow" Margin="-1,-1,0,0" VerticalAlignment="Center" Width="8" Fill="#FF527DB5" Stretch="Uniform" HorizontalAlignment="Left" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z " Height="24" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <StackPanel Name="drpDownLogin" Orientation="Vertical" Visibility="Hidden">
+                <Button Click="ChangePassword">
+                    <Button.Content>
+                        <TextBlock Text="Change Password" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+            
+        </StackPanel>
+            
+        
         <TabControl Grid.Row="1"
-                    x:Name="tabControlView" MouseLeftButtonDown="TabControlClicked"
+                    x:Name="tabControlView" MouseLeftButtonDown="TabControlClicked" Width="Auto"
                     >
             <TabItem Name="Home" Header="Home">
                 <Image Source="Data\HomeImage2.jpg"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Fill"/>
             </TabItem>
         </TabControl>
     </Grid>
+    
+    
+    
+    
+       
+        
 </Window>
