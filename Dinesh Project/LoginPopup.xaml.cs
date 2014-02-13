@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using DataOperations;
 
 namespace Dinesh_Project
 {
@@ -40,7 +41,15 @@ namespace Dinesh_Project
             if (e.Key.Equals(Key.Enter))
             {
                 isAuthenticationPassed();
-                this.Close();
+                if (isAuthPassed)
+                    this.Close();
+                else
+                {
+                    txtLoginId.Clear();
+                    txtPassword.Clear();
+                    MessageBox.Show("Authentication Failed","Fail",MessageBoxButton.OK,MessageBoxImage.Error,MessageBoxResult.OK,MessageBoxOptions.DefaultDesktopOnly);
+                }
+                
             }
         }
         private void isAuthenticationPassed()
@@ -49,16 +58,21 @@ namespace Dinesh_Project
             string password=txtPassword.Password;
             using (CoreDbEntities db = new CoreDbEntities())
             {
-                db.PasswordDetails.Where(u=>u.LoginID.Equals(userName));
+                var userDet= db.PasswordDetails.Where(u=>u.LoginID.Equals(userName));
+                if(userDet.Any())
+                {
+                    string strdHs = userDet.First().Password;
+                    isAuthPassed= Utility.ValidateMD5HashData(password, strdHs);
+                }
             }
 
-            if (userName.Equals(password))
-                isAuthPassed = true;
         }
 
         private void BeforeClose(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //Environment.Exit(0);
+            if (!isAuthPassed)
+                Environment.Exit(0);
+
         }
     }
 }
