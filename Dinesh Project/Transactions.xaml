@@ -143,14 +143,14 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel   Margin="4"   Orientation="Horizontal"   HorizontalAlignment="Center">
-                    <Button Margin="4,0" Content="&lt;&lt;" Click="FirstTransCustCliked" />
-                    <Button Margin="4,0" Content="&lt;" Click="PrevTransClicked"/>
+                    <Button Name="btnFirstClick" Margin="4,0" Content="&lt;&lt;" Click="FirstTransCustCliked" />
+                    <Button Name="btnPrevClick" Margin="4,0" Content="&lt;" Click="PrevTransClicked"/>
                     <StackPanel  VerticalAlignment="Center"  Orientation="Horizontal">
-                        <TextBlock Name="txtVehStart" Text="{Binding Start}"/>
+                        <TextBlock Name="txtTransStart" Text="{Binding Start}"/>
                         <TextBlock Text=" to "/>
-                        <TextBlock Name="txtVehEnd" Text="{Binding End}"/>
+                        <TextBlock Name="txtTransEnd" Text="{Binding End}"/>
                         <TextBlock Text=" of "/>
-                        <TextBlock Name="txtVehSize" Text="{Binding TotalItems}"/>
+                        <TextBlock Name="txtTransSize" Text="{Binding TotalItems}"/>
                     </StackPanel>
                     <Button Margin="4,0" Content=">" Click="nextTransClicked"/>
                     <Button Margin="4,0" Content=">>" Click="lastTransClicked"/>

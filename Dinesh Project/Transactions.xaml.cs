@@ -26,7 +26,6 @@ namespace Dinesh_Project
         Transaction currentTransaction;
         int startItem=0, maxTransactionsPerGrid;
         List<Transaction> currentMappedList;
-
         public Transactions()
         {
             InitializeComponent();
@@ -39,6 +38,8 @@ namespace Dinesh_Project
             txtRegID.ItemsSource = CoreOperations.GetAllVehicles();
             txtRegID.ValueMemberPath = "RegistrationNumber";
             BindTransactionToData();
+            
+            
         }
 
         private void  BindTransactionToData()
@@ -344,6 +345,9 @@ namespace Dinesh_Project
         private void matchTransSearchRequest()
         {
             var finalLIst = currentMappedList.Skip(startItem).Take(maxTransactionsPerGrid);
+            txtTransStart.Text = startItem.ToString();
+            txtTransEnd.Text = (startItem + maxTransactionsPerGrid).ToString();
+            txtTransSize.Text = currentMappedList.Count.ToString();
             grdTransacData.ItemsSource = finalLIst;
         }
 

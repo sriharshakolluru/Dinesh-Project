@@ -21,7 +21,6 @@ namespace Dinesh_Project
     public partial class MainWindow : Window
     {
         List<TabItem> listofTabls=new List<TabItem>();
-        bool showlogindropdown=false;
         public MainWindow()
         {
             InitializeComponent();

@@ -14,13 +14,13 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />  
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0"  Grid.Column="0"  Orientation="Horizontal" Height="25" VerticalAlignment="Top">
+        <StackPanel Grid.Row="0"  Grid.Column="0"  Orientation="Horizontal" Height="25" VerticalAlignment="Top" GotFocus ="lostfocus">
             <Button Content="Transactions"
                     Click="Page1_Click"/>
             <Button Content="Reports"
                     Click="Page2_Click" HorizontalAlignment="Right"/>
         </StackPanel>
-        <StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" LostFocus="lostfocus">
+        <StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" >
             <Button Name="LoginLabel"  Width="Auto" Click="LoginIdClicked" Height="25" >
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
@@ -29,7 +29,7 @@
                     </StackPanel>
                 </Button.Content>
             </Button>
-            <StackPanel Name="drpDownLogin" Orientation="Vertical" Visibility="Hidden">
+            <StackPanel Name="drpDownLogin" Orientation="Vertical" Visibility="Hidden" LostFocus="lostfocus">
                 <Button Click="ChangePassword">
                     <Button.Content>
                         <TextBlock Text="Change Password" />
@@ -40,11 +40,11 @@
         </StackPanel>
             
         
-        <TabControl Grid.Row="1"
+        <TabControl Grid.Row="1" GotFocus="lostfocus"
                     x:Name="tabControlView" MouseLeftButtonDown="TabControlClicked" Width="Auto"
                     >
             <TabItem Name="Home" Header="Home">
-                <Image Source="Data\HomeImage2.jpg"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Fill"/>
+                <!--<Image Source="Data\HomeImage2.jpg"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Fill"/>-->
             </TabItem>
         </TabControl>
     </Grid>
