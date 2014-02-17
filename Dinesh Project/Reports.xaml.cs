@@ -107,12 +107,12 @@ namespace Dinesh_Project
             var selectedItems = grdTechData.SelectedItems;
             bool delOk=false;
             StringBuilder FailedIDs = new StringBuilder("The Technicians which are failed to be deleted are : ");
-            foreach (DataRowView selectedItem in selectedItems)
+            foreach (Technician selectedItem in selectedItems)
             {
-                delOk = CoreOperations.DeleteTechnician(selectedItem[2].ToString());
+                delOk = CoreOperations.DeleteTechnician(selectedItem.RegistrationID);
                 if (!delOk)
                 {
-                    FailedIDs.Append(selectedItem[1]);
+                    FailedIDs.Append(selectedItem.Name);
                     continue;
                 }
             }
