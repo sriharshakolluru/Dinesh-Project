@@ -290,17 +290,9 @@ namespace Dinesh_Project
                         Vehicle vehic = db.Vehicles.ToList().First(c=> c.RegistrationNumber.Equals(RegistrationNumber));
                         vehic.Customer = db.Customers.First(c => c.CustomerID == ownerID);
                         trans.Vehicle = vehic;
-                        trans.Technician = db.Technicians.First(t => t.Id == techID);
-                        trans.Operation = db.Operations.First(t => t.OperationId == operationID);
-                        trans.PaymentAmount = paymentMoney;
-                        trans.PaymentStatus = PaymentDetails;
                         if (!startTime.Equals(default(DateTime)))
                         {
                             trans.StartDate = startTime;
-                        }
-                        if (!endTime.Equals(default(DateTime)))
-                        {
-                            trans.EndDate= endTime;
                         }
                         db.ObjectStateManager.ChangeObjectState(trans, System.Data.EntityState.Modified);
                         int returnStatus = db.SaveChanges();
@@ -525,7 +517,7 @@ namespace Dinesh_Project
             }
             return null;
         }
-        public static List<Transaction> GetAllTransactions(DateTime startTimeofTransac, DateTime endTimeofTransac, string OwnerName,string Technician,string RegistrationID,string ServiceID,string Phone)
+        public static List<Transaction> GetAllTransactions(DateTime startTimeofTransac,string OwnerName,string Technician,string RegistrationID,string ServiceID,string Phone)
         {
             try
             {
@@ -536,8 +528,7 @@ namespace Dinesh_Project
                                    where 
                                    currentTransaction.Vehicle.Customer.Name.Contains(OwnerName)&&
                                    currentTransaction.Vehicle.RegistrationNumber.Contains(RegistrationID)&&
-                                   currentTransaction.Technician.Name.Contains(Technician)&&
-                                   Utility.DateInBetween((DateTime)currentTransaction.StartDate,startTimeofTransac,endTimeofTransac)
+                                   Utility.DateInBetween((DateTime)currentTransaction.StartDate,startTimeofTransac,DateTime.MaxValue)
                                    &&(string.IsNullOrEmpty(ServiceID)||currentTransaction.ServiceId.Equals(ServiceID))
                                    &&currentTransaction.Vehicle.Customer.Phone.Contains(Phone)
                                    select currentTransaction

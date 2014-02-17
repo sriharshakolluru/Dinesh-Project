@@ -20,8 +20,9 @@ using System.Xml.Serialization;
 #region EDM Relationship Metadata
 
 [assembly: EdmRelationshipAttribute("CoreDbModel", "FK_Owner_Vehicle", "Customers", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Dinesh_Project.Customer), "Vehicles", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Dinesh_Project.Vehicle), true)]
-[assembly: EdmRelationshipAttribute("CoreDbModel", "FK_Operations", "Operations", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Dinesh_Project.Operation), "Transactions", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Dinesh_Project.Transaction), true)]
-[assembly: EdmRelationshipAttribute("CoreDbModel", "FK_Technician", "Technicians", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Dinesh_Project.Technician), "Transactions", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Dinesh_Project.Transaction), true)]
+[assembly: EdmRelationshipAttribute("CoreDbModel", "FK_OPerationID", "Operations", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Dinesh_Project.Operation), "OperationsofTransaction", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Dinesh_Project.OperationsofTransaction), true)]
+[assembly: EdmRelationshipAttribute("CoreDbModel", "FK_Operations_TRansactions", "Transactions", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Dinesh_Project.Transaction), "OperationsofTransaction", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Dinesh_Project.OperationsofTransaction), true)]
+[assembly: EdmRelationshipAttribute("CoreDbModel", "FK_TechniciantoOperation", "OperationsofTransaction", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Dinesh_Project.OperationsofTransaction), "TechniciansToOperations", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Dinesh_Project.TechniciansToOperation), true)]
 [assembly: EdmRelationshipAttribute("CoreDbModel", "FK_Vehicles", "Vehicles", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Dinesh_Project.Vehicle), "Transactions", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Dinesh_Project.Transaction), true)]
 
 #endregion
@@ -109,6 +110,22 @@ namespace Dinesh_Project
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
+        public ObjectSet<OperationsofTransaction> OperationsofTransactions
+        {
+            get
+            {
+                if ((_OperationsofTransactions == null))
+                {
+                    _OperationsofTransactions = base.CreateObjectSet<OperationsofTransaction>("OperationsofTransactions");
+                }
+                return _OperationsofTransactions;
+            }
+        }
+        private ObjectSet<OperationsofTransaction> _OperationsofTransactions;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
         public ObjectSet<PasswordDetail> PasswordDetails
         {
             get
@@ -137,6 +154,22 @@ namespace Dinesh_Project
             }
         }
         private ObjectSet<Technician> _Technicians;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<TechniciansToOperation> TechniciansToOperations
+        {
+            get
+            {
+                if ((_TechniciansToOperations == null))
+                {
+                    _TechniciansToOperations = base.CreateObjectSet<TechniciansToOperation>("TechniciansToOperations");
+                }
+                return _TechniciansToOperations;
+            }
+        }
+        private ObjectSet<TechniciansToOperation> _TechniciansToOperations;
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -191,6 +224,14 @@ namespace Dinesh_Project
         }
     
         /// <summary>
+        /// Deprecated Method for adding a new object to the OperationsofTransactions EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToOperationsofTransactions(OperationsofTransaction operationsofTransaction)
+        {
+            base.AddObject("OperationsofTransactions", operationsofTransaction);
+        }
+    
+        /// <summary>
         /// Deprecated Method for adding a new object to the PasswordDetails EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
         public void AddToPasswordDetails(PasswordDetail passwordDetail)
@@ -204,6 +245,14 @@ namespace Dinesh_Project
         public void AddToTechnicians(Technician technician)
         {
             base.AddObject("Technicians", technician);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the TechniciansToOperations EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToTechniciansToOperations(TechniciansToOperation techniciansToOperation)
+        {
+            base.AddObject("TechniciansToOperations", techniciansToOperation);
         }
     
         /// <summary>
@@ -526,18 +575,229 @@ namespace Dinesh_Project
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("CoreDbModel", "FK_Operations", "Transactions")]
-        public EntityCollection<Transaction> Transactions
+        [EdmRelationshipNavigationPropertyAttribute("CoreDbModel", "FK_OPerationID", "OperationsofTransaction")]
+        public EntityCollection<OperationsofTransaction> OperationsofTransactions
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Transaction>("CoreDbModel.FK_Operations", "Transactions");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<OperationsofTransaction>("CoreDbModel.FK_OPerationID", "OperationsofTransaction");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Transaction>("CoreDbModel.FK_Operations", "Transactions", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<OperationsofTransaction>("CoreDbModel.FK_OPerationID", "OperationsofTransaction", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="CoreDbModel", Name="OperationsofTransaction")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class OperationsofTransaction : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new OperationsofTransaction object.
+        /// </summary>
+        /// <param name="transactionID">Initial value of the TransactionID property.</param>
+        /// <param name="operationId">Initial value of the OperationId property.</param>
+        /// <param name="operationtoTechnicianID">Initial value of the OperationtoTechnicianID property.</param>
+        public static OperationsofTransaction CreateOperationsofTransaction(global::System.String transactionID, global::System.Int32 operationId, global::System.Int32 operationtoTechnicianID)
+        {
+            OperationsofTransaction operationsofTransaction = new OperationsofTransaction();
+            operationsofTransaction.TransactionID = transactionID;
+            operationsofTransaction.OperationId = operationId;
+            operationsofTransaction.OperationtoTechnicianID = operationtoTechnicianID;
+            return operationsofTransaction;
+        }
+
+        #endregion
+
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String TransactionID
+        {
+            get
+            {
+                return _TransactionID;
+            }
+            set
+            {
+                OnTransactionIDChanging(value);
+                ReportPropertyChanging("TransactionID");
+                _TransactionID = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("TransactionID");
+                OnTransactionIDChanged();
+            }
+        }
+        private global::System.String _TransactionID;
+        partial void OnTransactionIDChanging(global::System.String value);
+        partial void OnTransactionIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 OperationId
+        {
+            get
+            {
+                return _OperationId;
+            }
+            set
+            {
+                OnOperationIdChanging(value);
+                ReportPropertyChanging("OperationId");
+                _OperationId = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("OperationId");
+                OnOperationIdChanged();
+            }
+        }
+        private global::System.Int32 _OperationId;
+        partial void OnOperationIdChanging(global::System.Int32 value);
+        partial void OnOperationIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 OperationtoTechnicianID
+        {
+            get
+            {
+                return _OperationtoTechnicianID;
+            }
+            set
+            {
+                if (_OperationtoTechnicianID != value)
+                {
+                    OnOperationtoTechnicianIDChanging(value);
+                    ReportPropertyChanging("OperationtoTechnicianID");
+                    _OperationtoTechnicianID = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("OperationtoTechnicianID");
+                    OnOperationtoTechnicianIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _OperationtoTechnicianID;
+        partial void OnOperationtoTechnicianIDChanging(global::System.Int32 value);
+        partial void OnOperationtoTechnicianIDChanged();
+
+        #endregion
+
+    
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("CoreDbModel", "FK_OPerationID", "Operations")]
+        public Operation Operation
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Operation>("CoreDbModel.FK_OPerationID", "Operations").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Operation>("CoreDbModel.FK_OPerationID", "Operations").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Operation> OperationReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Operation>("CoreDbModel.FK_OPerationID", "Operations");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Operation>("CoreDbModel.FK_OPerationID", "Operations", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("CoreDbModel", "FK_Operations_TRansactions", "Transactions")]
+        public Transaction Transaction
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Transaction>("CoreDbModel.FK_Operations_TRansactions", "Transactions").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Transaction>("CoreDbModel.FK_Operations_TRansactions", "Transactions").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Transaction> TransactionReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Transaction>("CoreDbModel.FK_Operations_TRansactions", "Transactions");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Transaction>("CoreDbModel.FK_Operations_TRansactions", "Transactions", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("CoreDbModel", "FK_TechniciantoOperation", "TechniciansToOperations")]
+        public EntityCollection<TechniciansToOperation> TechniciansToOperations
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<TechniciansToOperation>("CoreDbModel.FK_TechniciantoOperation", "TechniciansToOperations");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<TechniciansToOperation>("CoreDbModel.FK_TechniciantoOperation", "TechniciansToOperations", value);
                 }
             }
         }
@@ -760,6 +1020,92 @@ namespace Dinesh_Project
         #endregion
 
     
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="CoreDbModel", Name="TechniciansToOperation")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class TechniciansToOperation : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new TechniciansToOperation object.
+        /// </summary>
+        /// <param name="operationID">Initial value of the OperationID property.</param>
+        /// <param name="technicianID">Initial value of the TechnicianID property.</param>
+        public static TechniciansToOperation CreateTechniciansToOperation(global::System.Int32 operationID, global::System.Int32 technicianID)
+        {
+            TechniciansToOperation techniciansToOperation = new TechniciansToOperation();
+            techniciansToOperation.OperationID = operationID;
+            techniciansToOperation.TechnicianID = technicianID;
+            return techniciansToOperation;
+        }
+
+        #endregion
+
+        #region Primitive Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 OperationID
+        {
+            get
+            {
+                return _OperationID;
+            }
+            set
+            {
+                if (_OperationID != value)
+                {
+                    OnOperationIDChanging(value);
+                    ReportPropertyChanging("OperationID");
+                    _OperationID = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("OperationID");
+                    OnOperationIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _OperationID;
+        partial void OnOperationIDChanging(global::System.Int32 value);
+        partial void OnOperationIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 TechnicianID
+        {
+            get
+            {
+                return _TechnicianID;
+            }
+            set
+            {
+                if (_TechnicianID != value)
+                {
+                    OnTechnicianIDChanging(value);
+                    ReportPropertyChanging("TechnicianID");
+                    _TechnicianID = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("TechnicianID");
+                    OnTechnicianIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _TechnicianID;
+        partial void OnTechnicianIDChanging(global::System.Int32 value);
+        partial void OnTechnicianIDChanged();
+
+        #endregion
+
+    
         #region Navigation Properties
     
         /// <summary>
@@ -768,18 +1114,34 @@ namespace Dinesh_Project
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("CoreDbModel", "FK_Technician", "Transactions")]
-        public EntityCollection<Transaction> Transactions
+        [EdmRelationshipNavigationPropertyAttribute("CoreDbModel", "FK_TechniciantoOperation", "OperationsofTransaction")]
+        public OperationsofTransaction OperationsofTransaction
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Transaction>("CoreDbModel.FK_Technician", "Transactions");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<OperationsofTransaction>("CoreDbModel.FK_TechniciantoOperation", "OperationsofTransaction").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<OperationsofTransaction>("CoreDbModel.FK_TechniciantoOperation", "OperationsofTransaction").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<OperationsofTransaction> OperationsofTransactionReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<OperationsofTransaction>("CoreDbModel.FK_TechniciantoOperation", "OperationsofTransaction");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Transaction>("CoreDbModel.FK_Technician", "Transactions", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<OperationsofTransaction>("CoreDbModel.FK_TechniciantoOperation", "OperationsofTransaction", value);
                 }
             }
         }
@@ -802,12 +1164,10 @@ namespace Dinesh_Project
         /// Create a new Transaction object.
         /// </summary>
         /// <param name="serviceId">Initial value of the ServiceId property.</param>
-        /// <param name="operationId">Initial value of the OperationId property.</param>
-        public static Transaction CreateTransaction(global::System.String serviceId, global::System.Int32 operationId)
+        public static Transaction CreateTransaction(global::System.String serviceId)
         {
             Transaction transaction = new Transaction();
             transaction.ServiceId = serviceId;
-            transaction.OperationId = operationId;
             return transaction;
         }
 
@@ -845,30 +1205,6 @@ namespace Dinesh_Project
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 OperationId
-        {
-            get
-            {
-                return _OperationId;
-            }
-            set
-            {
-                OnOperationIdChanging(value);
-                ReportPropertyChanging("OperationId");
-                _OperationId = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("OperationId");
-                OnOperationIdChanged();
-            }
-        }
-        private global::System.Int32 _OperationId;
-        partial void OnOperationIdChanging(global::System.Int32 value);
-        partial void OnOperationIdChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.DateTime> StartDate
@@ -889,30 +1225,6 @@ namespace Dinesh_Project
         private Nullable<global::System.DateTime> _StartDate;
         partial void OnStartDateChanging(Nullable<global::System.DateTime> value);
         partial void OnStartDateChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.DateTime> EndDate
-        {
-            get
-            {
-                return _EndDate;
-            }
-            set
-            {
-                OnEndDateChanging(value);
-                ReportPropertyChanging("EndDate");
-                _EndDate = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("EndDate");
-                OnEndDateChanged();
-            }
-        }
-        private Nullable<global::System.DateTime> _EndDate;
-        partial void OnEndDateChanging(Nullable<global::System.DateTime> value);
-        partial void OnEndDateChanged();
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -985,102 +1297,6 @@ namespace Dinesh_Project
         private global::System.String _Remarks;
         partial void OnRemarksChanging(global::System.String value);
         partial void OnRemarksChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Int32> TechnicianId
-        {
-            get
-            {
-                return _TechnicianId;
-            }
-            set
-            {
-                OnTechnicianIdChanging(value);
-                ReportPropertyChanging("TechnicianId");
-                _TechnicianId = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("TechnicianId");
-                OnTechnicianIdChanged();
-            }
-        }
-        private Nullable<global::System.Int32> _TechnicianId;
-        partial void OnTechnicianIdChanging(Nullable<global::System.Int32> value);
-        partial void OnTechnicianIdChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public global::System.String PaymentType
-        {
-            get
-            {
-                return _PaymentType;
-            }
-            set
-            {
-                OnPaymentTypeChanging(value);
-                ReportPropertyChanging("PaymentType");
-                _PaymentType = StructuralObject.SetValidValue(value, true);
-                ReportPropertyChanged("PaymentType");
-                OnPaymentTypeChanged();
-            }
-        }
-        private global::System.String _PaymentType;
-        partial void OnPaymentTypeChanging(global::System.String value);
-        partial void OnPaymentTypeChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public global::System.String PaymentStatus
-        {
-            get
-            {
-                return _PaymentStatus;
-            }
-            set
-            {
-                OnPaymentStatusChanging(value);
-                ReportPropertyChanging("PaymentStatus");
-                _PaymentStatus = StructuralObject.SetValidValue(value, true);
-                ReportPropertyChanged("PaymentStatus");
-                OnPaymentStatusChanged();
-            }
-        }
-        private global::System.String _PaymentStatus;
-        partial void OnPaymentStatusChanging(global::System.String value);
-        partial void OnPaymentStatusChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Double> PaymentAmount
-        {
-            get
-            {
-                return _PaymentAmount;
-            }
-            set
-            {
-                OnPaymentAmountChanging(value);
-                ReportPropertyChanging("PaymentAmount");
-                _PaymentAmount = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("PaymentAmount");
-                OnPaymentAmountChanged();
-            }
-        }
-        private Nullable<global::System.Double> _PaymentAmount;
-        partial void OnPaymentAmountChanging(Nullable<global::System.Double> value);
-        partial void OnPaymentAmountChanged();
 
         #endregion
 
@@ -1093,72 +1309,18 @@ namespace Dinesh_Project
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("CoreDbModel", "FK_Operations", "Operations")]
-        public Operation Operation
+        [EdmRelationshipNavigationPropertyAttribute("CoreDbModel", "FK_Operations_TRansactions", "OperationsofTransaction")]
+        public EntityCollection<OperationsofTransaction> OperationsofTransactions
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Operation>("CoreDbModel.FK_Operations", "Operations").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Operation>("CoreDbModel.FK_Operations", "Operations").Value = value;
-            }
-        }
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<Operation> OperationReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Operation>("CoreDbModel.FK_Operations", "Operations");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<OperationsofTransaction>("CoreDbModel.FK_Operations_TRansactions", "OperationsofTransaction");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Operation>("CoreDbModel.FK_Operations", "Operations", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("CoreDbModel", "FK_Technician", "Technicians")]
-        public Technician Technician
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Technician>("CoreDbModel.FK_Technician", "Technicians").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Technician>("CoreDbModel.FK_Technician", "Technicians").Value = value;
-            }
-        }
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<Technician> TechnicianReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Technician>("CoreDbModel.FK_Technician", "Technicians");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Technician>("CoreDbModel.FK_Technician", "Technicians", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<OperationsofTransaction>("CoreDbModel.FK_Operations_TRansactions", "OperationsofTransaction", value);
                 }
             }
         }

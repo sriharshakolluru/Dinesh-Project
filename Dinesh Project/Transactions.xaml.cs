@@ -31,20 +31,19 @@ namespace Dinesh_Project
             InitializeComponent();
             maxTransactionsPerGrid = int.TryParse(ConfigurationManager.AppSettings["MaxRowsPerGrid"], out maxTransactionsPerGrid) ? maxTransactionsPerGrid : 5;
             
-            txtOperations.ItemsSource = CoreOperations.GetAllOPerations();
-            txtOperations.ValueMemberPath = "Name";
             txtTech.ItemsSource = CoreOperations.GetAllTechnicians();
             txtTech.ValueMemberPath = "Name";
             txtRegID.ItemsSource = CoreOperations.GetAllVehicles();
             txtRegID.ValueMemberPath = "RegistrationNumber";
             BindTransactionToData();
             
-            
+                        
         }
 
         private void  BindTransactionToData()
         {
-             List<Transaction> trans= CoreOperations.GetAllTransactions(default(DateTime), DateTime.MaxValue, string.Empty, string.Empty, string.Empty,string.Empty,string.Empty);
+             List<Transaction> trans= CoreOperations.GetAllTransactions(default(DateTime), string.Empty, string.Empty, string.Empty,string.Empty,string.Empty);
+             TechniciansToOperation newore = new TechniciansToOperation();
              currentMappedList = trans;
              matchTransSearchRequest();
             // FillSingleTransacData();
@@ -53,17 +52,14 @@ namespace Dinesh_Project
         private void FillSingleTransacData()
         {
             DateTime startDate = (startDatePicker.Value == null) ? default(DateTime) : (DateTime)startDatePicker.Value;
-            var trans = CoreOperations.GetAllTransactions(startDate, (DateTime)endDatePicker.Value, txtCustName.Text, txtTech.Text, txtRegID.Text,string.Empty,string.Empty);
+            var trans = CoreOperations.GetAllTransactions(startDate, txtCustName.Text, txtTech.Text, txtRegID.Text,string.Empty,string.Empty);
             if (trans.Count > 0)
             {
                 var transaction = trans.First();
                 txtCustName.Text = transaction.Vehicle.Customer.Name;
-                txtOperations.Text = transaction.Operation.Name;
-                txtTech.Text = transaction.Technician.Name;
+                
+                
                 startDatePicker.Value = transaction.StartDate;
-                endDatePicker.Value = transaction.EndDate;
-                txtPayment.Text = transaction.PaymentAmount.ToString();
-                txtPaymentDetails.Text = transaction.PaymentStatus;
                 txtRegID.Text = transaction.Vehicle.RegistrationNumber;
                 txtCustPhone.Text = transaction.Vehicle.Customer.Phone;
             }

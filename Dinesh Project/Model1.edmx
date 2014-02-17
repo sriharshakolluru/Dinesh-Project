@@ -8,21 +8,32 @@
         <EntityContainer Name="CoreDbModelStoreContainer">
           <EntitySet Name="Customers" EntityType="CoreDbModel.Store.Customers" store:Type="Tables" />
           <EntitySet Name="Operations" EntityType="CoreDbModel.Store.Operations" store:Type="Tables" />
+          <EntitySet Name="OperationsofTransaction" EntityType="CoreDbModel.Store.OperationsofTransaction" store:Type="Tables" />
           <EntitySet Name="PasswordDetails" EntityType="CoreDbModel.Store.PasswordDetails" store:Type="Tables" />
           <EntitySet Name="Technicians" EntityType="CoreDbModel.Store.Technicians" store:Type="Tables" />
+          <EntitySet Name="TechniciansToOperations" EntityType="CoreDbModel.Store.TechniciansToOperations" store:Type="Tables" store:Name="TechniciansToOperations">
+            <DefiningQuery>SELECT 
+            [TechniciansToOperations].[OperationID] AS [OperationID], 
+            [TechniciansToOperations].[TechnicianID] AS [TechnicianID]
+            FROM [TechniciansToOperations] AS [TechniciansToOperations]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="Transactions" EntityType="CoreDbModel.Store.Transactions" store:Type="Tables" />
           <EntitySet Name="Vehicles" EntityType="CoreDbModel.Store.Vehicles" store:Type="Tables" />
-          <AssociationSet Name="FK_Operations" Association="CoreDbModel.Store.FK_Operations">
+          <AssociationSet Name="FK_OPerationID" Association="CoreDbModel.Store.FK_OPerationID">
             <End Role="Operations" EntitySet="Operations" />
+            <End Role="OperationsofTransaction" EntitySet="OperationsofTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Operations_TRansactions" Association="CoreDbModel.Store.FK_Operations_TRansactions">
             <End Role="Transactions" EntitySet="Transactions" />
+            <End Role="OperationsofTransaction" EntitySet="OperationsofTransaction" />
           </AssociationSet>
           <AssociationSet Name="FK_Owner_Vehicle" Association="CoreDbModel.Store.FK_Owner_Vehicle">
             <End Role="Customers" EntitySet="Customers" />
             <End Role="Vehicles" EntitySet="Vehicles" />
           </AssociationSet>
-          <AssociationSet Name="FK_Technician" Association="CoreDbModel.Store.FK_Technician">
-            <End Role="Technicians" EntitySet="Technicians" />
-            <End Role="Transactions" EntitySet="Transactions" />
+          <AssociationSet Name="FK_TechniciantoOperation" Association="CoreDbModel.Store.FK_TechniciantoOperation">
+            <End Role="OperationsofTransaction" EntitySet="OperationsofTransaction" />
+            <End Role="TechniciansToOperations" EntitySet="TechniciansToOperations" />
           </AssociationSet>
           <AssociationSet Name="FK_Vehicles" Association="CoreDbModel.Store.FK_Vehicles">
             <End Role="Vehicles" EntitySet="Vehicles" />
@@ -47,6 +58,14 @@
           <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="20" />
           <Property Name="VehicleClass" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <EntityType Name="OperationsofTransaction">
+          <Key>
+            <PropertyRef Name="OperationtoTechnicianID" />
+          </Key>
+          <Property Name="TransactionID" Type="nvarchar" Nullable="false" MaxLength="20" />
+          <Property Name="OperationId" Type="int" Nullable="false" />
+          <Property Name="OperationtoTechnicianID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+        </EntityType>
         <EntityType Name="PasswordDetails">
           <Key>
             <PropertyRef Name="Id" />
@@ -63,21 +82,26 @@
           <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="RegistrationID" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <!--Errors Found During Generation:
+            warning 6002: The table/view 'TechniciansToOperations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+            -->
+        <EntityType Name="TechniciansToOperations">
+          <Key>
+            <PropertyRef Name="OperationID" />
+            <PropertyRef Name="TechnicianID" />
+          </Key>
+          <Property Name="OperationID" Type="int" Nullable="false" />
+          <Property Name="TechnicianID" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Transactions">
           <Key>
             <PropertyRef Name="ServiceId" />
           </Key>
           <Property Name="ServiceId" Type="nvarchar" Nullable="false" MaxLength="20" />
-          <Property Name="OperationId" Type="int" Nullable="false" />
           <Property Name="StartDate" Type="datetime" />
-          <Property Name="EndDate" Type="datetime" />
           <Property Name="Status" Type="nvarchar" MaxLength="10" />
           <Property Name="VehicleId" Type="int" />
           <Property Name="Remarks" Type="nvarchar" MaxLength="100" />
-          <Property Name="TechnicianId" Type="int" />
-          <Property Name="PaymentType" Type="nvarchar" MaxLength="10" />
-          <Property Name="PaymentStatus" Type="nvarchar" MaxLength="20" />
-          <Property Name="PaymentAmount" Type="float" />
         </EntityType>
         <EntityType Name="Vehicles">
           <Key>
@@ -88,15 +112,27 @@
           <Property Name="VehicleType" Type="nvarchar" MaxLength="10" />
           <Property Name="Ownerid" Type="bigint" Nullable="false" />
         </EntityType>
-        <Association Name="FK_Operations">
+        <Association Name="FK_OPerationID">
           <End Role="Operations" Type="CoreDbModel.Store.Operations" Multiplicity="1" />
-          <End Role="Transactions" Type="CoreDbModel.Store.Transactions" Multiplicity="*" />
+          <End Role="OperationsofTransaction" Type="CoreDbModel.Store.OperationsofTransaction" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Operations">
               <PropertyRef Name="OperationId" />
             </Principal>
-            <Dependent Role="Transactions">
+            <Dependent Role="OperationsofTransaction">
               <PropertyRef Name="OperationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Operations_TRansactions">
+          <End Role="Transactions" Type="CoreDbModel.Store.Transactions" Multiplicity="1" />
+          <End Role="OperationsofTransaction" Type="CoreDbModel.Store.OperationsofTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Transactions">
+              <PropertyRef Name="ServiceId" />
+            </Principal>
+            <Dependent Role="OperationsofTransaction">
+              <PropertyRef Name="TransactionID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -112,15 +148,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Technician">
-          <End Role="Technicians" Type="CoreDbModel.Store.Technicians" Multiplicity="0..1" />
-          <End Role="Transactions" Type="CoreDbModel.Store.Transactions" Multiplicity="*" />
+        <Association Name="FK_TechniciantoOperation">
+          <End Role="OperationsofTransaction" Type="CoreDbModel.Store.OperationsofTransaction" Multiplicity="1" />
+          <End Role="TechniciansToOperations" Type="CoreDbModel.Store.TechniciansToOperations" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Technicians">
-              <PropertyRef Name="Id" />
+            <Principal Role="OperationsofTransaction">
+              <PropertyRef Name="OperationtoTechnicianID" />
             </Principal>
-            <Dependent Role="Transactions">
-              <PropertyRef Name="TechnicianId" />
+            <Dependent Role="TechniciansToOperations">
+              <PropertyRef Name="OperationID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -144,21 +180,27 @@
         <EntityContainer Name="CoreDbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Customers" EntityType="CoreDbModel.Customer" />
           <EntitySet Name="Operations" EntityType="CoreDbModel.Operation" />
+          <EntitySet Name="OperationsofTransactions" EntityType="CoreDbModel.OperationsofTransaction" />
           <EntitySet Name="PasswordDetails" EntityType="CoreDbModel.PasswordDetail" />
           <EntitySet Name="Technicians" EntityType="CoreDbModel.Technician" />
+          <EntitySet Name="TechniciansToOperations" EntityType="CoreDbModel.TechniciansToOperation" />
           <EntitySet Name="Transactions" EntityType="CoreDbModel.Transaction" />
           <EntitySet Name="Vehicles" EntityType="CoreDbModel.Vehicle" />
           <AssociationSet Name="FK_Owner_Vehicle" Association="CoreDbModel.FK_Owner_Vehicle">
             <End Role="Customers" EntitySet="Customers" />
             <End Role="Vehicles" EntitySet="Vehicles" />
           </AssociationSet>
-          <AssociationSet Name="FK_Operations" Association="CoreDbModel.FK_Operations">
+          <AssociationSet Name="FK_OPerationID" Association="CoreDbModel.FK_OPerationID">
             <End Role="Operations" EntitySet="Operations" />
-            <End Role="Transactions" EntitySet="Transactions" />
+            <End Role="OperationsofTransaction" EntitySet="OperationsofTransactions" />
           </AssociationSet>
-          <AssociationSet Name="FK_Technician" Association="CoreDbModel.FK_Technician">
-            <End Role="Technicians" EntitySet="Technicians" />
+          <AssociationSet Name="FK_Operations_TRansactions" Association="CoreDbModel.FK_Operations_TRansactions">
             <End Role="Transactions" EntitySet="Transactions" />
+            <End Role="OperationsofTransaction" EntitySet="OperationsofTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TechniciantoOperation" Association="CoreDbModel.FK_TechniciantoOperation">
+            <End Role="OperationsofTransaction" EntitySet="OperationsofTransactions" />
+            <End Role="TechniciansToOperations" EntitySet="TechniciansToOperations" />
           </AssociationSet>
           <AssociationSet Name="FK_Vehicles" Association="CoreDbModel.FK_Vehicles">
             <End Role="Vehicles" EntitySet="Vehicles" />
@@ -183,7 +225,18 @@
           <Property Name="OperationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="VehicleClass" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
-          <NavigationProperty Name="Transactions" Relationship="CoreDbModel.FK_Operations" FromRole="Operations" ToRole="Transactions" />
+          <NavigationProperty Name="OperationsofTransactions" Relationship="CoreDbModel.FK_OPerationID" FromRole="Operations" ToRole="OperationsofTransaction" />
+        </EntityType>
+        <EntityType Name="OperationsofTransaction">
+          <Key>
+            <PropertyRef Name="OperationtoTechnicianID" />
+          </Key>
+          <Property Name="TransactionID" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
+          <Property Name="OperationId" Type="Int32" Nullable="false" />
+          <Property Name="OperationtoTechnicianID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Operation" Relationship="CoreDbModel.FK_OPerationID" FromRole="OperationsofTransaction" ToRole="Operations" />
+          <NavigationProperty Name="Transaction" Relationship="CoreDbModel.FK_Operations_TRansactions" FromRole="OperationsofTransaction" ToRole="Transactions" />
+          <NavigationProperty Name="TechniciansToOperations" Relationship="CoreDbModel.FK_TechniciantoOperation" FromRole="OperationsofTransaction" ToRole="TechniciansToOperations" />
         </EntityType>
         <EntityType Name="PasswordDetail">
           <Key>
@@ -200,25 +253,26 @@
           <Property Name="Name" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RegistrationID" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
-          <NavigationProperty Name="Transactions" Relationship="CoreDbModel.FK_Technician" FromRole="Technicians" ToRole="Transactions" />
+        </EntityType>
+        <EntityType Name="TechniciansToOperation">
+          <Key>
+            <PropertyRef Name="OperationID" />
+            <PropertyRef Name="TechnicianID" />
+          </Key>
+          <Property Name="OperationID" Type="Int32" Nullable="false" />
+          <Property Name="TechnicianID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="OperationsofTransaction" Relationship="CoreDbModel.FK_TechniciantoOperation" FromRole="TechniciansToOperations" ToRole="OperationsofTransaction" />
         </EntityType>
         <EntityType Name="Transaction">
           <Key>
             <PropertyRef Name="ServiceId" />
           </Key>
           <Property Name="ServiceId" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
-          <Property Name="OperationId" Type="Int32" Nullable="false" />
           <Property Name="StartDate" Type="DateTime" />
-          <Property Name="EndDate" Type="DateTime" />
           <Property Name="Status" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
           <Property Name="VehicleId" Type="Int32" />
           <Property Name="Remarks" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
-          <Property Name="TechnicianId" Type="Int32" />
-          <Property Name="PaymentType" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
-          <Property Name="PaymentStatus" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
-          <Property Name="PaymentAmount" Type="Double" />
-          <NavigationProperty Name="Operation" Relationship="CoreDbModel.FK_Operations" FromRole="Transactions" ToRole="Operations" />
-          <NavigationProperty Name="Technician" Relationship="CoreDbModel.FK_Technician" FromRole="Transactions" ToRole="Technicians" />
+          <NavigationProperty Name="OperationsofTransactions" Relationship="CoreDbModel.FK_Operations_TRansactions" FromRole="Transactions" ToRole="OperationsofTransaction" />
           <NavigationProperty Name="Vehicle" Relationship="CoreDbModel.FK_Vehicles" FromRole="Transactions" ToRole="Vehicles" />
         </EntityType>
         <EntityType Name="Vehicle">
@@ -244,27 +298,39 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Operations">
+        <Association Name="FK_OPerationID">
           <End Role="Operations" Type="CoreDbModel.Operation" Multiplicity="1" />
-          <End Role="Transactions" Type="CoreDbModel.Transaction" Multiplicity="*" />
+          <End Role="OperationsofTransaction" Type="CoreDbModel.OperationsofTransaction" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Operations">
               <PropertyRef Name="OperationId" />
             </Principal>
-            <Dependent Role="Transactions">
+            <Dependent Role="OperationsofTransaction">
               <PropertyRef Name="OperationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Technician">
-          <End Role="Technicians" Type="CoreDbModel.Technician" Multiplicity="0..1" />
-          <End Role="Transactions" Type="CoreDbModel.Transaction" Multiplicity="*" />
+        <Association Name="FK_Operations_TRansactions">
+          <End Role="Transactions" Type="CoreDbModel.Transaction" Multiplicity="1" />
+          <End Role="OperationsofTransaction" Type="CoreDbModel.OperationsofTransaction" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Technicians">
-              <PropertyRef Name="Id" />
+            <Principal Role="Transactions">
+              <PropertyRef Name="ServiceId" />
             </Principal>
-            <Dependent Role="Transactions">
-              <PropertyRef Name="TechnicianId" />
+            <Dependent Role="OperationsofTransaction">
+              <PropertyRef Name="TransactionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TechniciantoOperation">
+          <End Role="OperationsofTransaction" Type="CoreDbModel.OperationsofTransaction" Multiplicity="1" />
+          <End Role="TechniciansToOperations" Type="CoreDbModel.TechniciansToOperation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OperationsofTransaction">
+              <PropertyRef Name="OperationtoTechnicianID" />
+            </Principal>
+            <Dependent Role="TechniciansToOperations">
+              <PropertyRef Name="OperationID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -306,6 +372,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="OperationsofTransactions">
+            <EntityTypeMapping TypeName="CoreDbModel.OperationsofTransaction">
+              <MappingFragment StoreEntitySet="OperationsofTransaction">
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+                <ScalarProperty Name="OperationId" ColumnName="OperationId" />
+                <ScalarProperty Name="OperationtoTechnicianID" ColumnName="OperationtoTechnicianID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="PasswordDetails">
             <EntityTypeMapping TypeName="CoreDbModel.PasswordDetail">
               <MappingFragment StoreEntitySet="PasswordDetails">
@@ -324,20 +399,22 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="TechniciansToOperations">
+            <EntityTypeMapping TypeName="CoreDbModel.TechniciansToOperation">
+              <MappingFragment StoreEntitySet="TechniciansToOperations">
+                <ScalarProperty Name="OperationID" ColumnName="OperationID" />
+                <ScalarProperty Name="TechnicianID" ColumnName="TechnicianID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Transactions">
             <EntityTypeMapping TypeName="CoreDbModel.Transaction">
               <MappingFragment StoreEntitySet="Transactions">
                 <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
-                <ScalarProperty Name="OperationId" ColumnName="OperationId" />
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
-                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="VehicleId" ColumnName="VehicleId" />
                 <ScalarProperty Name="Remarks" ColumnName="Remarks" />
-                <ScalarProperty Name="TechnicianId" ColumnName="TechnicianId" />
-                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
-                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
-                <ScalarProperty Name="PaymentAmount" ColumnName="PaymentAmount" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -372,31 +449,34 @@
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
       <Diagram Name="Model1">
-        <EntityTypeShape EntityType="CoreDbModel.Customer" Width="1.5" PointX="0.75" PointY="1.75" Height="2.1725878906250005" IsExpanded="true" />
-        <EntityTypeShape EntityType="CoreDbModel.Operation" Width="1.5" PointX="3" PointY="5.375" Height="1.7879850260416674" IsExpanded="true" />
-        <EntityTypeShape EntityType="CoreDbModel.PasswordDetail" Width="1.5" PointX="5.75" PointY="5.75" Height="1.5956835937499996" IsExpanded="true" />
-        <EntityTypeShape EntityType="CoreDbModel.Technician" Width="1.5" PointX="3" PointY="8" Height="1.7879850260416648" IsExpanded="true" />
-        <EntityTypeShape EntityType="CoreDbModel.Transaction" Width="1.5" PointX="5.25" PointY="1" Height="3.7109993489583331" IsExpanded="true" />
-        <EntityTypeShape EntityType="CoreDbModel.Vehicle" Width="1.5" PointX="3" PointY="1.75" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.Customer" Width="1.5" PointX="0.75" PointY="1" Height="2.1725878906250005" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.Operation" Width="1.5" PointX="5.25" PointY="5.25" Height="1.7879850260416674" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.OperationsofTransaction" Width="1.5" PointX="7.5" PointY="1" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.PasswordDetail" Width="1.5" PointX="0.75" PointY="4.75" Height="1.5956835937499996" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.Technician" Width="1.5" PointX="0.75" PointY="7.75" Height="1.5956835937499996" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.TechniciansToOperation" Width="1.5" PointX="9.75" PointY="1.375" Height="1.5956835937499996" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.Transaction" Width="1.5" PointX="5.25" PointY="1" Height="2.3648893229166674" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoreDbModel.Vehicle" Width="1.5" PointX="3" PointY="1" Height="2.1725878906249996" IsExpanded="true" />
         <AssociationConnector Association="CoreDbModel.FK_Owner_Vehicle" ManuallyRouted="false">
-          <ConnectorPoint PointX="2.25" PointY="2.8362939453125" />
-          <ConnectorPoint PointX="3" PointY="2.8362939453125" />
+          <ConnectorPoint PointX="2.25" PointY="2.0862939453125" />
+          <ConnectorPoint PointX="3" PointY="2.0862939453125" />
         </AssociationConnector>
-        <AssociationConnector Association="CoreDbModel.FK_Operations" ManuallyRouted="false">
-          <ConnectorPoint PointX="4.5" PointY="5.53125" />
-          <ConnectorPoint PointX="5.2447891666666671" PointY="5.5312499999999991" />
-          <ConnectorPoint PointX="5.4114558333333331" PointY="5.53125" />
-          <ConnectorPoint PointX="5.46875" PointY="5.53125" />
-          <ConnectorPoint PointX="5.46875" PointY="4.7109993489583335" />
+        <AssociationConnector Association="CoreDbModel.FK_OPerationID" ManuallyRouted="false">
+          <ConnectorPoint PointX="6.75" PointY="6.1439925130208337" />
+          <ConnectorPoint PointX="8.25" PointY="6.1439925130208337" />
+          <ConnectorPoint PointX="8.25" PointY="3.1725878906249996" />
         </AssociationConnector>
-        <AssociationConnector Association="CoreDbModel.FK_Technician" ManuallyRouted="false">
-          <ConnectorPoint PointX="4.5" PointY="8.8939925130208319" />
-          <ConnectorPoint PointX="5.3281225" PointY="8.8939925130208319" />
-          <ConnectorPoint PointX="5.3281225" PointY="4.7109993489583335" />
+        <AssociationConnector Association="CoreDbModel.FK_Operations_TRansactions" ManuallyRouted="false">
+          <ConnectorPoint PointX="6.75" PointY="2.0862939453125" />
+          <ConnectorPoint PointX="7.5" PointY="2.0862939453125" />
+        </AssociationConnector>
+        <AssociationConnector Association="CoreDbModel.FK_TechniciantoOperation" ManuallyRouted="false">
+          <ConnectorPoint PointX="9" PointY="2.172841796875" />
+          <ConnectorPoint PointX="9.75" PointY="2.172841796875" />
         </AssociationConnector>
         <AssociationConnector Association="CoreDbModel.FK_Vehicles" ManuallyRouted="false">
-          <ConnectorPoint PointX="4.5" PointY="2.8362939453125" />
-          <ConnectorPoint PointX="5.25" PointY="2.8362939453125" />
+          <ConnectorPoint PointX="4.5" PointY="2.0862939453125" />
+          <ConnectorPoint PointX="5.25" PointY="2.0862939453125" />
         </AssociationConnector>
       </Diagram>
     </Diagrams>

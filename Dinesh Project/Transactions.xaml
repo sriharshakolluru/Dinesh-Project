@@ -7,7 +7,7 @@
       xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300" 
+      d:DesignHeight="300" d:DesignWidth="1594" 
     Title="Transactions">
     <Border BorderBrush="Red" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8">
         <Border.Background>
@@ -53,7 +53,7 @@
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Technician" Height="28" HorizontalAlignment="Left"  Name="lblTechName" VerticalAlignment="Top" Width="100" />
                             <toolkit:AutoCompleteBox x:Name="txtTech" Grid.Row ="0" Grid.Column="1" MaxDropDownHeight="300" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"
-                                 FilterMode="StartsWith" IsTextCompletionEnabled="False">
+                                 FilterMode="StartsWith" IsTextCompletionEnabled="False" >
                                 <toolkit:AutoCompleteBox.ItemTemplate >
                                     <DataTemplate>
                                         <StackPanel>
@@ -64,17 +64,8 @@
                             </toolkit:AutoCompleteBox>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Operation" Height="28" HorizontalAlignment="Left"  Name="lblOperation" VerticalAlignment="Top" Width="100" />
-                            <toolkit:AutoCompleteBox x:Name="txtOperations" Grid.Row ="0" Grid.Column="1" MaxDropDownHeight="300" VerticalAlignment="Top" MaxWidth="400" MinWidth="187"
-                                 FilterMode="StartsWith" IsTextCompletionEnabled="False">
-                                <toolkit:AutoCompleteBox.ItemTemplate >
-                                    <DataTemplate>
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding Name}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </toolkit:AutoCompleteBox.ItemTemplate>
-                            </toolkit:AutoCompleteBox>
+                            <Label Content="ServiceID" Height="28" Name="lblServiceID" Width="100" />
+                            <TextBox Name="txtServiceID" MinWidth="187" MaxWidth="400" IsReadOnly="True" />
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
@@ -83,21 +74,53 @@
                             <wpfTool:DateTimePicker Name="startDatePicker" DefaultValue="{x:Static sys:DateTime.Now}" ></wpfTool:DateTimePicker>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Delivered Time" Height="28" HorizontalAlignment="Left"  Name="lblEmdDate" VerticalAlignment="Top" Width="100" />
-                            <wpfTool:DateTimePicker Name="endDatePicker"   DefaultValue="{x:Static sys:DateTime.Now}"></wpfTool:DateTimePicker>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Payment" Height="28" HorizontalAlignment="Left"  Name="lblPayment" VerticalAlignment="Top" Width="100" />
-                            <TextBox Name="txtPayment" MaxWidth="300" MinWidth="80" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
                             <Label Content="Payment Details" Height="28" HorizontalAlignment="Left"  Name="lblPaymentDetails" VerticalAlignment="Top" Width="100" />
                             <wpfTool:MultiLineTextEditor Name="txtPaymentDetails" MaxWidth="700" MinWidth="300" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="ServiceID" Height="28" HorizontalAlignment="Left"  Name="lblServiceID" VerticalAlignment="Top" Width="100" />
-                            <TextBox Name="txtServiceID" MaxWidth="300" MinWidth="80"  IsReadOnly="True"/>
+                            <DataGrid   HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" AutoGenerateColumns="False" x:Name="grdOperationsData" CanUserAddRows="True" CanUserResizeColumns="True" MouseDoubleClick="selectTransaction">
+                                <DataGrid.Resources>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                                        <Setter Property="Background" Value="LightGreen" />
+                                    </Style>
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="Operation" x:Name="operationCOlumn">       
+                                         <DataGridTemplateColumn.CellTemplate>   
+                                             <DataTemplate>       
+                                                 <toolkit:AutoCompleteBox x:Name="atoperationName"  MaxDropDownHeight="300" VerticalAlignment="Top" ValueMemberPath="Name"
+                                                                                 MaxWidth="400" MinWidth="187" FilterMode="Contains" IsTextCompletionEnabled="False">
+                                                     <toolkit:AutoCompleteBox.ItemTemplate >
+                                                                <DataTemplate>
+                                                                    <StackPanel>
+                                                                        <TextBlock Text="{Binding OperationName}" />
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </toolkit:AutoCompleteBox.ItemTemplate>    
+                                                 </toolkit:AutoCompleteBox>
+                                                    </DataTemplate>       
+                                         </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Technician" >
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <toolkit:AutoCompleteBox x:Name="atTechnician"  MaxDropDownHeight="300" VerticalAlignment="Top" ValueMemberPath="Name"
+                                                                                 MaxWidth="400" MinWidth="187" FilterMode="Contains" IsTextCompletionEnabled="False">
+                                                    <toolkit:AutoCompleteBox.ItemTemplate >
+                                                        <DataTemplate>
+                                                            <StackPanel>
+                                                                <TextBlock Text="{Binding TechnicianName}" />
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </toolkit:AutoCompleteBox.ItemTemplate>
+                                                </toolkit:AutoCompleteBox>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
                         </StackPanel>
+                        
                     </StackPanel>
 
                 </StackPanel>
@@ -138,8 +161,8 @@
                         </DataGridTextColumn>
                         <DataGridTextColumn Header="ReceivedDate" MaxWidth="200" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=StartDate}" />
                         <DataGridTextColumn Header="DeliveredDate" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=EndDate}" />
-                        <DataGridTextColumn Header="Operations" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Operation.Name}" />
-                        <DataGridTextColumn Header="Technician" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Technician.Name}" />
+                        <DataGridTextColumn Header="Operations" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True" Binding="{Binding Path=Operations}" />
+                        <DataGridTextColumn Header="Technician" MaxWidth="250" Width="*" Visibility="Visible" IsReadOnly="True"  Binding="{Binding Path=Technicians}" />
                     </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel   Margin="4"   Orientation="Horizontal"   HorizontalAlignment="Center">
