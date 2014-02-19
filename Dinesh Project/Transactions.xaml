@@ -6,9 +6,11 @@
       xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"   
       xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:CustomControl="clr-namespace:DataOperations;assembly=DataOperations"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="1594" 
     Title="Transactions">
+    <Canvas>
     <Border BorderBrush="Red" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8">
         <Border.Background>
             <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
@@ -85,38 +87,8 @@
                                     </Style>
                                 </DataGrid.Resources>
                                 <DataGrid.Columns>
-                                    <DataGridTemplateColumn Header="Operation" x:Name="operationCOlumn">       
-                                         <DataGridTemplateColumn.CellTemplate>   
-                                             <DataTemplate>       
-                                                 <toolkit:AutoCompleteBox x:Name="atoperationName"  MaxDropDownHeight="300" VerticalAlignment="Top" ValueMemberPath="Name"
-                                                                                 MaxWidth="400" MinWidth="187" FilterMode="Contains" IsTextCompletionEnabled="False">
-                                                     <toolkit:AutoCompleteBox.ItemTemplate >
-                                                                <DataTemplate>
-                                                                    <StackPanel>
-                                                                        <TextBlock Text="{Binding OperationName}" />
-                                                                    </StackPanel>
-                                                                </DataTemplate>
-                                                            </toolkit:AutoCompleteBox.ItemTemplate>    
-                                                 </toolkit:AutoCompleteBox>
-                                                    </DataTemplate>       
-                                         </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Header="Technician" >
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <toolkit:AutoCompleteBox x:Name="atTechnician"  MaxDropDownHeight="300" VerticalAlignment="Top" ValueMemberPath="Name"
-                                                                                 MaxWidth="400" MinWidth="187" FilterMode="Contains" IsTextCompletionEnabled="False">
-                                                    <toolkit:AutoCompleteBox.ItemTemplate >
-                                                        <DataTemplate>
-                                                            <StackPanel>
-                                                                <TextBlock Text="{Binding TechnicianName}" />
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </toolkit:AutoCompleteBox.ItemTemplate>
-                                                </toolkit:AutoCompleteBox>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn x:Name="Operation" Binding="{Binding Path=Name}" />
+                                    <DataGridTextColumn x:Name="Technicians" Binding="{Binding Path=Name}"
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
@@ -182,4 +154,8 @@
 
         </Grid>
     </Border>
+        <Border Opacity=".2" Canvas.Right="0" Canvas.Top="0">
+            <CustomControl:DragNDrop  Name="drgDrop" Visibility="Collapsed" ></CustomControl:DragNDrop>
+        </Border>
+    </Canvas>
 </Page>

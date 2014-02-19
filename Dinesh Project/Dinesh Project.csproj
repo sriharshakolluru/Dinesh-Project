@@ -236,13 +236,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataOperations\DataOperations.csproj">
-      <Project>{E3B02179-B6AB-4E7E-8781-DB0D688058F1}</Project>
-      <Name>DataOperations</Name>
-    </ProjectReference>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <ProjectReference Include="..\DataOperations\DataOperations.csproj">
+      <Project>{e3b02179-b6ab-4e7e-8781-db0d688058f1}</Project>
+      <Name>DataOperations</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

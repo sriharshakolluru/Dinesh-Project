@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="DataOperations.DragNDrop"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"   
+             xmlns:toolkit="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="100" Background="Yellow">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <Label  Name="lblHeader" Width="Auto" MaxWidth="150" Height="20" />
+        <DataGrid x:Name="grdList"  Height="600" Width="Auto" MaxWidth="150" VerticalAlignment="Bottom" Background="Aqua" PreviewMouseLeftButtonDown="DragInitiated" PreviewMouseMove="DragStarted">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="txtList" Binding="{Binding Path=Name}" />
+            </DataGrid.Columns>
+            
+        </DataGrid>
+        </StackPanel>
+    </Grid>
+</UserControl>
