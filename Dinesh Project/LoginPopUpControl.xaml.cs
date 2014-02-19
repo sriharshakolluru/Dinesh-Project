@@ -21,7 +21,7 @@ namespace Dinesh_Project
     {
         public LoginPopUpControl()
         {
-            InitializeComponent();
+            //InitializeComponent();
         }
 
         private void StatusFader_Completed(object sender, EventArgs e)

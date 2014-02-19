@@ -83,5 +83,10 @@ namespace DataOperations
                 Utility.WriteLogDebug(string.Format("Drag and Drop initiated with {0} as selected item",SelectedString));
             }
         }
+
+        private void LoadOperationsData(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }

@@ -26,8 +26,8 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0">
-                <Image Source="Data/ReportsFormsLinksHeader.png" Height="90px"  VerticalAlignment="Top" HorizontalAlignment="Stretch"  Stretch="Fill"/>
-            </StackPanel>
+                    <Image Source="Data/ReportsFormsLinksHeader.png" Height="90px"  VerticalAlignment="Top" HorizontalAlignment="Stretch"  Stretch="Fill"/>
+                </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Orientation="Vertical" MinWidth="400" MaxWidth="700">
@@ -88,7 +88,7 @@
                                 </DataGrid.Resources>
                                 <DataGrid.Columns>
                                     <DataGridTextColumn x:Name="Operation" Binding="{Binding Path=Name}" />
-                                    <DataGridTextColumn x:Name="Technicians" Binding="{Binding Path=Name}"
+                                    <DataGridTextColumn x:Name="Technicians" Binding="{Binding Path=Name}"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>

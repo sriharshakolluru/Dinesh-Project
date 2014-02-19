@@ -11,8 +11,12 @@
              d:DesignHeight="600" d:DesignWidth="100" Background="Yellow">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Label  Name="lblHeader" Width="Auto" MaxWidth="150" Height="20" />
-        <DataGrid x:Name="grdList"  Height="600" Width="Auto" MaxWidth="150" VerticalAlignment="Bottom" Background="Aqua" PreviewMouseLeftButtonDown="DragInitiated" PreviewMouseMove="DragStarted">
+            <ComboBox Name="SelectTable" Width="Auto" MaxWidth="150" SelectedIndex="0">
+                <ComboBoxItem Name="Operartions" Content="Operations" Selected="LoadOperationsData" />
+                <ComboBoxItem Name="Technicians" Content="Technicians"  Selected="LoadTechniciansData"/>
+            </ComboBox>
+
+            <DataGrid x:Name="grdList"  Height="600" Width="Auto" MaxWidth="150" VerticalAlignment="Bottom" Background="Aqua" PreviewMouseLeftButtonDown="DragInitiated" PreviewMouseMove="DragStarted">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="txtList" Binding="{Binding Path=Name}" />
             </DataGrid.Columns>
